@@ -2,6 +2,9 @@
 
 #include "raylib.h"
 
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+
 typedef enum FontTag
 {
     FONT_TAG_KONGTEXT,

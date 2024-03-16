@@ -7,7 +7,7 @@
 
 int main(void)
 {
-    InitWindow(800, 600, "Template-5.0.0");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Template-5.0.0");
     UI *ui = UIAlloc(100);
     Battle *battle = BattleAlloc();
     Texture2D nineSlice = AssetSprite(SPRITE_NINESLICE);
@@ -18,11 +18,9 @@ int main(void)
     {
         const float delta = GetFrameTime();
         BattleUpdate(battle, delta);
+
         BeginDrawing();
         ClearBackground(BLACK);
-        UIReset(ui);
-        UISprite(ui, scamp, 128, 128, WHITE);
-        UIDraw(ui, (Vector2){0, 0});
         BattleDraw(battle, ui);
         EndDrawing();
     }
