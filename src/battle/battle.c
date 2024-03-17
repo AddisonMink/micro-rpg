@@ -5,6 +5,7 @@
 #include "battle-types.h"
 #include "combatant-data.h"
 #include "draw/battle-draw-enemies.h"
+#include "draw/battle-draw-players.h"
 
 Battle *BattleAlloc()
 {
@@ -28,4 +29,5 @@ void BattleDraw(Battle *battle, UI *ui)
 {
     DrawEnemyOptions options = {.showStatusPane = IsKeyDown(KEY_TAB)};
     BattleDrawEnemies(ui, (_Battle *)battle, options);
+    BattleDrawPlayers(ui, (_Battle *)battle);
 }
