@@ -1,42 +1,51 @@
 #include "battle-draw-enemies.h"
 
 #include "../../asset.h"
+#include "draw-util.h"
 
 static const float ENEMY_SPRITE_WIDTH = 128;
 static const float ENEMY_SPRITE_HEIGHT = 128;
+
+static const float FONT_SIZE = 16;
+
 static const float HP_HEIGHT = 16;
+static const float HP_WIDTH = 80;
 static const float HP_SPACING = 2;
+
+static const float PANEL_PAD = 4;
+static const float PANEL_WIDTH = 112;
+static const float PANEL_HEIGHT = 46;
+
 static const float ENEMY_WIDTH = 128;
+static const float ENEMY_HEIGHT = 128;
 
-static void uiHpBar(UI *ui, const Combatant *enemy)
-{
-    const float numSpaces = enemy->maxHp - 1;
-    const float totalSpace = numSpaces * HP_SPACING;
-    const float pipWidth = (ENEMY_WIDTH - totalSpace) / enemy->maxHp;
-
-    UIShim(ui, ENEMY_WIDTH, HP_HEIGHT);
-    UIRow(ui, HP_SPACING);
-    for (int i = 0; i < enemy->hp; i++)
-    {
-        UIRect(ui, pipWidth, HP_HEIGHT, RED);
-    }
-    UIRowEnd(ui);
-}
-
-static void uiEnemy(UI *ui, const Combatant *enemy)
+static void uiStatusPanel(UI *ui, const Combatant *enemy)
 {
     const Font font = AssetFont(FONT_TAG_KONGTEXT);
-    const Color color = RAYWHITE;
-
-    UICol(ui, 0);
+    UIAlignShim(ui, ENEMY_WIDTH, ENEMY_HEIGHT, ALIGN_H_CENTER, ALIGN_V_CENTER);
+    const Vector2 innerSize = UIPanel(ui, PANEL_WIDTH, PANEL_HEIGHT);
     {
-        UISprite(ui, enemy->sprite, ENEMY_SPRITE_WIDTH, ENEMY_SPRITE_HEIGHT, WHITE);
-        uiHpBar(ui, enemy);
+        UIAlignShimH(ui, innerSize.x, FONT_SIZE, ALIGN_H_CENTER);
+        UILabel(ui, font, enemy->name, FONT_SIZE, RAYWHITE);
+
+        UIAlignShimH(ui, innerSize.x, HP_HEIGHT, ALIGN_H_CENTER);
+        UIRect(ui, HP_WIDTH, HP_HEIGHT, MAROON);
     }
-    UIColEnd(ui);
+    UIPanelEnd(ui);
 }
 
-void BattleDrawEnemies(UI *ui, const _Battle *battle)
+static void uiEnemy(UI *ui, const Combatant *enemy, DrawEnemyOptions options)
+{
+    UIOverlay(ui);
+    {
+        UISprite(ui, enemy->sprite, ENEMY_SPRITE_WIDTH, ENEMY_SPRITE_HEIGHT, WHITE);
+        if (options.showStatusPane)
+            uiStatusPanel(ui, enemy);
+    }
+    UIOverlayEnd(ui);
+}
+
+void BattleDrawEnemies(UI *ui, const _Battle *battle, DrawEnemyOptions options)
 {
     UIReset(ui);
     {
@@ -47,7 +56,7 @@ void BattleDrawEnemies(UI *ui, const _Battle *battle)
         {
             const Combatant *enemy = &battle->combatants[id];
             if (enemy->state == COMBATANT_STATE_ALIVE)
-                uiEnemy(ui, enemy);
+                uiEnemy(ui, enemy, options);
         }
         UIRowEnd(ui);
     }

@@ -223,3 +223,19 @@ void UIAlignV(UI *ui, AlignV alignV)
 {
     UIAlign(ui, ALIGN_H_LEFT, alignV);
 }
+
+void UIAlignShim(UI *ui, float width, float height, AlignH alignH, AlignV alignV)
+{
+    UIShim(ui, width, height);
+    UIAlign(ui, alignH, alignV);
+}
+
+void UIAlignShimH(UI *ui, float width, float height, AlignH alignH)
+{
+    UIAlignShim(ui, width, height, alignH, ALIGN_V_TOP);
+}
+
+void UIAlignShimV(UI *ui, float width, float height, AlignV alignV)
+{
+    UIAlignShim(ui, width, height, ALIGN_H_LEFT, alignV);
+}

@@ -3,5 +3,9 @@
 #include "../../ui/ui.h"
 #include "../battle-types.h"
 
-void BattleDrawEnemies(UI *ui, const _Battle *battle);
+typedef struct DrawEnemyOptions
+{
+    bool showStatusPane;
+} DrawEnemyOptions;
 
+void BattleDrawEnemies(UI *ui, const _Battle *battle, DrawEnemyOptions options);

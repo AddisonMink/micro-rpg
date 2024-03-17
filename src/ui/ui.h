@@ -50,3 +50,9 @@ void UIAlign(UI *ui, AlignH alignH, AlignV alignV);
 void UIAlignH(UI *ui, AlignH alignH);
 
 void UIAlignV(UI *ui, AlignV alignV);
+
+void UIAlignShim(UI *ui, float width, float height, AlignH alignH, AlignV alignV);
+
+void UIAlignShimH(UI *ui, float width, float height, AlignH alignH);
+
+void UIAlignShimV(UI *ui, float width, float height, AlignV alignV);
