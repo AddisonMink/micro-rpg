@@ -20,3 +20,17 @@ void UIPanelEnd(UI *ui)
     UIColEnd(ui);
     UIOverlayEnd(ui);
 }
+
+void UIMeter(UI *ui, float width, float height, int current, int max, Color color)
+{
+    const float totalSpacing = (max - 1) * 2;
+    const float pipWidth = (width - totalSpacing) / max;
+
+    UIRow(ui, 2);
+    for (int i = 0; i < max; i++)
+    {
+        const Color c = (i < current) ? color : GRAY;
+        UIRect(ui, pipWidth, height, c);
+    }
+    UIRowEnd(ui);
+}

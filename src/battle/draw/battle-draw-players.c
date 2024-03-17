@@ -24,7 +24,7 @@ static void uiPlayer(UI *ui, const Combatant *player)
         UILabel(ui, font, player->name, FONT_SIZE, RAYWHITE);
 
         UIAlignShimH(ui, innerSize.x, HP_HEIGHT, ALIGN_H_CENTER);
-        UIRect(ui, HP_WIDTH, HP_HEIGHT, MAROON);
+        UIMeter(ui, HP_WIDTH, HP_HEIGHT, player->hp, player->maxHp, MAROON);
     }
     UIPanelEnd(ui);
 }
