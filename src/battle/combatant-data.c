@@ -16,7 +16,7 @@ typedef struct CombatantData
 static const CombatantData combatantData[NUM_COMBATANT_TYPES] = {
     [COMBATANT_PLAYER] = {
         .name = "Player",
-        .spriteTag = SPRITE_NINESLICE,
+        .spriteTag = SPRITE_MAGICIAN,
         .maxHp = 8,
         .strength = 5,
         .magic = 5,

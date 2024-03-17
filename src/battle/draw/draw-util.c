@@ -8,7 +8,7 @@ Vector2 UIPanel(UI *ui, float width, float height)
     UINineSlice(ui, nineSlice, 1, 4, width, height, WHITE);
 
     UIPadSimple(ui, UI_PANEL_PAD);
-    UICol(ui, 0);
+    UICol(ui, UI_PANEL_SPACING);
 
     const float innerWidth = width - UI_PANEL_PAD * 2;
     const float innerHeight = height - UI_PANEL_PAD * 2;

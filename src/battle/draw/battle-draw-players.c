@@ -8,25 +8,36 @@ const int FONT_SIZE = 16;
 const float HP_WIDTH = 90;
 const float HP_HEIGHT = 16;
 
-const float PANEL_SPACING = 6;
+const float PORTRAIT_WIDTH = 128;
+const float PORTAIT_HEIGHT = 152;
 
 const float PLAYER_SPACING = 20;
 const float PLAYER_WIDTH = 118;
 const float PLAYER_HEIGHT = 52;
 
-static void uiPlayer(UI *ui, const Combatant *player)
+static void uiStatusPane(UI *ui, const Combatant *player)
 {
     const Font font = AssetFont(FONT_TAG_KONGTEXT);
     UIShim(ui, PLAYER_WIDTH, PLAYER_HEIGHT + PLAYER_SPACING);
     const Vector2 innerSize = UIPanel(ui, PLAYER_WIDTH, PLAYER_HEIGHT);
     {
-        UIAlignShimH(ui, innerSize.x, FONT_SIZE + PANEL_SPACING, ALIGN_H_CENTER);
+        UIAlignShimH(ui, innerSize.x, FONT_SIZE, ALIGN_H_CENTER);
         UILabel(ui, font, player->name, FONT_SIZE, RAYWHITE);
 
         UIAlignShimH(ui, innerSize.x, HP_HEIGHT, ALIGN_H_CENTER);
         UIMeter(ui, HP_WIDTH, HP_HEIGHT, player->hp, player->maxHp, MAROON);
     }
     UIPanelEnd(ui);
+}
+
+static void uiPlayer(UI *ui, const Combatant *player)
+{
+    UICol(ui, 0);
+    {
+        UISprite(ui, player->sprite, PORTRAIT_WIDTH, PORTAIT_HEIGHT, WHITE);
+        uiStatusPane(ui, player);
+    }
+    UIColEnd(ui);
 }
 
 void BattleDrawPlayers(UI *ui, const _Battle *battle)

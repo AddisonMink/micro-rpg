@@ -13,6 +13,7 @@ typedef enum FontTag
 typedef enum SpriteTag
 {
     SPRITE_SCAMP,
+    SPRITE_MAGICIAN,
     SPRITE_NINESLICE,
 } SpriteTag;
 

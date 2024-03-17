@@ -12,7 +12,6 @@ static const float HP_HEIGHT = 16;
 static const float HP_WIDTH = 80;
 
 static const float PANEL_PAD = 4;
-static const float PANEL_SPACING = 6;
 static const float PANEL_WIDTH = 112;
 static const float PANEL_HEIGHT = 52;
 
@@ -25,7 +24,7 @@ static void uiStatusPanel(UI *ui, const Combatant *enemy)
     UIAlignShim(ui, ENEMY_WIDTH, ENEMY_HEIGHT, ALIGN_H_CENTER, ALIGN_V_CENTER);
     const Vector2 innerSize = UIPanel(ui, PANEL_WIDTH, PANEL_HEIGHT);
     {
-        UIAlignShimH(ui, innerSize.x, FONT_SIZE + PANEL_SPACING, ALIGN_H_CENTER);
+        UIAlignShimH(ui, innerSize.x, FONT_SIZE, ALIGN_H_CENTER);
         UILabel(ui, font, enemy->name, FONT_SIZE, RAYWHITE);
 
         UIAlignShimH(ui, innerSize.x, HP_HEIGHT, ALIGN_H_CENTER);
