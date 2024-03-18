@@ -1,10 +1,10 @@
 #include "battle-draw-enemies.h"
 
+#include "raymath.h"
 #include "../../asset.h"
 #include "draw-util.h"
 
-static const float ENEMY_SPRITE_WIDTH = 128;
-static const float ENEMY_SPRITE_HEIGHT = 128;
+static const float SPRITE_SCALE = 4;
 
 static const float FONT_SIZE = 16;
 
@@ -18,10 +18,19 @@ static const float PANEL_HEIGHT = 52;
 static const float ENEMY_WIDTH = 128;
 static const float ENEMY_HEIGHT = 128;
 
-static void uiStatusPanel(UI *ui, const Combatant *enemy)
+static void uiEnemySprite(UI *ui, const Combatant *enemy, Vector2 size)
+{
+    const Vector2 spriteSize = enemy->row == ROW_FRONT ? size : Vector2Scale(size, 0.5);
+
+    UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
+    UISprite(ui, enemy->sprite, spriteSize.x, spriteSize.y, WHITE);
+}
+
+static void uiStatusPanel(UI *ui, const Combatant *enemy, Vector2 size)
 {
     const Font font = AssetFont(FONT_TAG_KONGTEXT);
-    UIAlignShim(ui, ENEMY_WIDTH, ENEMY_HEIGHT, ALIGN_H_CENTER, ALIGN_V_CENTER);
+
+    UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
     const Vector2 innerSize = UIPanel(ui, PANEL_WIDTH, PANEL_HEIGHT);
     {
         UIAlignShimH(ui, innerSize.x, FONT_SIZE, ALIGN_H_CENTER);
@@ -35,11 +44,13 @@ static void uiStatusPanel(UI *ui, const Combatant *enemy)
 
 static void uiEnemy(UI *ui, const Combatant *enemy, DrawEnemyOptions options)
 {
+    const Vector2 size = Vector2Scale((Vector2){enemy->sprite.width, enemy->sprite.height}, SPRITE_SCALE);
+
     UIOverlay(ui);
     {
-        UISprite(ui, enemy->sprite, ENEMY_SPRITE_WIDTH, ENEMY_SPRITE_HEIGHT, WHITE);
+        uiEnemySprite(ui, enemy, size);
         if (options.showStatusPane)
-            uiStatusPanel(ui, enemy);
+            uiStatusPanel(ui, enemy, size);
     }
     UIOverlayEnd(ui);
 }
