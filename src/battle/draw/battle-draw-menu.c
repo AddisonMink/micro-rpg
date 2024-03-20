@@ -15,6 +15,7 @@ static const float SELECT_ACTION_POINTER_SPACING = 5;
 static void uiActionMenu(UI *ui, const _Battle *battle)
 {
     const Font font = AssetFont(FONT_TAG_KONGTEXT);
+    const Texture2D pointer = AssetSprite(SPRITE_POINTER);
 
     const int queueIndex = battle->data.selectAction.queueIndex;
     const int actionIndex = battle->data.selectAction.actionIndex;
@@ -35,7 +36,7 @@ static void uiActionMenu(UI *ui, const _Battle *battle)
             if (i == actionIndex)
             {
                 UIRow(ui, SELECT_ACTION_POINTER_SPACING);
-                UIRect(ui, FONT_SIZE, FONT_SIZE, RAYWHITE);
+                UISprite(ui, pointer, pointer.width, pointer.height, WHITE);
                 UILabel(ui, font, action->name, FONT_SIZE, RAYWHITE);
                 UIRowEnd(ui);
             }
