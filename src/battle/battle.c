@@ -3,10 +3,10 @@
 #include "raylib.h"
 
 #include "battle-types.h"
-#include "combatant.h"
 #include "draw/battle-draw-enemies.h"
 #include "draw/battle-draw-menu.h"
 #include "draw/battle-draw-players.h"
+#include "update/battle-update.h"
 
 Battle *BattleAlloc()
 {
@@ -32,7 +32,10 @@ void BattleFree(Battle *battle)
     MemFree(battle);
 }
 
-void BattleUpdate(Battle *battle, float delta) {}
+void BattleUpdate(Battle *battle, float delta)
+{
+    BattleUpdateMain((_Battle *)battle, delta);
+}
 
 void BattleDraw(Battle *battle, UI *ui)
 {
