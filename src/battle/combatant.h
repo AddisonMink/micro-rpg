@@ -23,6 +23,7 @@ typedef enum CombatantType
     COMBATANT_SCAMP,
 } CombatantType;
 
+#define NUM_PLAYER_TYPES 1
 #define NUM_COMBATANT_TYPES 2
 
 typedef enum MagicLevel
