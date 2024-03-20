@@ -63,6 +63,10 @@ static void selectTarget(_Battle *battle)
     }
     else if (IsKeyPressed(KEY_ENTER))
     {
+        battle->state = BATTLE_EXECUTE_ACTION;
+        battle->data.executeAction.queueIndex = queueIndex;
+        battle->data.executeAction.actionType = battle->data.selectTarget.actionType;
+        battle->data.executeAction.targetIdOpt = battle->data.selectTarget.targets[targetIndex];
     }
     else if (IsKeyPressed(KEY_DELETE))
     {

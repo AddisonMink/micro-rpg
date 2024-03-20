@@ -5,8 +5,16 @@ void BattleExecuteEffect(_Battle *battle, const Effect *effect)
     switch (effect->type)
     {
     case EFFECT_DAMAGE:
-        TraceLog(LOG_INFO, "BATTLE-EXECUTE-EFFECT: Damage not implemented");
+    {
+        const CombatantId id = effect->target;
+        Combatant *combatant = &battle->combatants[id];
+        combatant->hp -= effect->data.damage.amount;
+        if (combatant->hp <= 0)
+        {
+            combatant->state = COMBATANT_STATE_DEAD;
+        }
         break;
+    }
     case EFFECT_MOVE:
     {
         const CombatantId id = effect->target;

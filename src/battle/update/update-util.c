@@ -28,8 +28,15 @@ void ActionSetTarget(Effect effects[MAX_EFFECTS], int *effectCount, const Action
         break;
     }
     case RANGE_MELEE:
-        TraceLog(LOG_INFO, "ACTION-SET-TARGET: Melee range not implemented");
+    {
+        for (int i = 0; i < *effectCount; i++)
+        {
+            effects[i] = action->effects[i];
+            effects[i].source = source;
+            effects[i].target = targetOpt;
+        }
         break;
+    }
     }
 }
 
@@ -39,7 +46,7 @@ void FindTargets(CombatantId targets[NUM_COMBATANTS], int *targetCount, const _B
     const CombatantId stop = source < FIRST_ENEMY_ID ? NUM_COMBATANTS : FIRST_ENEMY_ID;
     const Row sourceRow = battle->combatants[source].row;
     *targetCount = 0;
-    
+
     for (CombatantId id = start; id < stop; id++)
     {
         const Row targetRow = battle->combatants[id].row;
