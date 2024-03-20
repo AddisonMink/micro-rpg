@@ -115,5 +115,7 @@ void BattleDrawMenu(UI *ui, const _Battle *battle)
     {
     case BATTLE_SELECT_ACTION:
         return drawSelectAction(ui, battle);
+    case BATTLE_EXECUTE_ACTION:
+        return;
     }
 }
