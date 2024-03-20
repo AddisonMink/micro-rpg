@@ -1,7 +1,7 @@
 #include "asset.h"
 
 #define NUM_FONTS 1
-#define NUM_SPRITES 4
+#define NUM_SPRITES 5
 
 static const char *fontPaths[NUM_FONTS] = {
     [FONT_TAG_KONGTEXT] = "assets/kongtext.ttf",
@@ -12,6 +12,7 @@ static const char *spritePaths[NUM_SPRITES] = {
     [SPRITE_MAGICIAN] = "assets/magician_32_38.png",
     [SPRITE_NINESLICE] = "assets/nineslice.png",
     [SPRITE_POINTER] = "assets/pointer_12.png",
+    [SPRITE_POINTER_DOWN] = "assets/pointer_down_12.png",
 };
 
 static Font fonts[NUM_FONTS];

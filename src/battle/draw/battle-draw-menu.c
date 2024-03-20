@@ -13,7 +13,7 @@ static const float SELECT_ACTION_PANEL_SPACING = 20;
 static const float SELECT_ACTION_POINTER_SPACING = 5;
 
 static const float SELECT_TARGET_PANEL_WIDTH = 200;
-static const float SELECT_TARGET_PANEL_HEIGHT = 100;
+static const float SELECT_TARGET_PANEL_HEIGHT = 50;
 
 static void uiActionMenu(UI *ui, const _Battle *battle)
 {
@@ -114,8 +114,6 @@ static void drawSelectAction(UI *ui, const _Battle *battle)
 
 static void drawSelectTarget(UI *ui, const _Battle *battle)
 {
-    if (battle->data.selectTarget.targetCount > 0)
-        return;
 
     const Font font = AssetFont(FONT_TAG_KONGTEXT);
 
@@ -124,8 +122,19 @@ static void drawSelectTarget(UI *ui, const _Battle *battle)
         UIAlignShim(ui, SCREEN_WIDTH, SELECT_TARGET_PANEL_HEIGHT + MENU_MARGIN, ALIGN_H_CENTER, ALIGN_V_BOTTOM);
         const Vector2 size = UIPanel(ui, SELECT_TARGET_PANEL_WIDTH, SELECT_TARGET_PANEL_HEIGHT);
         {
-            UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
-            UILabel(ui, font, "No targets!", FONT_SIZE, RAYWHITE);
+            if (battle->data.selectTarget.targetCount > 0)
+            {
+                UIAlignShimH(ui, size.x, HEADER_SIZE, ALIGN_H_CENTER);
+                UILabel(ui, font, "Select", FONT_SIZE, RAYWHITE);
+
+                UIAlignShimH(ui, size.x, HEADER_SIZE, ALIGN_H_CENTER);
+                UILabel(ui, font, "target", FONT_SIZE, RAYWHITE);
+            }
+            else
+            {
+                UIAlignShimH(ui, size.x, HEADER_SIZE, ALIGN_H_CENTER);
+                UILabel(ui, font, "No targets!", FONT_SIZE, RAYWHITE);
+            }
         }
         UIPanelEnd(ui);
     }

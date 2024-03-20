@@ -8,6 +8,8 @@ typedef enum Range
     RANGE_MELEE,
 } Range;
 
+#define NUM_RANGE_TYPES 2
+
 typedef enum ActionType
 {
     ACTION_ATTACK,

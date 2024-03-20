@@ -42,7 +42,7 @@ static void uiStatusPanel(UI *ui, const Combatant *enemy, const CombatantData *d
     UIPanelEnd(ui);
 }
 
-static void uiEnemy(UI *ui, const Combatant *enemy, DrawEnemyOptions options)
+static void uiEnemy(UI *ui, const Combatant *enemy, DrawEnemyOptions options, bool target)
 {
     const CombatantData *data = CombatantGetData(enemy->type);
     const Texture2D sprite = AssetSprite(data->sprite);
@@ -50,15 +50,31 @@ static void uiEnemy(UI *ui, const Combatant *enemy, DrawEnemyOptions options)
 
     UIOverlay(ui);
     {
+        if (target)
+        {
+            const Texture2D pointer = AssetSprite(SPRITE_POINTER_DOWN);
+            UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_TOP);
+            UIOffset(ui, (Vector2){0, -pointer.height});
+            UISprite(ui, pointer, pointer.width, pointer.height, WHITE);
+        }
         uiEnemySprite(ui, enemy, sprite, size);
         if (options.showStatusPane)
+        {
             uiStatusPanel(ui, enemy, data, size);
+        }
     }
     UIOverlayEnd(ui);
 }
 
 void BattleDrawEnemies(UI *ui, const _Battle *battle, DrawEnemyOptions options)
 {
+    CombatantId target = -1;
+    if (battle->state == BATTLE_SELECT_TARGET)
+    {
+        const int index = battle->data.selectTarget.targetIndex;
+        target = battle->data.selectTarget.targets[index];
+    }
+
     UIReset(ui);
     {
         UIShim(ui, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -68,7 +84,7 @@ void BattleDrawEnemies(UI *ui, const _Battle *battle, DrawEnemyOptions options)
         {
             const Combatant *enemy = &battle->combatants[id];
             if (enemy->state == COMBATANT_STATE_ALIVE)
-                uiEnemy(ui, enemy, options);
+                uiEnemy(ui, enemy, options, id == target);
         }
         UIRowEnd(ui);
     }

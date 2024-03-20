@@ -39,10 +39,36 @@ static void selectAction(_Battle *battle)
             battle->state = BATTLE_SELECT_TARGET;
             battle->data.selectAction.queueIndex = queueIndex;
             battle->data.selectTarget.actionType = actionType;
-            battle->data.selectTarget.targetCount = 0;
+            FindTargets(battle->data.selectTarget.targets, &battle->data.selectTarget.targetCount, battle, id, action->range);
+            battle->data.selectTarget.targetIndex = 0;
             break;
         }
         }
+    }
+}
+
+static void selectTarget(_Battle *battle)
+{
+    const int queueIndex = battle->data.selectAction.queueIndex;
+    const int targetIndex = battle->data.selectTarget.targetIndex;
+    const int targetCount = battle->data.selectTarget.targetCount;
+
+    if (IsKeyPressed(KEY_D))
+    {
+        battle->data.selectTarget.targetIndex = (targetIndex + 1) % targetCount;
+    }
+    else if (IsKeyPressed(KEY_A))
+    {
+        battle->data.selectTarget.targetIndex = (targetIndex - 1 + targetCount) % targetCount;
+    }
+    else if (IsKeyPressed(KEY_ENTER))
+    {
+    }
+    else if (IsKeyPressed(KEY_DELETE))
+    {
+        battle->state = BATTLE_SELECT_ACTION;
+        battle->data.selectAction.queueIndex = queueIndex;
+        battle->data.selectAction.actionIndex = 0;
     }
 }
 
@@ -73,7 +99,7 @@ void BattleUpdateMain(_Battle *battle, float delta)
     case BATTLE_SELECT_ACTION:
         return selectAction(battle);
     case BATTLE_SELECT_TARGET:
-        return;
+        return selectTarget(battle);
     case BATTLE_EXECUTE_ACTION:
         return executeAction(battle);
     }

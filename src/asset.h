@@ -16,6 +16,7 @@ typedef enum SpriteTag
     SPRITE_MAGICIAN,
     SPRITE_NINESLICE,
     SPRITE_POINTER,
+    SPRITE_POINTER_DOWN,
 } SpriteTag;
 
 void AssetLoadFont(FontTag tag);

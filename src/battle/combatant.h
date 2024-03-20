@@ -17,6 +17,8 @@ typedef enum Row
     ROW_BACK
 } Row;
 
+#define NUM_ROWS 2
+
 typedef enum CombatantType
 {
     COMBATANT_PLAYER,

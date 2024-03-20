@@ -32,6 +32,7 @@ typedef struct _Battle
             ActionType actionType;
             CombatantId targets[NUM_COMBATANTS];
             int targetCount;
+            int targetIndex;
         } selectTarget;
 
         struct
