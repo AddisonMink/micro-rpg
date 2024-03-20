@@ -12,6 +12,9 @@ static const float SELECT_ACTION_PANEL_HEIGHT = 100;
 static const float SELECT_ACTION_PANEL_SPACING = 20;
 static const float SELECT_ACTION_POINTER_SPACING = 5;
 
+static const float SELECT_TARGET_PANEL_WIDTH = 200;
+static const float SELECT_TARGET_PANEL_HEIGHT = 100;
+
 static void uiActionMenu(UI *ui, const _Battle *battle)
 {
     const Font font = AssetFont(FONT_TAG_KONGTEXT);
@@ -109,12 +112,34 @@ static void drawSelectAction(UI *ui, const _Battle *battle)
     UIDraw(ui, (Vector2){0, 0});
 }
 
+static void drawSelectTarget(UI *ui, const _Battle *battle)
+{
+    if (battle->data.selectTarget.targetCount > 0)
+        return;
+
+    const Font font = AssetFont(FONT_TAG_KONGTEXT);
+
+    UIReset(ui);
+    {
+        UIAlignShim(ui, SCREEN_WIDTH, SELECT_TARGET_PANEL_HEIGHT + MENU_MARGIN, ALIGN_H_CENTER, ALIGN_V_BOTTOM);
+        const Vector2 size = UIPanel(ui, SELECT_TARGET_PANEL_WIDTH, SELECT_TARGET_PANEL_HEIGHT);
+        {
+            UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
+            UILabel(ui, font, "No targets!", FONT_SIZE, RAYWHITE);
+        }
+        UIPanelEnd(ui);
+    }
+    UIDraw(ui, (Vector2){0, 0});
+}
+
 void BattleDrawMenu(UI *ui, const _Battle *battle)
 {
     switch (battle->state)
     {
     case BATTLE_SELECT_ACTION:
         return drawSelectAction(ui, battle);
+    case BATTLE_SELECT_TARGET:
+        return drawSelectTarget(ui, battle);
     case BATTLE_EXECUTE_ACTION:
         return;
     }

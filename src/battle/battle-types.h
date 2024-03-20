@@ -14,6 +14,7 @@ typedef struct _Battle
     enum
     {
         BATTLE_SELECT_ACTION,
+        BATTLE_SELECT_TARGET,
         BATTLE_EXECUTE_ACTION,
     } state;
 
@@ -29,7 +30,16 @@ typedef struct _Battle
         {
             int queueIndex;
             ActionType actionType;
+            CombatantId targets[NUM_COMBATANTS];
+            int targetCount;
+        } selectTarget;
+
+        struct
+        {
+            int queueIndex;
+            ActionType actionType;
             CombatantId targetIdOpt;
         } executeAction;
+
     } data;
 } _Battle;

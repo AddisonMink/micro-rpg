@@ -35,8 +35,13 @@ static void selectAction(_Battle *battle)
             break;
         }
         case RANGE_MELEE:
-            TraceLog(LOG_INFO, "BATTLE-UPDATE: Melee actions are not implemented yet.");
+        {
+            battle->state = BATTLE_SELECT_TARGET;
+            battle->data.selectAction.queueIndex = queueIndex;
+            battle->data.selectTarget.actionType = actionType;
+            battle->data.selectTarget.targetCount = 0;
             break;
+        }
         }
     }
 }
@@ -67,6 +72,8 @@ void BattleUpdateMain(_Battle *battle, float delta)
     {
     case BATTLE_SELECT_ACTION:
         return selectAction(battle);
+    case BATTLE_SELECT_TARGET:
+        return;
     case BATTLE_EXECUTE_ACTION:
         return executeAction(battle);
     }
