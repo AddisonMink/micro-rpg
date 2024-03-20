@@ -18,15 +18,15 @@ static const float PANEL_HEIGHT = 52;
 static const float ENEMY_WIDTH = 128;
 static const float ENEMY_HEIGHT = 128;
 
-static void uiEnemySprite(UI *ui, const Combatant *enemy, Vector2 size)
+static void uiEnemySprite(UI *ui, const Combatant *enemy, Texture2D sprite, Vector2 size)
 {
     const Vector2 spriteSize = enemy->row == ROW_FRONT ? size : Vector2Scale(size, 0.5);
 
     UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
-    UISprite(ui, enemy->sprite, spriteSize.x, spriteSize.y, WHITE);
+    UISprite(ui, sprite, spriteSize.x, spriteSize.y, WHITE);
 }
 
-static void uiStatusPanel(UI *ui, const Combatant *enemy, Vector2 size)
+static void uiStatusPanel(UI *ui, const Combatant *enemy, const CombatantData *data, Vector2 size)
 {
     const Font font = AssetFont(FONT_TAG_KONGTEXT);
 
@@ -34,23 +34,25 @@ static void uiStatusPanel(UI *ui, const Combatant *enemy, Vector2 size)
     const Vector2 innerSize = UIPanel(ui, PANEL_WIDTH, PANEL_HEIGHT);
     {
         UIAlignShimH(ui, innerSize.x, FONT_SIZE, ALIGN_H_CENTER);
-        UILabel(ui, font, enemy->name, FONT_SIZE, RAYWHITE);
+        UILabel(ui, font, data->name, FONT_SIZE, RAYWHITE);
 
         UIAlignShimH(ui, innerSize.x, HP_HEIGHT, ALIGN_H_CENTER);
-        UIMeter(ui, HP_WIDTH, HP_HEIGHT, enemy->hp, enemy->maxHp, MAROON);
+        UIMeter(ui, HP_WIDTH, HP_HEIGHT, enemy->hp, data->maxHp, MAROON);
     }
     UIPanelEnd(ui);
 }
 
 static void uiEnemy(UI *ui, const Combatant *enemy, DrawEnemyOptions options)
 {
-    const Vector2 size = Vector2Scale((Vector2){enemy->sprite.width, enemy->sprite.height}, SPRITE_SCALE);
+    const CombatantData *data = CombatantGetData(enemy->type);
+    const Texture2D sprite = AssetSprite(data->sprite);
+    const Vector2 size = Vector2Scale((Vector2){sprite.width, sprite.height}, SPRITE_SCALE);
 
     UIOverlay(ui);
     {
-        uiEnemySprite(ui, enemy, size);
+        uiEnemySprite(ui, enemy, sprite, size);
         if (options.showStatusPane)
-            uiStatusPanel(ui, enemy, size);
+            uiStatusPanel(ui, enemy, data, size);
     }
     UIOverlayEnd(ui);
 }

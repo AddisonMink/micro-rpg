@@ -3,7 +3,7 @@
 #include "raylib.h"
 
 #include "battle-types.h"
-#include "combatant-data.h"
+#include "combatant.h"
 #include "draw/battle-draw-enemies.h"
 #include "draw/battle-draw-players.h"
 

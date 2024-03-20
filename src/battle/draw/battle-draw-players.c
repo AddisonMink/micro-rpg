@@ -17,30 +17,32 @@ const float PLAYER_SPACING = 20;
 const float PLAYER_WIDTH = 118;
 const float PLAYER_HEIGHT = 244;
 
-static void uiStatusPane(UI *ui, const Combatant *player)
+static void uiStatusPane(UI *ui, const Combatant *player, const CombatantData *data)
 {
     const Font font = AssetFont(FONT_TAG_KONGTEXT);
     UIShim(ui, PLAYER_WIDTH, PANE_HEIGHT + PLAYER_SPACING);
     const Vector2 innerSize = UIPanel(ui, PLAYER_WIDTH, PANE_HEIGHT);
     {
         UIAlignShimH(ui, innerSize.x, FONT_SIZE, ALIGN_H_CENTER);
-        UILabel(ui, font, player->name, FONT_SIZE, RAYWHITE);
+        UILabel(ui, font, data->name, FONT_SIZE, RAYWHITE);
 
         UIAlignShimH(ui, innerSize.x, HP_HEIGHT, ALIGN_H_CENTER);
-        UIMeter(ui, HP_WIDTH, HP_HEIGHT, player->hp, player->maxHp, MAROON);
+        UIMeter(ui, HP_WIDTH, HP_HEIGHT, player->hp, data->maxHp, MAROON);
     }
     UIPanelEnd(ui);
 }
 
 static void uiPlayer(UI *ui, const Combatant *player)
 {
+    const CombatantData *data = CombatantGetData(player->type);
+    const Texture2D sprite = AssetSprite(data->sprite);
     const AlignV alignV = player->row == ROW_FRONT ? ALIGN_V_TOP : ALIGN_V_BOTTOM;
 
     UIAlignShimV(ui, PLAYER_WIDTH, PLAYER_HEIGHT, alignV);
     UICol(ui, 0);
     {
-        UISprite(ui, player->sprite, PORTRAIT_WIDTH, PORTAIT_HEIGHT, WHITE);
-        uiStatusPane(ui, player);
+        UISprite(ui, sprite, PORTRAIT_WIDTH, PORTAIT_HEIGHT, WHITE);
+        uiStatusPane(ui, player, data);
     }
     UIColEnd(ui);
 }
