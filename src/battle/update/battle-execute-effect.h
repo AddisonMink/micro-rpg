@@ -2,4 +2,4 @@
 
 #include "../battle-types.h"
 
-void BattleExecuteEffect(_Battle *battle, const Effect *effect);
+void BattleExecuteEffect(_Battle *battle, Event events[MAX_EVENTS], int *eventCount, const Effect *effect);

@@ -5,6 +5,27 @@
 
 #define NUM_COMBATANTS 6
 #define FIRST_ENEMY_ID 3
+#define MAX_EVENTS 2
+
+typedef struct Event
+{
+    float duration;
+    float elapsed;
+
+    enum
+    {
+        EVENT_ENEMY_TINT,
+    } type;
+
+    union
+    {
+        struct
+        {
+            CombatantId id;
+            Color color;
+        } enemyTint;
+    } data;
+} Event;
 
 typedef struct _Battle
 {
@@ -17,6 +38,7 @@ typedef struct _Battle
         BATTLE_SELECT_TARGET,
         BATTLE_EXECUTE_ACTION,
         BATTLE_EXECUTE_EFFECTS,
+        BATTLE_SHOW_EVENTS,
     } state;
 
     union
@@ -51,6 +73,18 @@ typedef struct _Battle
             int effectCount;
             int effectIndex;
         } executeEffect;
+
+        struct
+        {
+            int queueIndex;
+            CombatantId targetIdOpt;
+            Effect effects[MAX_EFFECTS];
+            int effectCount;
+            int effectIndex;
+            Event events[MAX_EVENTS];
+            int eventCount;
+            int eventIndex;
+        } showEvents;
 
     } data;
 } _Battle;

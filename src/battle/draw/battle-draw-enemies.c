@@ -24,6 +24,27 @@ static void initializeDisplays(EnemyDisplay displays[NUM_COMBATANTS], bool activ
     }
 }
 
+static void showEnemyEvent(EnemyDisplay display[NUM_COMBATANTS], const _Battle *battle)
+{
+    const int eventIndex = battle->data.showEvents.eventIndex;
+    const Event *event = &battle->data.showEvents.events[eventIndex];
+
+    switch (event->type)
+    {
+    case EVENT_ENEMY_TINT:
+    {
+        const CombatantId id = event->data.enemyTint.id;
+        const Color color = event->data.enemyTint.color;
+        display[id].option = ENEMY_DISPLAY_TINT;
+        display[id].optionData.tint.color = color;
+        break;
+    }
+
+    default:
+        break;
+    }
+}
+
 static void setDisplayOptions(EnemyDisplay display[NUM_COMBATANTS], const _Battle *battle)
 {
     switch (battle->state)
@@ -54,6 +75,9 @@ static void setDisplayOptions(EnemyDisplay display[NUM_COMBATANTS], const _Battl
         display[id].option = ENEMY_DISPLAY_SELECTED;
         break;
     }
+    case BATTLE_SHOW_EVENTS:
+        showEnemyEvent(display, battle);
+        break;
     default:
         break;
     }

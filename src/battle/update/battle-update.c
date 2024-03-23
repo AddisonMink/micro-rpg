@@ -102,21 +102,84 @@ static void executeAction(_Battle *battle)
 static void executeEffects(_Battle *battle)
 {
     const int effectCount = battle->data.executeEffect.effectCount;
-    const int effectIndex = battle->data.executeEffect.effectIndex;
+    int effectIndex = battle->data.executeEffect.effectIndex;
     const int queueIndex = battle->data.executeEffect.queueIndex;
     const CombatantId targetOpt = battle->data.executeEffect.targetIdOpt;
     const Effect *effect = &battle->data.executeEffect.effects[effectIndex];
 
     if (effectIndex < effectCount)
     {
-        BattleExecuteEffect(battle, effect);
-        battle->data.executeEffect.effectIndex++;
+        Event events[MAX_EVENTS];
+        int eventCount = 0;
+        BattleExecuteEffect(battle, events, &eventCount, effect);
+        effectIndex++;
+
+        if (eventCount > 0)
+        {
+            battle->state = BATTLE_SHOW_EVENTS;
+            battle->data.showEvents.queueIndex = queueIndex;
+            battle->data.showEvents.targetIdOpt = targetOpt;
+            battle->data.showEvents.effectCount = effectCount;
+            battle->data.showEvents.effectIndex = effectIndex;
+            for (int i = effectIndex; i < effectCount; i++)
+            {
+                battle->data.showEvents.effects[i] = battle->data.executeEffect.effects[i];
+            }
+            battle->data.showEvents.eventCount = eventCount;
+            battle->data.showEvents.eventIndex = 0;
+            for (int i = 0; i < eventCount; i++)
+            {
+                battle->data.showEvents.events[i] = events[i];
+            }
+        }
+        else
+        {
+            battle->data.executeEffect.effectIndex = effectIndex;
+        }
     }
     else
     {
         battle->state = BATTLE_SELECT_ACTION;
         battle->data.selectAction.queueIndex = queueIndex;
         battle->data.selectAction.actionIndex = 0;
+    }
+}
+
+static void showEvents(_Battle *battle, float delta)
+{
+    const int eventCount = battle->data.showEvents.eventCount;
+    const int eventIndex = battle->data.showEvents.eventIndex;
+
+    if (eventIndex >= eventCount)
+    {
+        const int queueIndex = battle->data.showEvents.queueIndex;
+        const CombatantId targetOpt = battle->data.showEvents.targetIdOpt;
+        const int effectCount = battle->data.showEvents.effectCount;
+        const int effectIndex = battle->data.showEvents.effectIndex;
+        Effect effects[MAX_EFFECTS];
+        for (int i = effectIndex; i < effectCount; i++)
+        {
+            effects[i] = battle->data.showEvents.effects[i];
+        }
+
+        battle->state = BATTLE_EXECUTE_EFFECTS;
+        battle->data.executeEffect.queueIndex = queueIndex;
+        battle->data.executeEffect.targetIdOpt = targetOpt;
+        battle->data.executeEffect.effectCount = effectCount;
+        battle->data.executeEffect.effectIndex = effectIndex;
+        for (int i = effectIndex; i < effectCount; i++)
+        {
+            battle->data.executeEffect.effects[i] = effects[i];
+        }
+    }
+    else
+    {
+        Event *event = &battle->data.showEvents.events[eventIndex];
+        event->elapsed += delta;
+        if (event->elapsed >= event->duration)
+        {
+            battle->data.showEvents.eventIndex++;
+        }
     }
 }
 
@@ -132,5 +195,7 @@ void BattleUpdateMain(_Battle *battle, float delta)
         return executeAction(battle);
     case BATTLE_EXECUTE_EFFECTS:
         return executeEffects(battle);
+    case BATTLE_SHOW_EVENTS:
+        return showEvents(battle, delta);
     }
 }

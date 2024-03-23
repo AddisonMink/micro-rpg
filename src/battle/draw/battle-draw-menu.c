@@ -153,5 +153,7 @@ void BattleDrawMenu(UI *ui, const _Battle *battle)
         return;
     case BATTLE_EXECUTE_EFFECTS:
         return;
+    case BATTLE_SHOW_EVENTS:
+        return;
     }
 }

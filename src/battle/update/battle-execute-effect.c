@@ -1,6 +1,19 @@
 #include "battle-execute-effect.h"
 
-void BattleExecuteEffect(_Battle *battle, const Effect *effect)
+static const Event enemyDamageFlash(CombatantId id)
+{
+    return (Event){
+        .duration = 0.1f,
+        .elapsed = 0,
+        .type = EVENT_ENEMY_TINT,
+        .data.enemyTint = {
+            .id = id,
+            .color = RED,
+        },
+    };
+}
+
+void BattleExecuteEffect(_Battle *battle, Event events[MAX_EVENTS], int *eventCount, const Effect *effect)
 {
     switch (effect->type)
     {
@@ -13,6 +26,7 @@ void BattleExecuteEffect(_Battle *battle, const Effect *effect)
         {
             combatant->state = COMBATANT_STATE_DEAD;
         }
+        events[(*eventCount)++] = enemyDamageFlash(id);
         break;
     }
     case EFFECT_MOVE:
