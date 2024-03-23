@@ -87,13 +87,37 @@ static void executeAction(_Battle *battle)
     Effect effects[MAX_EFFECTS];
     int effectCount;
     ActionSetTarget(effects, &effectCount, action, id, targetOpt);
+
+    battle->state = BATTLE_EXECUTE_EFFECTS;
+    battle->data.executeEffect.queueIndex = queueIndex;
+    battle->data.executeEffect.targetIdOpt = targetOpt;
+    battle->data.executeEffect.effectCount = effectCount;
+    battle->data.executeEffect.effectIndex = 0;
     for (int i = 0; i < effectCount; i++)
     {
-        BattleExecuteEffect(battle, &effects[i]);
+        battle->data.executeEffect.effects[i] = effects[i];
     }
+}
 
-    battle->state = BATTLE_SELECT_ACTION;
-    battle->data.selectAction.queueIndex = queueIndex;
+static void executeEffects(_Battle *battle)
+{
+    const int effectCount = battle->data.executeEffect.effectCount;
+    const int effectIndex = battle->data.executeEffect.effectIndex;
+    const int queueIndex = battle->data.executeEffect.queueIndex;
+    const CombatantId targetOpt = battle->data.executeEffect.targetIdOpt;
+    const Effect *effect = &battle->data.executeEffect.effects[effectIndex];
+
+    if (effectIndex < effectCount)
+    {
+        BattleExecuteEffect(battle, effect);
+        battle->data.executeEffect.effectIndex++;
+    }
+    else
+    {
+        battle->state = BATTLE_SELECT_ACTION;
+        battle->data.selectAction.queueIndex = queueIndex;
+        battle->data.selectAction.actionIndex = 0;
+    }
 }
 
 void BattleUpdateMain(_Battle *battle, float delta)
@@ -106,5 +130,7 @@ void BattleUpdateMain(_Battle *battle, float delta)
         return selectTarget(battle);
     case BATTLE_EXECUTE_ACTION:
         return executeAction(battle);
+    case BATTLE_EXECUTE_EFFECTS:
+        return executeEffects(battle);
     }
 }

@@ -16,6 +16,7 @@ typedef struct _Battle
         BATTLE_SELECT_ACTION,
         BATTLE_SELECT_TARGET,
         BATTLE_EXECUTE_ACTION,
+        BATTLE_EXECUTE_EFFECTS,
     } state;
 
     union
@@ -41,6 +42,15 @@ typedef struct _Battle
             ActionType actionType;
             CombatantId targetIdOpt;
         } executeAction;
+
+        struct
+        {
+            int queueIndex;
+            CombatantId targetIdOpt;
+            Effect effects[MAX_EFFECTS];
+            int effectCount;
+            int effectIndex;
+        } executeEffect;
 
     } data;
 } _Battle;
