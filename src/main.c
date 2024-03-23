@@ -1,18 +1,17 @@
 #include "raylib.h"
 #include "raymath.h"
 
-#include "asset.h"
+#include "asset/asset.h"
 #include "ui/ui.h"
 #include "battle/battle.h"
+
+#include "battle/battle-types.h"
 
 int main(void)
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Template-5.0.0");
     UI *ui = UIAlloc(100);
     Battle *battle = BattleAlloc();
-    Texture2D nineSlice = AssetSprite(SPRITE_NINESLICE);
-    Font font = AssetFont(FONT_TAG_KONGTEXT);
-    Texture2D scamp = AssetSprite(SPRITE_SCAMP);
 
     while (!WindowShouldClose())
     {

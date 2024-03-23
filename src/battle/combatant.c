@@ -1,6 +1,6 @@
 #include "combatant.h"
 
-#include "../asset.h"
+#include "asset/asset.h"
 
 static const CombatantData combatantData[NUM_COMBATANT_TYPES] = {
     [COMBATANT_PLAYER] = {

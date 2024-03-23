@@ -39,8 +39,7 @@ void BattleUpdate(Battle *battle, float delta)
 
 void BattleDraw(Battle *battle, UI *ui)
 {
-    DrawEnemyOptions options = {.showStatusPane = IsKeyDown(KEY_TAB)};
-    BattleDrawEnemies(ui, (_Battle *)battle, options);
+    BattleDrawEnemies(ui, (_Battle *)battle);
     BattleDrawPlayers(ui, (_Battle *)battle);
     BattleDrawMenu(ui, (_Battle *)battle);
 }

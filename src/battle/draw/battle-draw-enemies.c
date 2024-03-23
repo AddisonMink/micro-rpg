@@ -1,79 +1,70 @@
 #include "battle-draw-enemies.h"
 
-#include "raymath.h"
-#include "../../asset.h"
-#include "draw-util.h"
+#include "battle/battle-types.h"
+#include "battle/draw/ui-enemy.h"
+#include "ui/ui.h"
 
-static const float SPRITE_SCALE = 4;
-
-static const float FONT_SIZE = 16;
-
-static const float HP_HEIGHT = 16;
-static const float HP_WIDTH = 80;
-
-static const float PANEL_PAD = 4;
-static const float PANEL_WIDTH = 112;
-static const float PANEL_HEIGHT = 52;
-
-static const float ENEMY_WIDTH = 128;
-static const float ENEMY_HEIGHT = 128;
-
-static void uiEnemySprite(UI *ui, const Combatant *enemy, Texture2D sprite, Vector2 size)
+static void initializeDisplays(EnemyDisplay displays[NUM_COMBATANTS], bool active[NUM_COMBATANTS], const _Battle *battle)
 {
-    const Vector2 spriteSize = enemy->row == ROW_FRONT ? size : Vector2Scale(size, 0.5);
-
-    UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
-    UISprite(ui, sprite, spriteSize.x, spriteSize.y, WHITE);
-}
-
-static void uiStatusPanel(UI *ui, const Combatant *enemy, const CombatantData *data, Vector2 size)
-{
-    const Font font = AssetFont(FONT_TAG_KONGTEXT);
-
-    UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
-    const Vector2 innerSize = UIPanel(ui, PANEL_WIDTH, PANEL_HEIGHT);
+    for (CombatantId id = FIRST_ENEMY_ID; id < NUM_COMBATANTS; id++)
     {
-        UIAlignShimH(ui, innerSize.x, FONT_SIZE, ALIGN_H_CENTER);
-        UILabel(ui, font, data->name, FONT_SIZE, RAYWHITE);
+        const Combatant *combatant = &battle->combatants[id];
+        const CombatantData *data = CombatantGetData(combatant->type);
+        if (combatant->state != COMBATANT_STATE_ALIVE)
+        {
+            active[id] = false;
+            continue;
+        }
 
-        UIAlignShimH(ui, innerSize.x, HP_HEIGHT, ALIGN_H_CENTER);
-        UIMeter(ui, HP_WIDTH, HP_HEIGHT, enemy->hp, data->maxHp, MAROON);
+        EnemyDisplay *display = &displays[id];
+        display->spriteTag = data->sprite;
+        display->row = combatant->row;
+        display->option = ENEMY_DISPLAY_NONE;
+        active[id] = true;
     }
-    UIPanelEnd(ui);
 }
 
-static void uiEnemy(UI *ui, const Combatant *enemy, DrawEnemyOptions options, bool target)
+static void setDisplayOptions(EnemyDisplay display[NUM_COMBATANTS], const _Battle *battle)
 {
-    const CombatantData *data = CombatantGetData(enemy->type);
-    const Texture2D sprite = AssetSprite(data->sprite);
-    const Vector2 size = Vector2Scale((Vector2){sprite.width, sprite.height}, SPRITE_SCALE);
-
-    UIOverlay(ui);
+    switch (battle->state)
     {
-        if (target)
+    case BATTLE_SELECT_ACTION:
+    {
+        if (IsKeyDown(KEY_TAB))
         {
-            const Texture2D pointer = AssetSprite(SPRITE_POINTER_DOWN);
-            UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_TOP);
-            UIOffset(ui, (Vector2){0, -pointer.height});
-            UISprite(ui, pointer, pointer.width, pointer.height, WHITE);
-        }
-        uiEnemySprite(ui, enemy, sprite, size);
-        if (options.showStatusPane)
-        {
-            uiStatusPanel(ui, enemy, data, size);
-        }
-    }
-    UIOverlayEnd(ui);
-}
+            for (CombatantId id = FIRST_ENEMY_ID; id < NUM_COMBATANTS; id++)
+            {
+                const Combatant *combatant = &battle->combatants[id];
+                const CombatantData *data = CombatantGetData(combatant->type);
 
-void BattleDrawEnemies(UI *ui, const _Battle *battle, DrawEnemyOptions options)
-{
-    CombatantId target = -1;
-    if (battle->state == BATTLE_SELECT_TARGET)
+                display[id].option = ENEMY_DISPLAY_STATUS;
+                display[id].optionData.status = (EnemyDisplayStatus){
+                    .name = data->name,
+                    .hp = combatant->hp,
+                    .maxHp = data->maxHp,
+                };
+            }
+        }
+        break;
+    }
+    case BATTLE_SELECT_TARGET:
     {
         const int index = battle->data.selectTarget.targetIndex;
-        target = battle->data.selectTarget.targets[index];
+        const CombatantId id = battle->data.selectTarget.targets[index];
+        display[id].option = ENEMY_DISPLAY_SELECTED;
+        break;
     }
+    default:
+        break;
+    }
+}
+
+void BattleDrawEnemies(UI *ui, const _Battle *battle)
+{
+    static bool active[NUM_COMBATANTS];
+    static EnemyDisplay displays[NUM_COMBATANTS];
+    initializeDisplays(displays, active, battle);
+    setDisplayOptions(displays, battle);
 
     UIReset(ui);
     {
@@ -82,9 +73,8 @@ void BattleDrawEnemies(UI *ui, const _Battle *battle, DrawEnemyOptions options)
         UIRow(ui, 20);
         for (CombatantId id = FIRST_ENEMY_ID; id < NUM_COMBATANTS; id++)
         {
-            const Combatant *enemy = &battle->combatants[id];
-            if (enemy->state == COMBATANT_STATE_ALIVE)
-                uiEnemy(ui, enemy, options, id == target);
+            if (active[id])
+                UIEnemy(ui, &displays[id]);
         }
         UIRowEnd(ui);
     }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../asset.h"
+#include "asset/asset.h"
 
 typedef int CombatantId;
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../asset.h"
-#include "../../ui/ui.h"
+#include "asset/asset.h"
+#include "ui/ui.h"
 
 #define UI_PANEL_PAD 6
 #define UI_PANEL_SPACING 6

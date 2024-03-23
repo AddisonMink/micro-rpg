@@ -1,10 +1,21 @@
 #include "asset.h"
 
 #define NUM_FONTS 1
-#define NUM_SPRITES 5
+#define NUM_SPRITES 6
+
+typedef struct Animation
+{
+    SpriteTag spriteTag;
+    int rows;
+    int cols;
+    int frameCount;
+    Vector2 frameSize;
+    float duration;
+    bool loop;
+} Animation;
 
 static const char *fontPaths[NUM_FONTS] = {
-    [FONT_TAG_KONGTEXT] = "assets/kongtext.ttf",
+    [FONT_KONGTEXT] = "assets/kongtext.ttf",
 };
 
 static const char *spritePaths[NUM_SPRITES] = {
@@ -13,6 +24,19 @@ static const char *spritePaths[NUM_SPRITES] = {
     [SPRITE_NINESLICE] = "assets/nineslice.png",
     [SPRITE_POINTER] = "assets/pointer_12.png",
     [SPRITE_POINTER_DOWN] = "assets/pointer_down_12.png",
+    [SPRITE_SLASH] = "assets/slash_32.png",
+};
+
+const Animation animations[] = {
+    [ANIMATION_SLASH] = {
+        .spriteTag = SPRITE_SLASH,
+        .rows = 2,
+        .cols = 2,
+        .frameCount = 4,
+        .frameSize = (Vector2){32, 32},
+        .duration = 0.5f,
+        .loop = false,
+    },
 };
 
 static Font fonts[NUM_FONTS];
@@ -48,6 +72,34 @@ Texture2D AssetSprite(SpriteTag tag)
     if (!spritesLoaded[tag])
         AssetLoadSprite(tag);
     return sprites[tag];
+}
+
+const Animation *AssetAnimation(AnimationTag tag)
+{
+    return &animations[tag];
+}
+
+Texture2D AssetAnimationSprite(const Animation *animation)
+{
+    return AssetSprite(animation->spriteTag);
+}
+
+Rectangle AssetAnimationFrame(const Animation *animation, float time)
+{
+    const int frame = (int)(time / animation->duration * animation->frameCount - 1);
+    const int row = frame / animation->cols;
+    const int col = frame % animation->cols;
+    return (Rectangle){
+        col * animation->frameSize.x,
+        row * animation->frameSize.y,
+        animation->frameSize.x,
+        animation->frameSize.y,
+    };
+}
+
+bool AssetAnimationFinished(const Animation *animation, float time)
+{
+    return !animation->loop && time >= animation->duration;
 }
 
 void AssetUnloadAll()

@@ -1,6 +1,6 @@
 #include "battle-draw-players.h"
 
-#include "../../asset.h"
+#include "asset/asset.h"
 #include "draw-util.h"
 
 const int FONT_SIZE = 16;
@@ -19,7 +19,7 @@ const float PLAYER_HEIGHT = 244;
 
 static void uiStatusPane(UI *ui, const Combatant *player, const CombatantData *data)
 {
-    const Font font = AssetFont(FONT_TAG_KONGTEXT);
+    const Font font = AssetFont(FONT_KONGTEXT);
     UIShim(ui, PLAYER_WIDTH, PANE_HEIGHT + PLAYER_SPACING);
     const Vector2 innerSize = UIPanel(ui, PLAYER_WIDTH, PANE_HEIGHT);
     {

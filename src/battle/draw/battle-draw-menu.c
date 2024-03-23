@@ -17,7 +17,7 @@ static const float SELECT_TARGET_PANEL_HEIGHT = 50;
 
 static void uiActionMenu(UI *ui, const _Battle *battle)
 {
-    const Font font = AssetFont(FONT_TAG_KONGTEXT);
+    const Font font = AssetFont(FONT_KONGTEXT);
     const Texture2D pointer = AssetSprite(SPRITE_POINTER);
 
     const int queueIndex = battle->data.selectAction.queueIndex;
@@ -54,7 +54,7 @@ static void uiActionMenu(UI *ui, const _Battle *battle)
 
 static void uiEffect(UI *ui, const Effect *effect, float maxWidth)
 {
-    const Font font = AssetFont(FONT_TAG_KONGTEXT);
+    const Font font = AssetFont(FONT_KONGTEXT);
 
     UIAlignShimH(ui, maxWidth, FONT_SIZE, ALIGN_H_CENTER);
     switch (effect->type)
@@ -74,7 +74,7 @@ static void uiEffect(UI *ui, const Effect *effect, float maxWidth)
 
 static void uiEffectList(UI *ui, const _Battle *battle)
 {
-    const Font font = AssetFont(FONT_TAG_KONGTEXT);
+    const Font font = AssetFont(FONT_KONGTEXT);
 
     const int queueIndex = battle->data.selectAction.queueIndex;
     const int actionIndex = battle->data.selectAction.actionIndex;
@@ -115,7 +115,7 @@ static void drawSelectAction(UI *ui, const _Battle *battle)
 static void drawSelectTarget(UI *ui, const _Battle *battle)
 {
 
-    const Font font = AssetFont(FONT_TAG_KONGTEXT);
+    const Font font = AssetFont(FONT_KONGTEXT);
 
     UIReset(ui);
     {
