@@ -11,9 +11,16 @@ static const float statusPanelHeight = 50.0f;
 static Vector2 uiEnemySprite(UI *ui, const EnemyDisplay *display)
 {
     const Texture2D sprite = AssetSprite(display->spriteTag);
-    const Color tint = display->option == ENEMY_DISPLAY_TINT ? display->optionData.tint.color : WHITE;
     const float width = sprite.width * spriteScale;
     const float height = sprite.height * spriteScale;
+
+    Color tint;
+    if (display->option == ENEMY_DISPLAY_TINT)
+        tint = display->optionData.tint.color;
+    else if (display->option == ENEMY_DISPLAY_DEAD)
+        tint = (Color){255, 255, 255, 0};
+    else
+        tint = WHITE;
 
     UISprite(ui, sprite, width, height, tint);
     return (Vector2){width, height};
@@ -64,6 +71,8 @@ void UIEnemy(UI *ui, const EnemyDisplay *display)
         switch (display->option)
         {
         case ENEMY_DISPLAY_NONE:
+            break;
+        case ENEMY_DISPLAY_DEAD:
             break;
         case ENEMY_DISPLAY_SELECTED:
             uiPointer(ui, size);

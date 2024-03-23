@@ -18,6 +18,7 @@ typedef struct Event
         EVENT_ENEMY_TINT,
         EVENT_ENEMY_ANIMATION,
         EVENT_ENEMY_STATUS,
+        EVENT_ENEMY_FADE,
     } type;
 
     union
@@ -38,6 +39,12 @@ typedef struct Event
         {
             CombatantId id;
         } enemyStatus;
+
+        struct
+        {
+            CombatantId id;
+        } enemyFade;
+
     } data;
 } Event;
 
@@ -45,7 +52,7 @@ typedef struct _Battle
 {
     Combatant combatants[NUM_COMBATANTS];
     CombatantId queue[NUM_COMBATANTS]; // This will eventually be used to implement initiative order.
-    
+
     CombatantId targets[NUM_COMBATANTS];
     Effect effects[MAX_EFFECTS];
     Event events[MAX_EVENTS];

@@ -18,6 +18,7 @@ typedef struct EnemyDisplay
     enum
     {
         ENEMY_DISPLAY_NONE,
+        ENEMY_DISPLAY_DEAD,
         ENEMY_DISPLAY_SELECTED,
         ENEMY_DISPLAY_STATUS,
         ENEMY_DISPLAY_TINT,

@@ -47,6 +47,18 @@ static const Event enemyStatus(CombatantId id)
     };
 }
 
+static const Event enemyDeathFade(CombatantId id)
+{
+    return (Event){
+        .duration = 0.5f,
+        .elapsed = 0,
+        .type = EVENT_ENEMY_FADE,
+        .data.enemyFade = {
+            .id = id,
+        },
+    };
+}
+
 static void pushEvent(_Battle *battle, int *eventCount, Event event)
 {
     if (*eventCount < MAX_EVENTS)
@@ -86,6 +98,7 @@ void BattleExecuteEffect(_Battle *battle, int *eventCount)
         if (combatant->hp <= 0)
         {
             Effect deathEffect = {.type = EFFECT_DEATH, .target = id};
+            pushEvent(battle, eventCount, enemyDeathFade(id));
             pushEffect(battle, effectCount, deathEffect);
         }
         break;

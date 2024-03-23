@@ -10,7 +10,7 @@ static void initializeDisplays(EnemyDisplay displays[NUM_COMBATANTS], bool activ
     {
         const Combatant *combatant = &battle->combatants[id];
         const CombatantData *data = CombatantGetData(combatant->type);
-        if (combatant->state != COMBATANT_STATE_ALIVE)
+        if (combatant->state == COMBATANT_STATE_INVALID)
         {
             active[id] = false;
             continue;
@@ -19,7 +19,7 @@ static void initializeDisplays(EnemyDisplay displays[NUM_COMBATANTS], bool activ
         EnemyDisplay *display = &displays[id];
         display->spriteTag = data->sprite;
         display->row = combatant->row;
-        display->option = ENEMY_DISPLAY_NONE;
+        display->option = combatant->state == COMBATANT_STATE_DEAD ? ENEMY_DISPLAY_DEAD : ENEMY_DISPLAY_NONE;
         active[id] = true;
     }
 }
@@ -59,6 +59,17 @@ static void showEnemyEvent(EnemyDisplay display[NUM_COMBATANTS], const _Battle *
             .hp = combatant->hp,
             .maxHp = data->maxHp,
         };
+        break;
+    }
+    case EVENT_ENEMY_FADE:
+    {
+        const CombatantId id = event->data.enemyFade.id;
+        const float time = event->elapsed;
+        const float duration = event->duration;
+        const int alpha = 255 - (int)(255 * time / duration);
+
+        display[id].option = ENEMY_DISPLAY_TINT;
+        display[id].optionData.tint.color = (Color){255, 255, 255, alpha};
         break;
     }
     default:
