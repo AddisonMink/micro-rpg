@@ -16,7 +16,7 @@ typedef enum ActionType
     ACTION_MOVE,
 } ActionType;
 
-#define MAX_EFFECTS 2
+#define MAX_EFFECTS 10
 
 typedef struct Action
 {

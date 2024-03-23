@@ -27,7 +27,7 @@ static void initializeDisplays(EnemyDisplay displays[NUM_COMBATANTS], bool activ
 static void showEnemyEvent(EnemyDisplay display[NUM_COMBATANTS], const _Battle *battle)
 {
     const int eventIndex = battle->data.showEvents.eventIndex;
-    const Event *event = &battle->data.showEvents.events[eventIndex];
+    const Event *event = &battle->events[eventIndex];
 
     switch (event->type)
     {
@@ -91,8 +91,11 @@ static void setDisplayOptions(EnemyDisplay display[NUM_COMBATANTS], const _Battl
     }
     case BATTLE_SELECT_TARGET:
     {
+        const int targetCount = battle->data.selectTarget.targetCount;
+        if (targetCount <= 0)
+            break;
         const int index = battle->data.selectTarget.targetIndex;
-        const CombatantId id = battle->data.selectTarget.targets[index];
+        const CombatantId id = battle->targets[index];
         display[id].option = ENEMY_DISPLAY_SELECTED;
         break;
     }

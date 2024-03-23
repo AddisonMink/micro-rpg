@@ -45,6 +45,10 @@ typedef struct _Battle
 {
     Combatant combatants[NUM_COMBATANTS];
     CombatantId queue[NUM_COMBATANTS]; // This will eventually be used to implement initiative order.
+    
+    CombatantId targets[NUM_COMBATANTS];
+    Effect effects[MAX_EFFECTS];
+    Event events[MAX_EVENTS];
 
     enum
     {
@@ -67,7 +71,6 @@ typedef struct _Battle
         {
             int queueIndex;
             ActionType actionType;
-            CombatantId targets[NUM_COMBATANTS];
             int targetCount;
             int targetIndex;
         } selectTarget;
@@ -83,7 +86,6 @@ typedef struct _Battle
         {
             int queueIndex;
             CombatantId targetIdOpt;
-            Effect effects[MAX_EFFECTS];
             int effectCount;
             int effectIndex;
         } executeEffect;
@@ -92,10 +94,8 @@ typedef struct _Battle
         {
             int queueIndex;
             CombatantId targetIdOpt;
-            Effect effects[MAX_EFFECTS];
             int effectCount;
             int effectIndex;
-            Event events[MAX_EVENTS];
             int eventCount;
             int eventIndex;
         } showEvents;
