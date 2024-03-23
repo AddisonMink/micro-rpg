@@ -30,6 +30,7 @@ typedef struct Effect
     enum
     {
         EFFECT_DAMAGE,
+        EFFECT_DEATH,
         EFFECT_MOVE,
     } type;
 

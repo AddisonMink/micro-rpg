@@ -64,6 +64,11 @@ static void uiEffect(UI *ui, const Effect *effect, float maxWidth)
         UILabel(ui, font, "Damage", FONT_SIZE, RAYWHITE);
         break;
     }
+    case EFFECT_DEATH:
+    {
+        UILabel(ui, font, "Death", FONT_SIZE, RAYWHITE);
+        break;
+    }
     case EFFECT_MOVE:
     {
         UILabel(ui, font, "Move", FONT_SIZE, RAYWHITE);

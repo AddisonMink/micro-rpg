@@ -100,12 +100,12 @@ static void executeEffects(_Battle *battle)
     int effectIndex = battle->data.executeEffect.effectIndex;
     const int queueIndex = battle->data.executeEffect.queueIndex;
     const CombatantId targetOpt = battle->data.executeEffect.targetIdOpt;
-    const Effect *effect = &battle->effects[effectIndex];
 
     if (effectIndex < effectCount)
     {
         int eventCount = 0;
-        BattleExecuteEffect(battle, battle->events, &eventCount, effect);
+        BattleExecuteEffect(battle, &eventCount);
+        const int newEffectCount = battle->data.executeEffect.effectCount;
         effectIndex++;
 
         if (eventCount > 0)
@@ -113,7 +113,7 @@ static void executeEffects(_Battle *battle)
             battle->state = BATTLE_SHOW_EVENTS;
             battle->data.showEvents.queueIndex = queueIndex;
             battle->data.showEvents.targetIdOpt = targetOpt;
-            battle->data.showEvents.effectCount = effectCount;
+            battle->data.showEvents.effectCount = newEffectCount;
             battle->data.showEvents.effectIndex = effectIndex;
             battle->data.showEvents.eventCount = eventCount;
             battle->data.showEvents.eventIndex = 0;
