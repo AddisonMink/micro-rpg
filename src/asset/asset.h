@@ -37,6 +37,8 @@ Texture2D AssetSprite(SpriteTag tag);
 
 const Animation *AssetAnimation(AnimationTag tag);
 
+float AssetAnimationDuration(const Animation *animation);
+
 Texture2D AssetAnimationSprite(const Animation *animation);
 
 Rectangle AssetAnimationFrame(const Animation *animation, float time);

@@ -148,9 +148,18 @@ static void executeEffects(_Battle *battle)
 static void showEvents(_Battle *battle, float delta)
 {
     const int eventCount = battle->data.showEvents.eventCount;
-    const int eventIndex = battle->data.showEvents.eventIndex;
 
-    if (eventIndex >= eventCount)
+    if (battle->data.showEvents.effectIndex < eventCount)
+    {
+        Event *event = &battle->data.showEvents.events[battle->data.showEvents.eventIndex];
+        event->elapsed += delta;
+        if (event->elapsed >= event->duration)
+        {
+            battle->data.showEvents.eventIndex++;
+        }
+    }
+
+    if (battle->data.showEvents.eventIndex >= eventCount)
     {
         const int queueIndex = battle->data.showEvents.queueIndex;
         const CombatantId targetOpt = battle->data.showEvents.targetIdOpt;
@@ -170,15 +179,6 @@ static void showEvents(_Battle *battle, float delta)
         for (int i = effectIndex; i < effectCount; i++)
         {
             battle->data.executeEffect.effects[i] = effects[i];
-        }
-    }
-    else
-    {
-        Event *event = &battle->data.showEvents.events[eventIndex];
-        event->elapsed += delta;
-        if (event->elapsed >= event->duration)
-        {
-            battle->data.showEvents.eventIndex++;
         }
     }
 }

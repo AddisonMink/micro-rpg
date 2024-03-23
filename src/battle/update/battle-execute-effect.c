@@ -1,14 +1,48 @@
 #include "battle-execute-effect.h"
 
+static const Event wait(float duration)
+{
+    return (Event){
+        .duration = duration,
+        .elapsed = 0,
+        .type = EVENT_WAIT,
+    };
+}
+
 static const Event enemyDamageFlash(CombatantId id)
 {
     return (Event){
-        .duration = 0.1f,
+        .duration = 0.05f,
         .elapsed = 0,
         .type = EVENT_ENEMY_TINT,
         .data.enemyTint = {
             .id = id,
             .color = RED,
+        },
+    };
+}
+
+static const Event enemySlashAnimation(CombatantId id)
+{
+    return (Event){
+        .duration = AssetAnimationDuration(AssetAnimation(ANIMATION_SLASH)),
+        .elapsed = 0,
+        .type = EVENT_ENEMY_ANIMATION,
+        .data.enemyAnimation = {
+            .id = id,
+            .tag = ANIMATION_SLASH,
+        },
+    };
+}
+
+static const Event enemyStatus(CombatantId id)
+{
+    return (Event){
+        .duration = 0.5f,
+        .elapsed = 0,
+        .type = EVENT_ENEMY_STATUS,
+        .data.enemyStatus = {
+            .id = id,
         },
     };
 }
@@ -22,11 +56,11 @@ void BattleExecuteEffect(_Battle *battle, Event events[MAX_EVENTS], int *eventCo
         const CombatantId id = effect->target;
         Combatant *combatant = &battle->combatants[id];
         combatant->hp -= effect->data.damage.amount;
-        if (combatant->hp <= 0)
-        {
-            combatant->state = COMBATANT_STATE_DEAD;
-        }
+        events[(*eventCount)++] = enemySlashAnimation(id);
+        events[(*eventCount)++] = wait(0.1f);
         events[(*eventCount)++] = enemyDamageFlash(id);
+        events[(*eventCount)++] = wait(0.2f);
+        events[(*eventCount)++] = enemyStatus(id);
         break;
     }
     case EFFECT_MOVE:

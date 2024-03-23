@@ -21,7 +21,7 @@ typedef struct EnemyDisplay
         ENEMY_DISPLAY_SELECTED,
         ENEMY_DISPLAY_STATUS,
         ENEMY_DISPLAY_TINT,
-        ENEMY_DISPlAY_ANIMATION,
+        ENEMY_DISPLAY_ANIMATION,
     } option;
 
     union

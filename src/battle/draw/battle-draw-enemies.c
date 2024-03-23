@@ -39,7 +39,28 @@ static void showEnemyEvent(EnemyDisplay display[NUM_COMBATANTS], const _Battle *
         display[id].optionData.tint.color = color;
         break;
     }
-
+    case EVENT_ENEMY_ANIMATION:
+    {
+        const CombatantId id = event->data.enemyAnimation.id;
+        const AnimationTag tag = event->data.enemyAnimation.tag;
+        display[id].option = ENEMY_DISPLAY_ANIMATION;
+        display[id].optionData.animation.tag = tag;
+        display[id].optionData.animation.time = event->elapsed;
+        break;
+    }
+    case EVENT_ENEMY_STATUS:
+    {
+        const CombatantId id = event->data.enemyStatus.id;
+        const Combatant *combatant = &battle->combatants[id];
+        const CombatantData *data = CombatantGetData(combatant->type);
+        display[id].option = ENEMY_DISPLAY_STATUS;
+        display[id].optionData.status = (EnemyDisplayStatus){
+            .name = data->name,
+            .hp = combatant->hp,
+            .maxHp = data->maxHp,
+        };
+        break;
+    }
     default:
         break;
     }

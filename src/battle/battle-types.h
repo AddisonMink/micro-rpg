@@ -5,7 +5,7 @@
 
 #define NUM_COMBATANTS 6
 #define FIRST_ENEMY_ID 3
-#define MAX_EVENTS 2
+#define MAX_EVENTS 10
 
 typedef struct Event
 {
@@ -14,7 +14,10 @@ typedef struct Event
 
     enum
     {
+        EVENT_WAIT,
         EVENT_ENEMY_TINT,
+        EVENT_ENEMY_ANIMATION,
+        EVENT_ENEMY_STATUS,
     } type;
 
     union
@@ -24,6 +27,17 @@ typedef struct Event
             CombatantId id;
             Color color;
         } enemyTint;
+
+        struct
+        {
+            CombatantId id;
+            AnimationTag tag;
+        } enemyAnimation;
+
+        struct
+        {
+            CombatantId id;
+        } enemyStatus;
     } data;
 } Event;
 

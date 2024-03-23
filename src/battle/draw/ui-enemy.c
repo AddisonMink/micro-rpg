@@ -73,7 +73,7 @@ void UIEnemy(UI *ui, const EnemyDisplay *display)
             break;
         case ENEMY_DISPLAY_TINT:
             break;
-        case ENEMY_DISPlAY_ANIMATION:
+        case ENEMY_DISPLAY_ANIMATION:
             uiAnimation(ui, size, display->optionData.animation.tag, display->optionData.animation.time);
             break;
         }

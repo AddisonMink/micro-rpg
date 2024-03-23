@@ -34,7 +34,7 @@ const Animation animations[] = {
         .cols = 2,
         .frameCount = 4,
         .frameSize = (Vector2){32, 32},
-        .duration = 0.5f,
+        .duration = 0.1f,
         .loop = false,
     },
 };
@@ -79,6 +79,11 @@ const Animation *AssetAnimation(AnimationTag tag)
     return &animations[tag];
 }
 
+float AssetAnimationDuration(const Animation *animation)
+{
+    return animation->duration;
+}
+
 Texture2D AssetAnimationSprite(const Animation *animation)
 {
     return AssetSprite(animation->spriteTag);
@@ -86,7 +91,7 @@ Texture2D AssetAnimationSprite(const Animation *animation)
 
 Rectangle AssetAnimationFrame(const Animation *animation, float time)
 {
-    const int frame = (int)(time / animation->duration * animation->frameCount - 1);
+    const int frame = (int)(time / (animation->duration / animation->frameCount));
     const int row = frame / animation->cols;
     const int col = frame % animation->cols;
     return (Rectangle){
