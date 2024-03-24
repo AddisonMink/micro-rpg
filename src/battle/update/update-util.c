@@ -57,3 +57,23 @@ void FindTargets(CombatantId targets[NUM_COMBATANTS], int *targetCount, const _B
         }
     }
 }
+
+// Assumes that the active combatant is alive.
+void BuildQueue(_Battle *battle, int *queueIndex)
+{
+    CombatantId activeId = battle->queue[(*queueIndex)];
+
+    battle->queueCount = 0;
+    for (CombatantId id = 0; id < NUM_COMBATANTS; id++)
+    {
+        if (battle->combatants[id].state == COMBATANT_STATE_ALIVE)
+        {
+            battle->queue[battle->queueCount] = id;
+            if (id == activeId)
+            {
+                *queueIndex = battle->queueCount;
+            }
+            battle->queueCount++;
+        }
+    }
+}

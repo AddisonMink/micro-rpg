@@ -51,10 +51,18 @@ typedef struct Event
 typedef struct _Battle
 {
     Combatant combatants[NUM_COMBATANTS];
-    CombatantId queue[NUM_COMBATANTS]; // This will eventually be used to implement initiative order.
 
+    // This will eventually be used to implement initiative order.
+    CombatantId queue[NUM_COMBATANTS];
+    int queueCount;
+
+    // Only valid during BATTLE_SELECT_TARGET.
     CombatantId targets[NUM_COMBATANTS];
+
+    // Only valid during BATTLE_EXECUTE_EFFECTS and BATTLE_SHOW_EVENTS.
     Effect effects[MAX_EFFECTS];
+
+    // Only valid during BATTLE_SHOW_EVENTS.
     Event events[MAX_EVENTS];
 
     enum
@@ -65,6 +73,7 @@ typedef struct _Battle
         BATTLE_EXECUTE_EFFECTS,
         BATTLE_SHOW_EVENTS,
         BATTLE_END_TURN,
+        BATTLE_ENEMY_TURN,
         BATTLE_WIN,
     } state;
 
@@ -113,6 +122,11 @@ typedef struct _Battle
         {
             int queueIndex;
         } endTurn;
+
+        struct
+        {
+            int queueIndex;
+        } enemyTurn;
 
     } data;
 } _Battle;

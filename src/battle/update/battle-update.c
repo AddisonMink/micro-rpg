@@ -159,28 +159,35 @@ static void showEvents(_Battle *battle, float delta)
     }
 }
 
+static bool enemiesDead(_Battle *battle)
+{
+    for (CombatantId id = FIRST_ENEMY_ID; id < NUM_COMBATANTS; id++)
+        if (battle->combatants[id].state == COMBATANT_STATE_ALIVE)
+            return false;
+    return true;
+}
+
 static void endTurn(_Battle *battle)
 {
-    bool enemiesDead = true;
-    for (CombatantId id = FIRST_ENEMY_ID; id < NUM_COMBATANTS; id++)
-    {
-        const bool alive = battle->combatants[id].state == COMBATANT_STATE_ALIVE;
-        if (alive)
-        {
-            enemiesDead = false;
-            break;
-        }
-    }
+    BuildQueue(battle, &battle->data.endTurn.queueIndex);
+    const int queueIndex = battle->data.endTurn.queueIndex;
+    const int nextIndex = (queueIndex + 1) % battle->queueCount;
+    const CombatantId nextId = battle->queue[nextIndex];
 
-    if (enemiesDead)
+    if (enemiesDead(battle))
     {
         battle->state = BATTLE_WIN;
     }
-    else
+    else if (nextId < FIRST_ENEMY_ID)
     {
         battle->state = BATTLE_SELECT_ACTION;
-        battle->data.selectAction.queueIndex = 0;
+        battle->data.selectAction.queueIndex = nextIndex;
         battle->data.selectAction.actionIndex = 0;
+    }
+    else
+    {
+        battle->state = BATTLE_ENEMY_TURN;
+        battle->data.enemyTurn.queueIndex = nextIndex;
     }
 }
 
@@ -200,6 +207,8 @@ void BattleUpdateMain(_Battle *battle, float delta)
         return showEvents(battle, delta);
     case BATTLE_END_TURN:
         return endTurn(battle);
+    case BATTLE_ENEMY_TURN:
+        return TraceLog(LOG_INFO, "Enemy turn");
     case BATTLE_WIN:
         return;
     }

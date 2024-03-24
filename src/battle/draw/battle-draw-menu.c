@@ -183,6 +183,8 @@ void BattleDrawMenu(UI *ui, const _Battle *battle)
         return;
     case BATTLE_END_TURN:
         return;
+    case BATTLE_ENEMY_TURN:
+        return;
     case BATTLE_WIN:
         return drawWin(ui);
     }
