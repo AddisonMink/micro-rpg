@@ -3,9 +3,7 @@
 #include "raylib.h"
 
 #include "battle/types.h"
-#include "battle/draw/draw-enemies.h"
-#include "battle/draw/draw-menu.h"
-#include "battle/draw/draw-players.h"
+#include "battle/draw/draw.h"
 #include "battle/update/update.h"
 
 Battle *BattleAlloc()
@@ -39,7 +37,5 @@ void BattleUpdate(Battle *battle, float delta)
 
 void BattleDraw(Battle *battle, UI *ui)
 {
-    BattleDrawEnemies(ui, (_Battle *)battle);
-    BattleDrawPlayers(ui, (_Battle *)battle);
-    BattleDrawMenu(ui, (_Battle *)battle);
+    BattleDrawMain(ui, (_Battle *)battle);
 }
