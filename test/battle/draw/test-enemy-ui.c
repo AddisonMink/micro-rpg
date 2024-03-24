@@ -2,7 +2,7 @@
 
 #include "asset/asset.h"
 #include "ui/ui.h"
-#include "battle/battle-types.h"
+#include "battle/types.h"
 #include "battle/draw/ui-enemy.h"
 
 int main(void)
@@ -58,6 +58,7 @@ int main(void)
     */
 
     // option = animation
+    /*
     EnemyDisplay enemy = {
         .spriteTag = SPRITE_SCAMP,
         .row = ROW_FRONT,
@@ -65,6 +66,17 @@ int main(void)
         .optionData.animation = {
             .tag = ANIMATION_SLASH,
             .time = 0.25f,
+        },
+    };
+    */
+
+    // option = action
+    EnemyDisplay enemy = {
+        .spriteTag = SPRITE_SCAMP,
+        .row = ROW_FRONT,
+        .option = ENEMY_DISPLAY_ACTION,
+        .optionData.action = {
+            .name = "Attack",
         },
     };
 

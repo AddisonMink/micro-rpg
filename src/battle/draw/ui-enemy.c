@@ -8,6 +8,9 @@ static const int fontSize = 12;
 static const float statusPanelWidth = 100.0f;
 static const float statusPanelHeight = 50.0f;
 
+static const float actionPanelWidth = 100.0f;
+static const float actionPanelHeight = 25.0f;
+
 static Vector2 uiEnemySprite(UI *ui, const EnemyDisplay *display)
 {
     const Texture2D sprite = AssetSprite(display->spriteTag);
@@ -62,6 +65,19 @@ static void uiAnimation(UI *ui, Vector2 size, AnimationTag tag, float time)
     UISpriteSlice(ui, sprite, frame, width, height, WHITE);
 }
 
+static void uiAction(UI *ui, Vector2 size, const char *name)
+{
+    const Font font = AssetFont(FONT_KONGTEXT);
+
+    UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
+    Vector2 panelSize = UIPanel(ui, actionPanelWidth, actionPanelHeight);
+    {
+        UIAlignShimH(ui, panelSize.x, fontSize, ALIGN_H_CENTER);
+        UILabel(ui, font, name, fontSize, RAYWHITE);
+    }
+    UIPanelEnd(ui);
+}
+
 void UIEnemy(UI *ui, const EnemyDisplay *display)
 {
     UIOverlay(ui);
@@ -84,6 +100,9 @@ void UIEnemy(UI *ui, const EnemyDisplay *display)
             break;
         case ENEMY_DISPLAY_ANIMATION:
             uiAnimation(ui, size, display->optionData.animation.tag, display->optionData.animation.time);
+            break;
+        case ENEMY_DISPLAY_ACTION:
+            uiAction(ui, size, display->optionData.action.name);
             break;
         }
     }

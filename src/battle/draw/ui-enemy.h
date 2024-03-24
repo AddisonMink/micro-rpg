@@ -23,6 +23,7 @@ typedef struct EnemyDisplay
         ENEMY_DISPLAY_STATUS,
         ENEMY_DISPLAY_TINT,
         ENEMY_DISPLAY_ANIMATION,
+        ENEMY_DISPLAY_ACTION,
     } option;
 
     union
@@ -39,6 +40,11 @@ typedef struct EnemyDisplay
             AnimationTag tag;
             float time;
         } animation;
+
+        struct
+        {
+            const char *name;
+        } action;
     } optionData;
 } EnemyDisplay;
 
