@@ -1,7 +1,8 @@
 #include "battle-update.h"
 
-#include "battle-execute-effect.h"
-#include "update-util.h"
+#include "battle/update/battle-execute-effect.h"
+#include "battle/update/update-util.h"
+#include "battle/update/enemy-behavior.h"
 
 static void selectAction(_Battle *battle)
 {
@@ -191,6 +192,20 @@ static void endTurn(_Battle *battle)
     }
 }
 
+static void enemyTurn(_Battle *battle)
+{
+    const int queueIndex = battle->data.enemyTurn.queueIndex;
+
+    ActionType actionType;
+    CombatantId target;
+    BattleEnemyBehavior(&actionType, &target, battle);
+
+    battle->state = BATTLE_EXECUTE_ACTION;
+    battle->data.executeAction.queueIndex = queueIndex;
+    battle->data.executeAction.actionType = actionType;
+    battle->data.executeAction.targetIdOpt = target;
+}
+
 void BattleUpdateMain(_Battle *battle, float delta)
 {
     switch (battle->state)
@@ -208,7 +223,7 @@ void BattleUpdateMain(_Battle *battle, float delta)
     case BATTLE_END_TURN:
         return endTurn(battle);
     case BATTLE_ENEMY_TURN:
-        return TraceLog(LOG_INFO, "Enemy turn");
+        return enemyTurn(battle);
     case BATTLE_WIN:
         return;
     }
