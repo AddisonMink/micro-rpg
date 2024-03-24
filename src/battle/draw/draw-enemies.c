@@ -1,8 +1,6 @@
-#include "battle-draw-enemies.h"
+#include "draw-enemies.h"
 
-#include "battle/battle-types.h"
 #include "battle/draw/ui-enemy.h"
-#include "ui/ui.h"
 
 static void initializeDisplays(EnemyDisplay displays[NUM_COMBATANTS], bool active[NUM_COMBATANTS], const _Battle *battle)
 {

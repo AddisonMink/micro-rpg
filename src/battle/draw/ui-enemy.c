@@ -1,6 +1,6 @@
 #include "ui-enemy.h"
 
-#include "battle/draw/draw-util.h"
+#include "battle/draw/util.h"
 
 static const float spriteScale = 4.0f;
 static const int fontSize = 12;

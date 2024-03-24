@@ -1,7 +1,7 @@
-#include "battle-draw-players.h"
+#include "draw-players.h"
 
 #include "asset/asset.h"
-#include "draw-util.h"
+#include "battle/draw/util.h"
 
 const int FONT_SIZE = 16;
 

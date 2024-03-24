@@ -1,7 +1,7 @@
 #pragma once
 
+#include "battle/types.h"
 #include "ui/ui.h"
-#include "battle/battle-types.h"
 
 typedef struct EnemyDisplayStatus
 {

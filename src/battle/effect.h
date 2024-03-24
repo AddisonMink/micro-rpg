@@ -1,6 +1,6 @@
 #pragma once
 
-#include "combatant.h"
+#include "battle/combatant.h"
 
 typedef enum DamageSource
 {

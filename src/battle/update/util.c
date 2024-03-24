@@ -1,4 +1,4 @@
-#include "update-util.h"
+#include "util.h"
 
 static const bool inRange[NUM_RANGE_TYPES][NUM_ROWS][NUM_ROWS] = {
     [RANGE_SELF] = {

@@ -1,7 +1,7 @@
-#include "battle-draw-menu.h"
+#include "draw-menu.h"
 
-#include "../action.h"
-#include "draw-util.h"
+#include "battle/action.h"
+#include "battle/draw/util.h"
 
 static const float MENU_MARGIN = 10;
 static const int HEADER_SIZE = 16;

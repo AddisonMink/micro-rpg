@@ -1,6 +1,6 @@
 #pragma once
 
-#include "effect.h"
+#include "battle/effect.h"
 
 typedef enum Range
 {

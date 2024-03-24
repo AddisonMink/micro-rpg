@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../ui/ui.h"
-#include "../battle-types.h"
+#include "battle/types.h"
+#include "ui/ui.h"
 
 void BattleDrawMenu(UI *ui, const _Battle *battle);

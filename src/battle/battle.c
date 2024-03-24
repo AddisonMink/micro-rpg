@@ -2,11 +2,11 @@
 
 #include "raylib.h"
 
-#include "battle-types.h"
-#include "draw/battle-draw-enemies.h"
-#include "draw/battle-draw-menu.h"
-#include "draw/battle-draw-players.h"
-#include "update/battle-update.h"
+#include "battle/types.h"
+#include "battle/draw/draw-enemies.h"
+#include "battle/draw/draw-menu.h"
+#include "battle/draw/draw-players.h"
+#include "battle/update/update.h"
 
 Battle *BattleAlloc()
 {

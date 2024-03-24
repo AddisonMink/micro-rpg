@@ -1,8 +1,8 @@
-#include "battle-update.h"
+#include "update.h"
 
-#include "battle/update/battle-execute-effect.h"
-#include "battle/update/update-util.h"
 #include "battle/update/enemy-behavior.h"
+#include "battle/update/execute-effect.h"
+#include "battle/update/util.h"
 
 static void selectAction(_Battle *battle)
 {

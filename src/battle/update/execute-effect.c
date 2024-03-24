@@ -1,4 +1,4 @@
-#include "battle-execute-effect.h"
+#include "execute-effect.h"
 
 static const Event wait(float duration)
 {
