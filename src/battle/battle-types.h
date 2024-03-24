@@ -64,6 +64,8 @@ typedef struct _Battle
         BATTLE_EXECUTE_ACTION,
         BATTLE_EXECUTE_EFFECTS,
         BATTLE_SHOW_EVENTS,
+        BATTLE_END_TURN,
+        BATTLE_WIN,
     } state;
 
     union
@@ -106,6 +108,11 @@ typedef struct _Battle
             int eventCount;
             int eventIndex;
         } showEvents;
+
+        struct
+        {
+            int queueIndex;
+        } endTurn;
 
     } data;
 } _Battle;

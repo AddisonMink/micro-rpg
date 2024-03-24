@@ -125,9 +125,8 @@ static void executeEffects(_Battle *battle)
     }
     else
     {
-        battle->state = BATTLE_SELECT_ACTION;
-        battle->data.selectAction.queueIndex = queueIndex;
-        battle->data.selectAction.actionIndex = 0;
+        battle->state = BATTLE_END_TURN;
+        battle->data.endTurn.queueIndex = queueIndex;
     }
 }
 
@@ -160,6 +159,31 @@ static void showEvents(_Battle *battle, float delta)
     }
 }
 
+static void endTurn(_Battle *battle)
+{
+    bool enemiesDead = true;
+    for (CombatantId id = FIRST_ENEMY_ID; id < NUM_COMBATANTS; id++)
+    {
+        const bool alive = battle->combatants[id].state == COMBATANT_STATE_ALIVE;
+        if (alive)
+        {
+            enemiesDead = false;
+            break;
+        }
+    }
+
+    if (enemiesDead)
+    {
+        battle->state = BATTLE_WIN;
+    }
+    else
+    {
+        battle->state = BATTLE_SELECT_ACTION;
+        battle->data.selectAction.queueIndex = 0;
+        battle->data.selectAction.actionIndex = 0;
+    }
+}
+
 void BattleUpdateMain(_Battle *battle, float delta)
 {
     switch (battle->state)
@@ -174,5 +198,9 @@ void BattleUpdateMain(_Battle *battle, float delta)
         return executeEffects(battle);
     case BATTLE_SHOW_EVENTS:
         return showEvents(battle, delta);
+    case BATTLE_END_TURN:
+        return endTurn(battle);
+    case BATTLE_WIN:
+        return;
     }
 }

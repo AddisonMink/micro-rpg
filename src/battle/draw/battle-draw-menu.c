@@ -15,6 +15,10 @@ static const float SELECT_ACTION_POINTER_SPACING = 5;
 static const float SELECT_TARGET_PANEL_WIDTH = 200;
 static const float SELECT_TARGET_PANEL_HEIGHT = 50;
 
+static const float winPanelWidth = 450;
+static const float winPanelHeight = 50;
+static const float winPanelFontSize = 24;
+
 static void uiActionMenu(UI *ui, const _Battle *battle)
 {
     const Font font = AssetFont(FONT_KONGTEXT);
@@ -146,6 +150,23 @@ static void drawSelectTarget(UI *ui, const _Battle *battle)
     UIDraw(ui, (Vector2){0, 0});
 }
 
+static void drawWin(UI *ui)
+{
+    const Font font = AssetFont(FONT_KONGTEXT);
+
+    UIReset(ui);
+    {
+        UIAlignShim(ui, SCREEN_WIDTH, SCREEN_HEIGHT, ALIGN_H_CENTER, ALIGN_V_CENTER);
+        const Vector2 size = UIPanel(ui, winPanelWidth, winPanelHeight);
+        {
+            UIAlignShimH(ui, size.x, winPanelFontSize, ALIGN_H_CENTER);
+            UILabel(ui, font, "Enemies Defeated!", winPanelFontSize, RAYWHITE);
+        }
+        UIPanelEnd(ui);
+    }
+    UIDraw(ui, (Vector2){0, 0});
+}
+
 void BattleDrawMenu(UI *ui, const _Battle *battle)
 {
     switch (battle->state)
@@ -160,5 +181,9 @@ void BattleDrawMenu(UI *ui, const _Battle *battle)
         return;
     case BATTLE_SHOW_EVENTS:
         return;
+    case BATTLE_END_TURN:
+        return;
+    case BATTLE_WIN:
+        return drawWin(ui);
     }
 }
