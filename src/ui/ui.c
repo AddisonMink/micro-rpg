@@ -1,8 +1,8 @@
 #include "ui.h"
 
-#include "ui-types.h"
-#include "ui-compile.h"
-#include "ui-render.h"
+#include "ui/compile.h"
+#include "ui/render.h"
+#include "ui/types.h"
 
 typedef struct UI
 {

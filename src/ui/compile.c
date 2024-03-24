@@ -1,4 +1,4 @@
-#include "ui-compile.h"
+#include "compile.h"
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 

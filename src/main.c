@@ -2,10 +2,8 @@
 #include "raymath.h"
 
 #include "asset/asset.h"
-#include "ui/ui.h"
 #include "battle/battle.h"
-
-#include "battle/battle-types.h"
+#include "ui/ui.h"
 
 int main(void)
 {
