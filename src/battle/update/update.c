@@ -4,6 +4,8 @@
 #include "battle/update/execute-effect.h"
 #include "battle/update/util.h"
 
+static float enemyTurnDuration = 1.0f;
+
 static void selectAction(_Battle *battle)
 {
     const int queueIndex = battle->data.selectAction.queueIndex;
@@ -187,23 +189,32 @@ static void endTurn(_Battle *battle)
     }
     else
     {
+        ActionType actionType;
+        CombatantId target;
+        BattleEnemyBehavior(&actionType, &target, battle);
+
         battle->state = BATTLE_ENEMY_TURN;
         battle->data.enemyTurn.queueIndex = nextIndex;
+        battle->data.enemyTurn.actionType = actionType;
+        battle->data.enemyTurn.targetIdOpt = target;
+        battle->data.enemyTurn.elapsed = 0;
     }
 }
 
-static void enemyTurn(_Battle *battle)
+static void enemyTurn(_Battle *battle, float delta)
 {
-    const int queueIndex = battle->data.enemyTurn.queueIndex;
+    battle->data.enemyTurn.elapsed += delta;
+    if (battle->data.enemyTurn.elapsed >= enemyTurnDuration)
+    {
+        const int queueIndex = battle->data.enemyTurn.queueIndex;
+        const ActionType actionType = battle->data.enemyTurn.actionType;
+        const CombatantId targetIdOpt = battle->data.enemyTurn.targetIdOpt;
 
-    ActionType actionType;
-    CombatantId target;
-    BattleEnemyBehavior(&actionType, &target, battle);
-
-    battle->state = BATTLE_EXECUTE_ACTION;
-    battle->data.executeAction.queueIndex = queueIndex;
-    battle->data.executeAction.actionType = actionType;
-    battle->data.executeAction.targetIdOpt = target;
+        battle->state = BATTLE_EXECUTE_ACTION;
+        battle->data.executeAction.queueIndex = queueIndex;
+        battle->data.executeAction.actionType = actionType;
+        battle->data.executeAction.targetIdOpt = targetIdOpt;
+    }
 }
 
 void BattleUpdateMain(_Battle *battle, float delta)
@@ -223,7 +234,7 @@ void BattleUpdateMain(_Battle *battle, float delta)
     case BATTLE_END_TURN:
         return endTurn(battle);
     case BATTLE_ENEMY_TURN:
-        return enemyTurn(battle);
+        return enemyTurn(battle, delta);
     case BATTLE_WIN:
         return;
     }

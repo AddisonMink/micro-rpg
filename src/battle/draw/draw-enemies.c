@@ -111,6 +111,15 @@ static void setDisplayOptions(EnemyDisplay display[NUM_COMBATANTS], const _Battl
     case BATTLE_SHOW_EVENTS:
         showEnemyEvent(display, battle);
         break;
+    case BATTLE_ENEMY_TURN:
+    {
+        const int queueIndex = battle->data.enemyTurn.queueIndex;
+        const CombatantId id = battle->queue[queueIndex];
+        const Action *action = ActionGet(battle->data.enemyTurn.actionType);
+        display[id].option = ENEMY_DISPLAY_ACTION;
+        display[id].optionData.action.name = action->name;
+        break;
+    }
     default:
         break;
     }

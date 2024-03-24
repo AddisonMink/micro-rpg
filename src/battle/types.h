@@ -126,6 +126,9 @@ typedef struct _Battle
         struct
         {
             int queueIndex;
+            ActionType actionType;
+            CombatantId targetIdOpt;
+            float elapsed;
         } enemyTurn;
 
     } data;
