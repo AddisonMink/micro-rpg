@@ -1,64 +1,5 @@
 #include "execute-effect.h"
 
-static const Event wait(float duration)
-{
-    return (Event){
-        .duration = duration,
-        .elapsed = 0,
-        .type = EVENT_WAIT,
-    };
-}
-
-static const Event enemyDamageFlash(CombatantId id)
-{
-    return (Event){
-        .duration = 0.05f,
-        .elapsed = 0,
-        .type = EVENT_ENEMY_TINT,
-        .data.enemyTint = {
-            .id = id,
-            .color = RED,
-        },
-    };
-}
-
-static const Event enemySlashAnimation(CombatantId id)
-{
-    return (Event){
-        .duration = AssetAnimationDuration(AssetAnimation(ANIMATION_SLASH)),
-        .elapsed = 0,
-        .type = EVENT_ENEMY_ANIMATION,
-        .data.enemyAnimation = {
-            .id = id,
-            .tag = ANIMATION_SLASH,
-        },
-    };
-}
-
-static const Event enemyStatus(CombatantId id)
-{
-    return (Event){
-        .duration = 0.5f,
-        .elapsed = 0,
-        .type = EVENT_ENEMY_STATUS,
-        .data.enemyStatus = {
-            .id = id,
-        },
-    };
-}
-
-static const Event enemyDeathFade(CombatantId id)
-{
-    return (Event){
-        .duration = 0.5f,
-        .elapsed = 0,
-        .type = EVENT_ENEMY_FADE,
-        .data.enemyFade = {
-            .id = id,
-        },
-    };
-}
-
 static void pushEvent(_Battle *battle, int *eventCount, Event event)
 {
     if (*eventCount < MAX_EVENTS)
@@ -89,16 +30,17 @@ void BattleExecuteEffect(_Battle *battle, int *eventCount)
         Combatant *combatant = &battle->combatants[id];
         combatant->hp -= effect->data.damage.amount;
 
-        pushEvent(battle, eventCount, enemySlashAnimation(id));
-        pushEvent(battle, eventCount, wait(0.1f));
-        pushEvent(battle, eventCount, enemyDamageFlash(id));
-        pushEvent(battle, eventCount, wait(0.2f));
-        pushEvent(battle, eventCount, enemyStatus(id));
+        pushEvent(battle, eventCount, EventSlashAnimation(id));
+        pushEvent(battle, eventCount, EventWait(0.1f));
+        pushEvent(battle, eventCount, EventDamageFlash(id));
+        pushEvent(battle, eventCount, EventWait(0.2f));
+        if (id > FIRST_ENEMY_ID)
+            pushEvent(battle, eventCount, EventEnemyStatus(id));
 
         if (combatant->hp <= 0)
         {
             Effect deathEffect = {.type = EFFECT_DEATH, .target = id};
-            pushEvent(battle, eventCount, enemyDeathFade(id));
+            pushEvent(battle, eventCount, EventDeathFade(id));
             pushEffect(battle, effectCount, deathEffect);
         }
         break;

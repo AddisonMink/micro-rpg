@@ -2,52 +2,12 @@
 
 #include "action.h"
 #include "combatant.h"
+#include "event.h"
 
 #define NUM_COMBATANTS 6
 #define NUM_PLAYERS 3
 #define FIRST_ENEMY_ID 3
 #define MAX_EVENTS 10
-
-typedef struct Event
-{
-    float duration;
-    float elapsed;
-
-    enum
-    {
-        EVENT_WAIT,
-        EVENT_ENEMY_TINT,
-        EVENT_ENEMY_ANIMATION,
-        EVENT_ENEMY_STATUS,
-        EVENT_ENEMY_FADE,
-    } type;
-
-    union
-    {
-        struct
-        {
-            CombatantId id;
-            Color color;
-        } enemyTint;
-
-        struct
-        {
-            CombatantId id;
-            AnimationTag tag;
-        } enemyAnimation;
-
-        struct
-        {
-            CombatantId id;
-        } enemyStatus;
-
-        struct
-        {
-            CombatantId id;
-        } enemyFade;
-
-    } data;
-} Event;
 
 typedef struct _Battle
 {
