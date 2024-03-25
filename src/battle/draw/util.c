@@ -11,7 +11,6 @@ Vector2 UIPanel(UI *ui, float width, float height)
     UINineSlice(ui, nineSlice, 1, 4, width, height, WHITE);
 
     UIPadSimple(ui, UI_PANEL_PAD);
-    UIAlignShimV(ui, innerWidth, innerHeight, ALIGN_V_CENTER);
     UICol(ui, UI_PANEL_SPACING);
 
     return (Vector2){innerWidth, innerHeight};

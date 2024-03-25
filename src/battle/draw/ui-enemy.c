@@ -6,7 +6,7 @@ static const float spriteScale = 4.0f;
 static const int fontSize = 12;
 
 static const float statusPanelWidth = 100.0f;
-static const float statusPanelHeight = 50.0f;
+static const float statusPanelHeight = 45.0f;
 
 static const float actionPanelWidth = 100.0f;
 static const float actionPanelHeight = 25.0f;
@@ -72,7 +72,7 @@ static void uiAction(UI *ui, Vector2 size, const char *name)
     UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
     Vector2 panelSize = UIPanel(ui, actionPanelWidth, actionPanelHeight);
     {
-        UIAlignShimH(ui, panelSize.x, fontSize, ALIGN_H_CENTER);
+        UIAlignShim(ui, panelSize.x, fontSize, ALIGN_H_CENTER, ALIGN_V_CENTER);
         UILabel(ui, font, name, fontSize, RAYWHITE);
     }
     UIPanelEnd(ui);

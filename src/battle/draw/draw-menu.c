@@ -159,7 +159,7 @@ static void drawWin(UI *ui)
         UIAlignShim(ui, SCREEN_WIDTH, SCREEN_HEIGHT, ALIGN_H_CENTER, ALIGN_V_CENTER);
         const Vector2 size = UIPanel(ui, winPanelWidth, winPanelHeight);
         {
-            UIAlignShimH(ui, size.x, winPanelFontSize, ALIGN_H_CENTER);
+            UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
             UILabel(ui, font, "Enemies Defeated!", winPanelFontSize, RAYWHITE);
         }
         UIPanelEnd(ui);
