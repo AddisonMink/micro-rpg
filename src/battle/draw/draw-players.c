@@ -29,11 +29,56 @@ static void initializeDisplays(PlayerDisplay displays[NUM_PLAYERS], bool active[
     }
 }
 
+static void showPlayerEvent(PlayerDisplay displays[NUM_PLAYERS], const Event *event)
+{
+    switch (event->type)
+    {
+    case EVENT_PLAYER_TINT:
+    {
+        const CombatantId id = event->data.tint.id;
+        const Color color = event->data.tint.color;
+        displays[id].option = PLAYER_DISPLAY_TINT;
+        displays[id].optionData.tint.color = color;
+        break;
+    }
+    case EVENT_PLAYER_ANIMATION:
+    {
+        const CombatantId id = event->data.animation.id;
+        const AnimationTag tag = event->data.animation.tag;
+        const float time = event->elapsed;
+
+        displays[id].option = PLAYER_DISPLAY_ANIMATION;
+        displays[id].optionData.animation.tag = tag;
+        displays[id].optionData.animation.time = time;
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void setDisplayOptions(PlayerDisplay displays[NUM_PLAYERS], const _Battle *battle)
+{
+    switch (battle->state)
+    {
+    case BATTLE_SHOW_EVENTS:
+    {
+        const int eventIndex = battle->data.showEvents.eventIndex;
+        const Event *event = &battle->events[eventIndex];
+        showPlayerEvent(displays, event);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void BattleDrawPlayers(UI *ui, const _Battle *battle)
 {
     static bool active[NUM_PLAYERS];
     static PlayerDisplay displays[NUM_PLAYERS];
     initializeDisplays(displays, active, battle);
+    setDisplayOptions(displays, battle);
 
     UIReset(ui);
     {

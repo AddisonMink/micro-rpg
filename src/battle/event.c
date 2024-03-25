@@ -13,11 +13,13 @@ Event EventWait(float duration)
 
 Event EventDamageFlash(CombatantId id)
 {
+    const EventType type = id < FIRST_ENEMY_ID ? EVENT_PLAYER_TINT : EVENT_ENEMY_TINT;
+
     return (Event){
         .duration = 0.05f,
         .elapsed = 0,
-        .type = EVENT_ENEMY_TINT,
-        .data.enemyTint = {
+        .type = type,
+        .data.tint = {
             .id = id,
             .color = RED,
         },
@@ -26,11 +28,15 @@ Event EventDamageFlash(CombatantId id)
 
 Event EventSlashAnimation(CombatantId id)
 {
+    const EventType type = id < FIRST_ENEMY_ID ? EVENT_PLAYER_ANIMATION : EVENT_ENEMY_ANIMATION;
+    const Animation *animation = AssetAnimation(ANIMATION_SLASH);
+    const float duration = AssetAnimationDuration(animation);
+
     return (Event){
-        .duration = AssetAnimationDuration(AssetAnimation(ANIMATION_SLASH)),
+        .duration = duration,
         .elapsed = 0,
-        .type = EVENT_ENEMY_ANIMATION,
-        .data.enemyAnimation = {
+        .type = type,
+        .data.animation = {
             .id = id,
             .tag = ANIMATION_SLASH,
         },
@@ -39,11 +45,13 @@ Event EventSlashAnimation(CombatantId id)
 
 Event EventDeathFade(CombatantId id)
 {
+    const EventType type = id < FIRST_ENEMY_ID ? EVENT_PLAYER_FADE : EVENT_ENEMY_FADE;
+
     return (Event){
         .duration = 0.5f,
         .elapsed = 0,
-        .type = EVENT_ENEMY_FADE,
-        .data.enemyFade = {
+        .type = type,
+        .data.fade = {
             .id = id,
         },
     };

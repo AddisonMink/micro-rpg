@@ -9,9 +9,34 @@ static const float rowMargin = 40.0f;
 static const float panelHeight = 50.0f;
 static const int fontSize = 16;
 
-static void uiPortrait(UI *ui, Vector2 size, const Texture2D sprite)
+static void uiAnimation(UI *ui, Vector2 size, AnimationTag tag, float time)
 {
-    UISprite(ui, sprite, size.x, size.y, WHITE);
+    const Animation *animation = AssetAnimation(tag);
+    const Texture2D sprite = AssetAnimationSprite(animation);
+    const Rectangle frame = AssetAnimationFrame(animation, time);
+    const float width = frame.width * spriteScale;
+    const float height = frame.height * spriteScale;
+
+    UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
+    UISpriteSlice(ui, sprite, frame, width, height, WHITE);
+}
+
+static void uiPortrait(UI *ui, Vector2 size, const Texture2D sprite, const PlayerDisplay *player)
+{
+    const Color tint = player->option == PLAYER_DISPLAY_TINT ? player->optionData.tint.color : WHITE;
+
+    UIOverlay(ui);
+    {
+        UISprite(ui, sprite, size.x, size.y, tint);
+
+        if (player->option == PLAYER_DISPLAY_ANIMATION)
+        {
+            const AnimationTag tag = player->optionData.animation.tag;
+            const float time = player->optionData.animation.time;
+            uiAnimation(ui, size, tag, time);
+        }
+    }
+    UIOverlayEnd(ui);
 }
 
 static void uiStatusPane(UI *ui, Vector2 spriteSize, const PlayerDisplay *player)
@@ -39,7 +64,7 @@ void UIPlayer(UI *ui, const PlayerDisplay *player)
     UIAlignShimV(ui, spriteSize.x, height, alignV);
     UICol(ui, 0);
     {
-        uiPortrait(ui, spriteSize, sprite);
+        uiPortrait(ui, spriteSize, sprite, player);
         uiStatusPane(ui, spriteSize, player);
     }
     UIColEnd(ui);

@@ -4,7 +4,7 @@
 #include "battle/update/execute-effect.h"
 #include "battle/update/util.h"
 
-static float enemyTurnDuration = 1.0f;
+static float enemyTurnDuration = 0.5f;
 
 static void selectAction(_Battle *battle)
 {

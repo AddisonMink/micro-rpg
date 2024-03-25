@@ -6,9 +6,12 @@ typedef enum EventType
 {
     EVENT_WAIT,
     EVENT_ENEMY_TINT,
+    EVENT_PLAYER_TINT,
     EVENT_ENEMY_ANIMATION,
+    EVENT_PLAYER_ANIMATION,
     EVENT_ENEMY_STATUS,
     EVENT_ENEMY_FADE,
+    EVENT_PLAYER_FADE,
 } EventType;
 
 typedef struct Event
@@ -23,13 +26,13 @@ typedef struct Event
         {
             CombatantId id;
             Color color;
-        } enemyTint;
+        } tint;
 
         struct
         {
             CombatantId id;
             AnimationTag tag;
-        } enemyAnimation;
+        } animation;
 
         struct
         {
@@ -39,7 +42,7 @@ typedef struct Event
         struct
         {
             CombatantId id;
-        } enemyFade;
+        } fade;
 
     } data;
 } Event;

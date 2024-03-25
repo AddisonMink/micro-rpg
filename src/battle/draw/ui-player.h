@@ -16,7 +16,23 @@ typedef struct PlayerDisplay
     {
         PLAYER_DISPLAY_NONE,
         PLAYER_DISPLAY_DEAD,
+        PLAYER_DISPLAY_TINT,
+        PLAYER_DISPLAY_ANIMATION,
     } option;
+
+    union
+    {
+        struct
+        {
+            Color color;
+        } tint;
+
+        struct
+        {
+            AnimationTag tag;
+            float time;
+        } animation;
+    } optionData;
 } PlayerDisplay;
 
 void UIPlayer(UI *ui, const PlayerDisplay *player);

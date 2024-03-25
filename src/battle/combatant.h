@@ -4,6 +4,8 @@
 
 typedef int CombatantId;
 
+#define FIRST_ENEMY_ID 3
+
 typedef enum CombatantState
 {
     COMBATANT_STATE_INVALID,

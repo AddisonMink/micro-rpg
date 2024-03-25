@@ -34,7 +34,7 @@ void BattleExecuteEffect(_Battle *battle, int *eventCount)
         pushEvent(battle, eventCount, EventWait(0.1f));
         pushEvent(battle, eventCount, EventDamageFlash(id));
         pushEvent(battle, eventCount, EventWait(0.2f));
-        if (id > FIRST_ENEMY_ID)
+        if (id >= FIRST_ENEMY_ID)
             pushEvent(battle, eventCount, EventEnemyStatus(id));
 
         if (combatant->hp <= 0)

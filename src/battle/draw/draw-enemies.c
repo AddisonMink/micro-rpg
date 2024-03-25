@@ -31,16 +31,16 @@ static void showEnemyEvent(EnemyDisplay display[NUM_COMBATANTS], const _Battle *
     {
     case EVENT_ENEMY_TINT:
     {
-        const CombatantId id = event->data.enemyTint.id;
-        const Color color = event->data.enemyTint.color;
+        const CombatantId id = event->data.tint.id;
+        const Color color = event->data.tint.color;
         display[id].option = ENEMY_DISPLAY_TINT;
         display[id].optionData.tint.color = color;
         break;
     }
     case EVENT_ENEMY_ANIMATION:
     {
-        const CombatantId id = event->data.enemyAnimation.id;
-        const AnimationTag tag = event->data.enemyAnimation.tag;
+        const CombatantId id = event->data.animation.id;
+        const AnimationTag tag = event->data.animation.tag;
         display[id].option = ENEMY_DISPLAY_ANIMATION;
         display[id].optionData.animation.tag = tag;
         display[id].optionData.animation.time = event->elapsed;
@@ -61,7 +61,7 @@ static void showEnemyEvent(EnemyDisplay display[NUM_COMBATANTS], const _Battle *
     }
     case EVENT_ENEMY_FADE:
     {
-        const CombatantId id = event->data.enemyFade.id;
+        const CombatantId id = event->data.fade.id;
         const float time = event->elapsed;
         const float duration = event->duration;
         const int alpha = 255 - (int)(255 * time / duration);
