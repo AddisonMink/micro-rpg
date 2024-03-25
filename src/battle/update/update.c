@@ -162,6 +162,14 @@ static void showEvents(_Battle *battle, float delta)
     }
 }
 
+static bool playersDead(_Battle *battle)
+{
+    for (CombatantId id = 0; id < FIRST_ENEMY_ID; id++)
+        if (battle->combatants[id].state == COMBATANT_STATE_ALIVE)
+            return false;
+    return true;
+}
+
 static bool enemiesDead(_Battle *battle)
 {
     for (CombatantId id = FIRST_ENEMY_ID; id < NUM_COMBATANTS; id++)
@@ -177,7 +185,11 @@ static void endTurn(_Battle *battle)
     const int nextIndex = (queueIndex + 1) % battle->queueCount;
     const CombatantId nextId = battle->queue[nextIndex];
 
-    if (enemiesDead(battle))
+    if (playersDead(battle))
+    {
+        battle->state = BATTLE_LOSE;
+    }
+    else if (enemiesDead(battle))
     {
         battle->state = BATTLE_WIN;
     }
@@ -236,6 +248,8 @@ void BattleUpdateMain(_Battle *battle, float delta)
     case BATTLE_ENEMY_TURN:
         return enemyTurn(battle, delta);
     case BATTLE_WIN:
+        return;
+    case BATTLE_LOSE:
         return;
     }
 }

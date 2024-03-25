@@ -52,6 +52,17 @@ static void showPlayerEvent(PlayerDisplay displays[NUM_PLAYERS], const Event *ev
         displays[id].optionData.animation.time = time;
         break;
     }
+    case EVENT_PLAYER_FADE:
+    {
+        const CombatantId id = event->data.fade.id;
+        const float time = event->elapsed;
+        const float duration = event->duration;
+        const int alpha = 255 - (int)(255 * time / duration);
+
+        displays[id].option = PLAYER_DISPLAY_TINT;
+        displays[id].optionData.tint.color = (Color){255, 255, 255, alpha};
+        break;
+    }
     default:
         break;
     }

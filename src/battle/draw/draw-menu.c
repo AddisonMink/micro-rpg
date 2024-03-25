@@ -167,6 +167,23 @@ static void drawWin(UI *ui)
     UIDraw(ui, (Vector2){0, 0});
 }
 
+static void drawLose(UI *ui)
+{
+    const Font font = AssetFont(FONT_KONGTEXT);
+
+    UIReset(ui);
+    {
+        UIAlignShim(ui, SCREEN_WIDTH, SCREEN_HEIGHT, ALIGN_H_CENTER, ALIGN_V_CENTER);
+        const Vector2 size = UIPanel(ui, winPanelWidth, winPanelHeight);
+        {
+            UIAlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
+            UILabel(ui, font, "Game Over!", winPanelFontSize, RAYWHITE);
+        }
+        UIPanelEnd(ui);
+    }
+    UIDraw(ui, (Vector2){0, 0});
+}
+
 void BattleDrawMenu(UI *ui, const _Battle *battle)
 {
     switch (battle->state)
@@ -187,5 +204,7 @@ void BattleDrawMenu(UI *ui, const _Battle *battle)
         return;
     case BATTLE_WIN:
         return drawWin(ui);
+    case BATTLE_LOSE:
+        return drawLose(ui);
     }
 }

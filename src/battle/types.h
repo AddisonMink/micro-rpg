@@ -35,6 +35,7 @@ typedef struct _Battle
         BATTLE_END_TURN,
         BATTLE_ENEMY_TURN,
         BATTLE_WIN,
+        BATTLE_LOSE,
     } state;
 
     union

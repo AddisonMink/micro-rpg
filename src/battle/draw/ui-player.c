@@ -23,7 +23,13 @@ static void uiAnimation(UI *ui, Vector2 size, AnimationTag tag, float time)
 
 static void uiPortrait(UI *ui, Vector2 size, const Texture2D sprite, const PlayerDisplay *player)
 {
-    const Color tint = player->option == PLAYER_DISPLAY_TINT ? player->optionData.tint.color : WHITE;
+    Color tint;
+    if (player->option == PLAYER_DISPLAY_TINT)
+        tint = player->optionData.tint.color;
+    else if (player->option == PLAYER_DISPLAY_DEAD)
+        tint = (Color){255, 255, 255, 0};
+    else
+        tint = WHITE;
 
     UIOverlay(ui);
     {
