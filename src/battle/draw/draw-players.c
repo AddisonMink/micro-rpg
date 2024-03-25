@@ -1,64 +1,49 @@
 #include "draw-players.h"
 
 #include "asset/asset.h"
+#include "battle/draw/ui-player.h"
 #include "battle/draw/util.h"
 
-const int FONT_SIZE = 16;
+const float playerSpacing = 20;
 
-const float HP_WIDTH = 90;
-const float HP_HEIGHT = 16;
-
-const float PORTRAIT_WIDTH = 128;
-const float PORTAIT_HEIGHT = 152;
-
-const float PANE_HEIGHT = 52;
-
-const float PLAYER_SPACING = 20;
-const float PLAYER_WIDTH = 118;
-const float PLAYER_HEIGHT = 244;
-
-static void uiStatusPane(UI *ui, const Combatant *player, const CombatantData *data)
+static void initializeDisplays(PlayerDisplay displays[NUM_PLAYERS], bool active[NUM_PLAYERS], const _Battle *battle)
 {
-    const Font font = AssetFont(FONT_KONGTEXT);
-    UIShim(ui, PLAYER_WIDTH, PANE_HEIGHT + PLAYER_SPACING);
-    const Vector2 innerSize = UIPanel(ui, PLAYER_WIDTH, PANE_HEIGHT);
+    for (CombatantId id = 0; id < FIRST_ENEMY_ID; id++)
     {
-        UIAlignShimH(ui, innerSize.x, FONT_SIZE, ALIGN_H_CENTER);
-        UILabel(ui, font, data->name, FONT_SIZE, RAYWHITE);
+        const Combatant *combatant = &battle->combatants[id];
+        const CombatantData *data = CombatantGetData(combatant->type);
+        if (combatant->state == COMBATANT_STATE_INVALID)
+        {
+            active[id] = false;
+            continue;
+        }
 
-        UIAlignShimH(ui, innerSize.x, HP_HEIGHT, ALIGN_H_CENTER);
-        UIMeter(ui, HP_WIDTH, HP_HEIGHT, player->hp, data->maxHp, MAROON);
+        PlayerDisplay *display = &displays[id];
+        display->spriteTag = data->sprite;
+        display->name = data->name;
+        display->row = combatant->row;
+        display->hp = combatant->hp;
+        display->maxHp = data->maxHp;
+        display->option = combatant->state == COMBATANT_STATE_DEAD ? PLAYER_DISPLAY_DEAD : PLAYER_DISPLAY_NONE;
+        active[id] = true;
     }
-    UIPanelEnd(ui);
-}
-
-static void uiPlayer(UI *ui, const Combatant *player)
-{
-    const CombatantData *data = CombatantGetData(player->type);
-    const Texture2D sprite = AssetSprite(data->sprite);
-    const AlignV alignV = player->row == ROW_FRONT ? ALIGN_V_TOP : ALIGN_V_BOTTOM;
-
-    UIAlignShimV(ui, PLAYER_WIDTH, PLAYER_HEIGHT, alignV);
-    UICol(ui, 0);
-    {
-        UISprite(ui, sprite, PORTRAIT_WIDTH, PORTAIT_HEIGHT, WHITE);
-        uiStatusPane(ui, player, data);
-    }
-    UIColEnd(ui);
 }
 
 void BattleDrawPlayers(UI *ui, const _Battle *battle)
 {
+    static bool active[NUM_PLAYERS];
+    static PlayerDisplay displays[NUM_PLAYERS];
+    initializeDisplays(displays, active, battle);
+
     UIReset(ui);
     {
         UIShim(ui, SCREEN_WIDTH, SCREEN_HEIGHT);
         UIAlign(ui, ALIGN_H_CENTER, ALIGN_V_BOTTOM);
-        UIRow(ui, PLAYER_SPACING);
+        UIRow(ui, playerSpacing);
         for (CombatantId id = 0; id < FIRST_ENEMY_ID; id++)
         {
-            const Combatant *player = &battle->combatants[id];
-            if (player->state != COMBATANT_STATE_INVALID)
-                uiPlayer(ui, player);
+            if (active[id])
+                UIPlayer(ui, &displays[id]);
         }
         UIRowEnd(ui);
     }

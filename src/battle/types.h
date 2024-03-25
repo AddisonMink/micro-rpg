@@ -4,6 +4,7 @@
 #include "combatant.h"
 
 #define NUM_COMBATANTS 6
+#define NUM_PLAYERS 3
 #define FIRST_ENEMY_ID 3
 #define MAX_EVENTS 10
 
