@@ -1,6 +1,13 @@
 #include "action.h"
 
 static const Action actions[] = {
+    [ACTION_WAIT] = {
+        .type = ACTION_WAIT,
+        .name = "Wait",
+        .range = RANGE_SELF,
+        .effectCount = 0,
+    },
+
     [ACTION_ATTACK] = {
         .type = ACTION_ATTACK,
         .name = "Attack",

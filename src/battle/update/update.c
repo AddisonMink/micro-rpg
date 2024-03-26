@@ -201,14 +201,15 @@ static void endTurn(_Battle *battle)
     }
     else
     {
+        const CombatantId enemy = battle->queue[nextIndex];
         ActionType actionType;
-        CombatantId target;
-        BattleEnemyBehavior(&actionType, &target, battle);
+        CombatantId targetOpt;
+        BattleEnemyBehavior(&actionType, &targetOpt, battle, enemy);
 
         battle->state = BATTLE_ENEMY_TURN;
         battle->data.enemyTurn.queueIndex = nextIndex;
         battle->data.enemyTurn.actionType = actionType;
-        battle->data.enemyTurn.targetIdOpt = target;
+        battle->data.enemyTurn.targetIdOpt = targetOpt;
         battle->data.enemyTurn.elapsed = 0;
     }
 }

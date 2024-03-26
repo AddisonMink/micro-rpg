@@ -12,6 +12,7 @@ typedef enum Range
 
 typedef enum ActionType
 {
+    ACTION_WAIT,
     ACTION_ATTACK,
     ACTION_MOVE,
 } ActionType;
