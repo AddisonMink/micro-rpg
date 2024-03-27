@@ -82,3 +82,32 @@ void BuildQueue(_Battle *battle, int *queueIndex)
         }
     }
 }
+
+static void resetRowSide(_Battle *battle, int start, int stop)
+{
+    bool allInBack = true;
+    for (int i = start; i < stop; i++)
+    {
+        const bool alive = battle->combatants[i].state == COMBATANT_STATE_ALIVE;
+        const bool inFront = battle->combatants[i].row == ROW_FRONT;
+        if (alive && inFront)
+        {
+            allInBack = false;
+            break;
+        }
+    }
+
+    if (allInBack)
+    {
+        for (int i = start; i < stop; i++)
+        {
+            battle->combatants[i].row = ROW_FRONT;
+        }
+    }
+}
+
+void ResetRows(_Battle *battle)
+{
+    resetRowSide(battle, 0, FIRST_ENEMY_ID);
+    resetRowSide(battle, FIRST_ENEMY_ID, NUM_COMBATANTS);
+}

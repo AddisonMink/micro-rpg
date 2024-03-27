@@ -182,6 +182,8 @@ static bool enemiesDead(_Battle *battle)
 static void endTurn(_Battle *battle)
 {
     BuildQueue(battle, &battle->data.endTurn.queueIndex);
+    ResetRows(battle);
+    
     const int queueIndex = battle->data.endTurn.queueIndex;
     const int nextIndex = (queueIndex + 1) % battle->queueCount;
     const CombatantId nextId = battle->queue[nextIndex];
