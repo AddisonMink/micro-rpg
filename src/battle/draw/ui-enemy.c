@@ -25,7 +25,21 @@ static Vector2 uiEnemySprite(UI *ui, const EnemyDisplay *display)
     else
         tint = WHITE;
 
-    UISprite(ui, sprite, width, height, tint);
+    float spriteWidth;
+    float spriteHeight;
+    if (display->row == ROW_FRONT)
+    {
+        spriteWidth = width;
+        spriteHeight = height;
+    }
+    else
+    {
+        spriteWidth = width / 2;
+        spriteHeight = height / 2;
+        UIAlignShim(ui, width, height, ALIGN_H_CENTER, ALIGN_V_CENTER);
+    }
+
+    UISprite(ui, sprite, spriteWidth, spriteHeight, tint);
     return (Vector2){width, height};
 }
 
