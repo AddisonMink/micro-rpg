@@ -34,14 +34,23 @@ static bool attemptAction(State *state, const _Battle *battle, ActionType action
 
 void BattleEnemyBehavior(ActionType *actionType, CombatantId *targetOpt, const _Battle *battle, CombatantId enemy)
 {
-    State state = {.enemy = enemy};
+    static const int numActions = 2;
+    static const ActionType actions[numActions] = {ACTION_ATTACK, ACTION_MOVE};
 
-    if (attemptAction(&state, battle, ACTION_ATTACK))
+    State state = {.enemy = enemy};
+    bool actionFound = false;
+    for (int i = 0; i < numActions; i++)
     {
-        *actionType = state.actionType;
-        *targetOpt = state.targets[0];
+        if (attemptAction(&state, battle, actions[i]))
+        {
+            *actionType = state.actionType;
+            *targetOpt = state.targets[0];
+            actionFound = true;
+            break;
+        }
     }
-    else
+
+    if(!actionFound)
     {
         *actionType = ACTION_WAIT;
     }
