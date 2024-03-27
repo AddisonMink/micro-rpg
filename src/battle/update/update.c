@@ -38,6 +38,7 @@ static void selectAction(_Battle *battle)
             break;
         }
         case RANGE_MELEE:
+        case RANGE_PROJECTILE:
         {
             battle->state = BATTLE_SELECT_TARGET;
             battle->data.selectAction.queueIndex = queueIndex;

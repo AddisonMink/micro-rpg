@@ -6,15 +6,18 @@ typedef enum Range
 {
     RANGE_SELF,
     RANGE_MELEE,
+    RANGE_PROJECTILE,
 } Range;
 
-#define NUM_RANGE_TYPES 2
+#define NUM_RANGE_TYPES 3
 
 typedef enum ActionType
 {
     ACTION_WAIT,
     ACTION_ATTACK,
     ACTION_MOVE,
+
+    ACTION_SCAMP_CLEAVER,
 } ActionType;
 
 #define MAX_EFFECTS 10

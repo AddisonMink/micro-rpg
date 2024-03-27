@@ -9,6 +9,10 @@ static const bool inRange[NUM_RANGE_TYPES][NUM_ROWS][NUM_ROWS] = {
         [ROW_FRONT] = {[ROW_FRONT] = true, [ROW_BACK] = false},
         [ROW_BACK] = {[ROW_FRONT] = false, [ROW_BACK] = false},
     },
+    [RANGE_PROJECTILE] = {
+        [ROW_FRONT] = {[ROW_FRONT] = false, [ROW_BACK] = true},
+        [ROW_BACK] = {[ROW_FRONT] = true, [ROW_BACK] = true},
+    },
 };
 
 void ActionSetTarget(Effect effects[MAX_EFFECTS], int *effectCount, const Action *action, CombatantId source, CombatantId targetOpt)
@@ -28,6 +32,7 @@ void ActionSetTarget(Effect effects[MAX_EFFECTS], int *effectCount, const Action
         break;
     }
     case RANGE_MELEE:
+    case RANGE_PROJECTILE:
     {
         for (int i = 0; i < *effectCount; i++)
         {

@@ -27,6 +27,16 @@ static const Action actions[] = {
             MAKE_EFFECT_MOVE(true, MOVE_TOGGLE),
         },
     },
+
+    [ACTION_SCAMP_CLEAVER] = {
+        .type = ACTION_SCAMP_CLEAVER,
+        .name = "Cleaver",
+        .range = RANGE_PROJECTILE,
+        .effectCount = 1,
+        .effects = {
+            MAKE_EFFECT_DAMAGE(false, 2, DAMAGE_SOURCE_STRENGTH, DAMAGE_TYPE_PHYSICAL),
+        },
+    },
 };
 
 static const PlayerActions playerActions[NUM_PLAYER_TYPES] = {

@@ -24,6 +24,7 @@ static bool attemptAction(State *state, const _Battle *battle, ActionType action
         return true;
     }
     case RANGE_MELEE:
+    case RANGE_PROJECTILE:
     {
         FindTargets(state->targets, &state->targetCount, battle, state->enemy, actionData->range);
         state->actionType = action;
@@ -34,8 +35,8 @@ static bool attemptAction(State *state, const _Battle *battle, ActionType action
 
 void BattleEnemyBehavior(ActionType *actionType, CombatantId *targetOpt, const _Battle *battle, CombatantId enemy)
 {
-    static const int numActions = 2;
-    static const ActionType actions[numActions] = {ACTION_ATTACK, ACTION_MOVE};
+    static const int numActions = 3;
+    static const ActionType actions[numActions] = {ACTION_SCAMP_CLEAVER, ACTION_ATTACK, ACTION_MOVE};
 
     State state = {.enemy = enemy};
     bool actionFound = false;
