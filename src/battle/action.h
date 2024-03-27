@@ -38,7 +38,7 @@ typedef struct Action
     Effect effects[MAX_EFFECTS];
 } Action;
 
-#define MAX_PLAYER_ACTIONS 3
+#define MAX_PLAYER_ACTIONS 4
 
 typedef struct PlayerActions
 {

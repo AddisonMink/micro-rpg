@@ -68,8 +68,8 @@ static const Action actions[] = {
 
 static const PlayerActions playerActions[NUM_PLAYER_TYPES] = {
     [COMBATANT_PLAYER] = {
-        .count = 3,
-        .actions = {ACTION_ATTACK, ACTION_MOVE, ACTION_ITEM},
+        .count = 4,
+        .actions = {ACTION_ATTACK, ACTION_MOVE, ACTION_ITEM, ACTION_WAIT},
     },
 };
 

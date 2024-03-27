@@ -15,11 +15,11 @@ static void selectAction(_Battle *battle)
     const PlayerActions *actions = PlayerActionsGet(type);
     const int count = actions->count;
 
-    if (IsKeyPressed(KEY_W))
+    if (IsKeyPressed(KEY_S))
     {
         battle->data.selectAction.actionIndex = (actionIndex + 1) % count;
     }
-    else if (IsKeyPressed(KEY_S))
+    else if (IsKeyPressed(KEY_W))
     {
         battle->data.selectAction.actionIndex = (actionIndex - 1 + count) % count;
     }
