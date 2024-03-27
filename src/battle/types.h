@@ -3,16 +3,20 @@
 #include "action.h"
 #include "combatant.h"
 #include "event.h"
+#include "item.h"
 
 #define NUM_COMBATANTS 6
 #define NUM_PLAYERS 3
 #define MAX_EVENTS 10
+#define MAX_ITEMS 3
 
 typedef struct _Battle
 {
     Combatant combatants[NUM_COMBATANTS];
 
-    // This will eventually be used to implement initiative order.
+    Item items[MAX_ITEMS];
+    int itemCount;
+
     CombatantId queue[NUM_COMBATANTS];
     int queueCount;
 

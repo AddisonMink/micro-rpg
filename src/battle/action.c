@@ -1,6 +1,7 @@
 #include "action.h"
 
 static const Action actions[] = {
+    // General
     [ACTION_WAIT] = {
         .type = ACTION_WAIT,
         .name = "Wait",
@@ -28,6 +29,32 @@ static const Action actions[] = {
         },
     },
 
+    [ACTION_ITEM] = {
+        .type = ACTION_ITEM,
+        .name = "Item",
+        .range = RANGE_SELF,
+        .effectCount = 0,
+        .effects = {},
+    },
+
+    // Lodestone
+    [ACTION_LODESTONE_HOLD] = {
+        .type = ACTION_LODESTONE_HOLD,
+        .name = "Hold",
+        .range = RANGE_SELF,
+        .effectCount = 0,
+        .effects = {},
+    },
+
+    [ACTION_LODESTONE_PULL] = {
+        .type = ACTION_LODESTONE_PULL,
+        .name = "Pull",
+        .range = RANGE_PROJECTILE,
+        .effectCount = 0,
+        .effects = {},
+    },
+
+    // Scamp
     [ACTION_SCAMP_CLEAVER] = {
         .type = ACTION_SCAMP_CLEAVER,
         .name = "Cleaver",
@@ -41,8 +68,8 @@ static const Action actions[] = {
 
 static const PlayerActions playerActions[NUM_PLAYER_TYPES] = {
     [COMBATANT_PLAYER] = {
-        .count = 2,
-        .actions = {ACTION_ATTACK, ACTION_MOVE},
+        .count = 3,
+        .actions = {ACTION_ATTACK, ACTION_MOVE, ACTION_ITEM},
     },
 };
 

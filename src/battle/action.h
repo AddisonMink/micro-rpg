@@ -13,10 +13,17 @@ typedef enum Range
 
 typedef enum ActionType
 {
+    // General
     ACTION_WAIT,
     ACTION_ATTACK,
     ACTION_MOVE,
+    ACTION_ITEM,
 
+    // Lodestone
+    ACTION_LODESTONE_HOLD,
+    ACTION_LODESTONE_PULL,
+
+    // Scamp
     ACTION_SCAMP_CLEAVER,
 } ActionType;
 
@@ -31,7 +38,7 @@ typedef struct Action
     Effect effects[MAX_EFFECTS];
 } Action;
 
-#define MAX_PLAYER_ACTIONS 2
+#define MAX_PLAYER_ACTIONS 3
 
 typedef struct PlayerActions
 {
