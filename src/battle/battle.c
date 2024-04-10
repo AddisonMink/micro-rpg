@@ -1,6 +1,7 @@
 #include "battle/battle.h"
 
 #include "battle/action.h"
+#include "battle/action-menu.h"
 #include "battle/effect.h"
 #include "battle/target.h"
 #include "battle/queue.h"
@@ -18,13 +19,13 @@ typedef enum BattleState
     BATTLE_LOSE,
 } BattleState;
 
-typedef struct BattleSelectTarget
+typedef struct SelectTarget
 {
     const Action *action;
     int itemIndexOpt;
     TargetList targets;
     float scrollCooldown;
-} BattleSelectTarget;
+} SelectTarget;
 
 typedef struct CompileEffects
 {
@@ -33,12 +34,35 @@ typedef struct CompileEffects
     Id targetOpt;
 } CompileEffects;
 
+typedef struct ExecuteEffects
+{
+    EffectList effects;
+} ExecuteEffects;
+
+typedef struct ShowEvents
+{
+    EffectList effects;
+    EventList events;
+} ShowEvents;
+
 typedef struct Battle
 {
     Combatant combatants[MAX_COMBATANTS];
     Queue queue;
     ItemList items;
     BattleState state;
+    union
+    {
+        // selectAction;
+        SelectTarget selectTarget;
+        CompileEffects compileEffects;
+        ExecuteEffects executeEffects;
+        ShowEvents showEvents;
+        // endTurn;
+        // enemyTurn;
+        // win;
+        // lose;
+    } data;
 } Battle;
 
 static Battle battle;
