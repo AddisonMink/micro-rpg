@@ -1,0 +1,76 @@
+#pragma once
+
+#include "battle/action.h"
+#include "battle/combatant.h"
+#include "battle/event.h"
+#include "battle/item.h"
+
+#define MAX_EFFECTS 5
+
+typedef enum EffectType
+{
+    EFFECT_DAMAGE,
+    EFFECT_KILL,
+    EFFECT_MOVE,
+    EFFECT_USE_ITEM,
+    EFFECT_BREAK_ITEM,
+} EffectType;
+
+typedef struct EffectDamage
+{
+    int amount;
+    DamageType type;
+    Id id;
+} EffectDamage;
+
+typedef struct EffectKill
+{
+    Id id;
+} EffectKill;
+
+typedef struct EffectMove
+{
+    Direction direction;
+    Id id;
+} EffectMove;
+
+typedef struct EffectUseItem
+{
+    int amount;
+    int itemIndex;
+} EffectUseItem;
+
+typedef struct EffectBreakItem
+{
+    int itemIndex;
+} EffectBreakItem;
+
+typedef struct Effect
+{
+    EffectType type;
+    union
+    {
+        EffectDamage damage;
+        EffectKill kill;
+        EffectMove move;
+        EffectUseItem useItem;
+        EffectBreakItem breakItem;
+    };
+} Effect;
+
+typedef struct EffectList
+{
+    Effect effects[MAX_EFFECTS];
+    int capacity;
+    int count;
+} EffectList;
+
+typedef struct EffectResult
+{
+    EffectList effects;
+    EventList events;
+} EffectResult;
+
+// EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targetOpt, int itemIndexOpt);
+
+// EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *items, const Effect *effect);
