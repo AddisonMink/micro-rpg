@@ -4,7 +4,7 @@
 
 #include "raylib.h"
 
-#include "battle/action-menu.h"
+#include "battle/action-menu-alt.h"
 #include "common/list-macros.h"
 
 static UI *ui;
@@ -12,12 +12,12 @@ static UI *ui;
 static void run()
 {
     const float delta = GetFrameTime();
-    ActionMenuResult result = ActionMenu_Update(delta);
+    ActionMenu_Alt_Update(delta);
 
     BeginDrawing();
     {
         ClearBackground(BLACK);
-        ActionMenu_Draw(ui);
+        ActionMenu_Alt_Draw(ui);
     }
     EndDrawing();
 }
@@ -32,7 +32,7 @@ int main(void)
     ItemList items = LIST_INIT(MAX_ITEMS);
     LIST_APPEND((&items), Item_Create(ITEM_LODESTONE));
 
-    ActionMenu_Init(&items, &player);
+    ActionMenu_Alt_Init(&items, &player);
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(update, 0, 1);

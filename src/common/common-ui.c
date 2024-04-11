@@ -1,19 +1,17 @@
 #include "common-ui.h"
 
-const int bodyFontSize = 12;
-const int headerFontSize = 24;
 const float panelPadding = 10;
 const FontId font = FONT_KONGTEXT;
 const SpriteId panelSprite = SPRITE_NINESLICE;
 
 void UI_BodyLabel(UI *ui, const char *text)
 {
-    UI_Label(ui, Asset_Font(font), text, bodyFontSize, RAYWHITE);
+    UI_Label(ui, Asset_Font(font), text, BODY_FONT_SIZE, RAYWHITE);
 }
 
 void UI_HeaderLabel(UI *ui, const char *text)
 {
-    UI_Label(ui, Asset_Font(font), text, headerFontSize, RAYWHITE);
+    UI_Label(ui, Asset_Font(font), text, HEADER_FONT_SIZE, RAYWHITE);
 }
 
 void UI_ScreenCenter(UI *ui)

@@ -5,6 +5,8 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
+#define BODY_FONT_SIZE 14
+#define HEADER_FONT_SIZE 18
 
 void UI_BodyLabel(UI *ui, const char *text);
 
