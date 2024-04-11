@@ -5,6 +5,7 @@
 typedef struct CombatantData
 {
     CombatantType type;
+    const char *name;
     SpriteId spriteId;
     int strength;
     int magic;
@@ -16,6 +17,7 @@ typedef struct CombatantData
 static const CombatantData combatantData[] = {
     [COMBATANT_TYPE_GALOOT] = {
         .type = COMBATANT_TYPE_GALOOT,
+        .name = "Galoot",
         .spriteId = SPRITE_GALOOT,
         .strength = 2,
         .magic = 0,
@@ -26,6 +28,7 @@ static const CombatantData combatantData[] = {
 
     [COMBATANT_TYPE_MAGICIAN] = {
         .type = COMBATANT_TYPE_MAGICIAN,
+        .name = "Magician",
         .spriteId = SPRITE_MAGICIAN,
         .strength = 1,
         .magic = 1,
@@ -36,6 +39,7 @@ static const CombatantData combatantData[] = {
 
     [COMBATANT_TYPE_SCAMP] = {
         .type = COMBATANT_TYPE_SCAMP,
+        .name = "Scamp",
         .spriteId = SPRITE_SCAMP,
         .strength = 1,
         .magic = 0,
@@ -53,6 +57,7 @@ Combatant Combatant_Create(Id id, CombatantType type, Row row)
     return (Combatant){
         .id = id,
         .type = type,
+        .name = data->name,
         .sprite = sprite,
         .state = COMBATANT_STATE_ALIVE,
         .strength = data->strength,
