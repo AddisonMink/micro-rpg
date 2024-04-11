@@ -69,6 +69,19 @@ static Battle battle;
 
 void Battle_Init() {}
 
-void Battle_Update(float delta) {}
+void Battle_Update(float delta)
+{
+    switch (battle.state)
+    {
+    case BATTLE_SELECT_ACTION:
+    {
+        ActionMenuResult result = ActionMenu_Update(delta);
+        break;
+    }
+
+    default:
+        break;
+    }
+}
 
 void Battle_Draw(UI *ui) {}

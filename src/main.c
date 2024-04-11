@@ -12,6 +12,7 @@ static UI *ui;
 static void run()
 {
     const float delta = GetFrameTime();
+    ActionMenuResult result = ActionMenu_Update(delta);
 
     BeginDrawing();
     {

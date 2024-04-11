@@ -232,7 +232,53 @@ void ActionMenu_Draw(UI *ui)
     UI_Draw(ui, (Vector2){0, 0});
 }
 
+static const float scrollCooldown = 0.1;
+
 ActionMenuResult ActionMenu_Update(float delta)
 {
-    return (ActionMenuResult){0};
+    ActionMenuResult result = {.confirmed = false};
+
+    if (menu.scrollCooldown > 0)
+        menu.scrollCooldown -= delta;
+
+    if (IsKeyPressed(KEY_DELETE) || IsKeyPressed(KEY_BACKSPACE))
+    {
+        result.confirmed = true;
+        result.itemIndexOpt = -1;
+        result.action = Action_Load(ACTION_WAIT);
+    }
+    else if (IsKeyPressed(KEY_ENTER))
+    {
+        const ActionMenuEntry *entry = &LIST_ELEM((&menu), menu.index);
+        result.confirmed = true;
+        result.itemIndexOpt = entry->itemIndex;
+        result.action = entry->action;
+    }
+    else if (IsKeyPressed(KEY_ONE))
+    {
+        result.confirmed = true;
+        result.itemIndexOpt = -1;
+        result.action = Action_Load(ACTION_ATTACK);
+    }
+    else if (IsKeyPressed(KEY_TWO))
+    {
+        result.confirmed = true;
+        result.itemIndexOpt = -1;
+        result.action = Action_Load(ACTION_MOVE);
+    }
+    else if (IsKeyPressed(KEY_THREE))
+    {
+    }
+    else if (IsKeyDown(KEY_S) && menu.scrollCooldown <= 0)
+    {
+        menu.index = (menu.index + 1) % menu.count;
+        menu.scrollCooldown = scrollCooldown;
+    }
+    else if (IsKeyDown(KEY_W) && menu.scrollCooldown <= 0)
+    {
+        menu.index = (menu.index - 1 + menu.count) % menu.count;
+        menu.scrollCooldown = scrollCooldown;
+    }
+
+    return result;
 }
