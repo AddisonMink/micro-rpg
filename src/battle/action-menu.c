@@ -232,7 +232,7 @@ void ActionMenu_Draw(UI *ui)
     UI_Draw(ui, (Vector2){0, 0});
 }
 
-static const float scrollCooldown = 0.1;
+static const float scrollCooldown = 0.2;
 
 ActionMenuResult ActionMenu_Update(float delta)
 {
