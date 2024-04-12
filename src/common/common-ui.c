@@ -3,6 +3,7 @@
 const float panelPadding = 10;
 const FontId font = FONT_KONGTEXT;
 const SpriteId panelSprite = SPRITE_NINESLICE;
+const float meterSpacing = 2;
 
 void UI_BodyLabel(UI *ui, const char *text)
 {
@@ -30,4 +31,18 @@ Vector2 UI_Panel(UI *ui, float width, float height)
 void UI_PanelEnd(UI *ui)
 {
     UI_OverlayEnd(ui);
+}
+
+void UI_Meter(UI *ui, float width, float value, float max, Color color, Color bgColor)
+{
+    const float totalSpacing = (max - 1) * meterSpacing;
+    const float pipWidth = (width - totalSpacing) / max;
+
+    UI_Row(ui, meterSpacing);
+    for (int i = 0; i < max; i++)
+    {
+        const Color c = i < value ? color : bgColor;
+        UI_Rect(ui, pipWidth, BODY_FONT_SIZE, c);
+    }
+    UI_RowEnd(ui);
 }

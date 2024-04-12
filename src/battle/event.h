@@ -14,6 +14,7 @@ typedef enum EventType
     EVENT_MESSAGE,
     EVENT_ANIMATE,
     EVENT_FADE,
+    EVENT_STATUS,
 } EventType;
 
 typedef struct Event
@@ -25,7 +26,6 @@ typedef struct Event
     union
     {
         Color flash;
-        Direction move;
         const char *message;
         const Animation *animate;
     } data;
@@ -42,10 +42,12 @@ Event Event_Wait(Id id, float duration);
 
 Event Event_Flash(Id id, Color flash, float duration);
 
-Event Event_Move(Id id, Direction move, float duration);
+Event Event_Move(Id id, float duration);
 
 Event Event_Message(Id id, const char *message, float duration);
 
-Event Event_Animate(Id id, AnimationId animationId, float duration);
+Event Event_Animate(Id id, AnimationId animationId);
 
 Event Event_Fade(Id id, float duration);
+
+Event Event_Status(Id id, float duration);

@@ -21,14 +21,13 @@ Event Event_Flash(Id id, Color flash, float duration)
     };
 }
 
-Event Event_Move(Id id, Direction move, float duration)
+Event Event_Move(Id id, float duration)
 {
     return (Event){
         .id = id,
         .elapsed = 0,
         .duration = duration,
         .type = EVENT_MOVE,
-        .data.move = move,
     };
 }
 
@@ -43,12 +42,14 @@ Event Event_Message(Id id, const char *message, float duration)
     };
 }
 
-Event Event_Animate(Id id, AnimationId animationId, float duration)
+Event Event_Animate(Id id, AnimationId animationId)
 {
+    const Animation *animation = Asset_Animation(animationId);
+
     return (Event){
         .id = id,
         .elapsed = 0,
-        .duration = duration,
+        .duration = Asset_AnimationDuration(animation),
         .type = EVENT_ANIMATE,
         .data.animate = Asset_Animation(animationId),
     };
@@ -61,5 +62,15 @@ Event Event_Fade(Id id, float duration)
         .elapsed = 0,
         .duration = duration,
         .type = EVENT_FADE,
+    };
+}
+
+Event Event_Status(Id id, float duration)
+{
+    return (Event){
+        .id = id,
+        .elapsed = 0,
+        .duration = duration,
+        .type = EVENT_STATUS,
     };
 }

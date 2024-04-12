@@ -2,22 +2,28 @@
 #include <emscripten/emscripten.h>
 #endif
 
+#include "stddef.h"
 #include "raylib.h"
 
-#include "battle/action-menu-alt.h"
+#include "battle/enemy-display.h"
 #include "common/list-macros.h"
 
 static UI *ui;
+static Event event;
+static Combatant combatants[MAX_COMBATANTS];
 
 static void run()
 {
     const float delta = GetFrameTime();
-    ActionMenu_Alt_Update(delta);
+    if (event.elapsed < event.duration)
+        event.elapsed += delta;
+    if (IsKeyPressed(KEY_ENTER))
+        event.elapsed = 0;
 
     BeginDrawing();
     {
         ClearBackground(BLACK);
-        ActionMenu_Alt_Draw(ui);
+        EnemyDisplay_Draw(ui, combatants, -1, event.elapsed < event.duration ? &event : NULL, false);
     }
     EndDrawing();
 }
@@ -27,12 +33,9 @@ int main(void)
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Template-5.0.0");
     ui = UI_Alloc(100);
 
-    Combatant player = Combatant_Create(0, COMBATANT_TYPE_MAGICIAN, ROW_FRONT);
-
-    ItemList items = LIST_INIT(MAX_ITEMS);
-    LIST_APPEND((&items), Item_Create(ITEM_LODESTONE));
-
-    ActionMenu_Alt_Init(&items, &player);
+    combatants[FIRST_ENEMY_ID] = Combatant_Create(FIRST_ENEMY_ID, COMBATANT_TYPE_SCAMP, ROW_FRONT);
+    combatants[FIRST_ENEMY_ID + 1] = Combatant_Create(FIRST_ENEMY_ID + 1, COMBATANT_TYPE_SCAMP, ROW_BACK);
+    event = Event_Status(FIRST_ENEMY_ID, 1);
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(update, 0, 1);
