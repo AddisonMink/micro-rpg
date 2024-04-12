@@ -5,7 +5,7 @@
 #include "stddef.h"
 #include "raylib.h"
 
-#include "battle/enemy-display.h"
+#include "battle/player-display.h"
 #include "common/list-macros.h"
 
 static UI *ui;
@@ -23,7 +23,7 @@ static void run()
     BeginDrawing();
     {
         ClearBackground(BLACK);
-        EnemyDisplay_Draw(ui, combatants, -1, event.elapsed < event.duration ? &event : NULL, false);
+        PlayerDisplay_Draw(ui, combatants, 1, event.elapsed < event.duration ? &event : NULL);
     }
     EndDrawing();
 }
@@ -33,9 +33,9 @@ int main(void)
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Template-5.0.0");
     ui = UI_Alloc(100);
 
-    combatants[FIRST_ENEMY_ID] = Combatant_Create(FIRST_ENEMY_ID, COMBATANT_TYPE_SCAMP, ROW_FRONT);
-    combatants[FIRST_ENEMY_ID + 1] = Combatant_Create(FIRST_ENEMY_ID + 1, COMBATANT_TYPE_SCAMP, ROW_BACK);
-    event = Event_Status(FIRST_ENEMY_ID, 1);
+    combatants[0] = Combatant_Create(0, COMBATANT_TYPE_MAGICIAN, ROW_BACK);
+    combatants[1] = Combatant_Create(1, COMBATANT_TYPE_GALOOT, ROW_FRONT);
+    event = Event_Animate(1, ANIMATION_SLASH);
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(update, 0, 1);
