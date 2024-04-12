@@ -5,25 +5,19 @@
 #include "stddef.h"
 #include "raylib.h"
 
-#include "battle/player-display.h"
-#include "common/list-macros.h"
+#include "battle/battle.h"
 
 static UI *ui;
-static Event event;
-static Combatant combatants[MAX_COMBATANTS];
 
 static void run()
 {
     const float delta = GetFrameTime();
-    if (event.elapsed < event.duration)
-        event.elapsed += delta;
-    if (IsKeyPressed(KEY_ENTER))
-        event.elapsed = 0;
+    Battle_Update(delta);
 
     BeginDrawing();
     {
         ClearBackground(BLACK);
-        PlayerDisplay_Draw(ui, combatants, 1, event.elapsed < event.duration ? &event : NULL);
+        Battle_Draw(ui);
     }
     EndDrawing();
 }
@@ -32,10 +26,7 @@ int main(void)
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Template-5.0.0");
     ui = UI_Alloc(100);
-
-    combatants[0] = Combatant_Create(0, COMBATANT_TYPE_MAGICIAN, ROW_BACK);
-    combatants[1] = Combatant_Create(1, COMBATANT_TYPE_GALOOT, ROW_FRONT);
-    event = Event_Animate(1, ANIMATION_SLASH);
+    Battle_Init();
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(update, 0, 1);

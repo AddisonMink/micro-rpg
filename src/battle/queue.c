@@ -12,8 +12,7 @@ Queue Queue_Create(const Combatant combatants[MAX_COMBATANTS])
     {
         if (combatants[i].state == COMBATANT_STATE_ALIVE)
         {
-            queue.data[queue.count] = combatants[i].id;
-            queue.count++;
+            queue.data[queue.count++] = combatants[i].id;
         }
     }
 
