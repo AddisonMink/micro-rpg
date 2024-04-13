@@ -134,19 +134,18 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
         if (trueAmount < 0)
             trueAmount = 0;
 
-        LIST_APPEND(events, Event_Animate(id, ANIMATION_SLASH));
-        LIST_APPEND(events, Event_Flash(id, RED, 0.1));
-        if (combatant->id >= FIRST_ENEMY_ID)
-        {
-            LIST_APPEND(events, Event_Wait(0.2));
-            LIST_APPEND(events, Event_Status(id, 0.2));
-        }
-
         combatant->hp -= trueAmount;
         if (combatant->hp <= 0)
         {
-            LIST_APPEND(events, Event_Fade(id, 0.5));
             LIST_APPEND(effects, EffectKill_Create(id));
+        }
+
+        LIST_APPEND(events, Event_Animate(id, ANIMATION_SLASH));
+        LIST_APPEND(events, Event_Flash(id, RED, 0.1));
+        if (combatant->id >= FIRST_ENEMY_ID && combatant->hp > 0)
+        {
+            LIST_APPEND(events, Event_Wait(0.2));
+            LIST_APPEND(events, Event_Status(id, 0.2));
         }
         break;
     }
@@ -157,8 +156,9 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
 
         combatant->hp = 0;
         combatant->state = COMBATANT_STATE_DEAD;
-        TraceLog(LOG_INFO, "Effect_Kill: %d", id);
         Queue_Delete(queue, id);
+
+        LIST_APPEND(events, Event_Fade(id, 0.5));
         break;
     }
     case EFFECT_MOVE:

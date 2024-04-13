@@ -47,12 +47,10 @@ void Queue_Delete(Queue *queue, Id id)
 
     if (index != -1)
     {
-        TraceLog(LOG_INFO, "Queue_Delete: %d", index);
         LIST_DELETE(queue, index);
         if (queue->index > index)
         {
             queue->index--;
-            TraceLog(LOG_INFO, "Queue_Delete: %d", queue->index);
         }
     }
 }

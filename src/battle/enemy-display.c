@@ -9,8 +9,11 @@
 #define STATUS_HEIGHT (MESSAGE_HEIGHT * 2)
 #define STATUS_SPACING 10
 
-static void ui_combatant(UI *ui, const Combatant *enemy, bool selected, const Event *eventOpt, bool showStatus)
+static void ui_enemy(UI *ui, const Combatant *enemy, bool selected, const Event *eventOpt, bool showStatus)
 {
+    if (eventOpt != NULL && eventOpt->type == EVENT_FADE)
+        TraceLog(LOG_INFO, "FADE");
+
     const float width = enemy->sprite.width * SPRITE_SCALE;
     const float height = enemy->sprite.height * SPRITE_SCALE;
 
@@ -43,7 +46,7 @@ static void ui_combatant(UI *ui, const Combatant *enemy, bool selected, const Ev
         color.a = 0;
     else if (eventOpt != NULL && eventOpt->type == EVENT_FLASH)
         color = eventOpt->data.flash;
-    else if (eventOpt != NULL && eventOpt->type == EVENT_FADE)
+    if (eventOpt != NULL && eventOpt->type == EVENT_FADE)
         color.a = (1 - eventOpt->elapsed / eventOpt->duration) * 255;
 
     UI_Overlay(ui);
@@ -115,7 +118,7 @@ void EnemyDisplay_Draw(UI *ui, const Combatant combatants[MAX_ENEMIES], Id selec
             {
                 const bool isSelected = i == selected;
                 const Event *enemyEvent = eventOpt != NULL && eventOpt->id == i ? eventOpt : NULL;
-                ui_combatant(ui, combatant, isSelected, enemyEvent, showStatus);
+                ui_enemy(ui, combatant, isSelected, enemyEvent, showStatus);
             }
         }
         UI_RowEnd(ui);
