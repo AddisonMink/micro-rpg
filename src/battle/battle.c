@@ -309,6 +309,8 @@ void Battle_Draw(UI *ui)
         const ShowEvents *data = &battle.data.showEvents;
         if (LIST_EMPTY((&data->events)))
         {
+            EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, false);
+            PlayerDisplay_Draw(ui, battle.combatants, -1, NULL);
             break;
         }
         const Event *event = &LIST_ELEM((&data->events), 0);
