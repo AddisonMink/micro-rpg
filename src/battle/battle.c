@@ -171,6 +171,12 @@ void Battle_Update(float delta)
         battle.data.executeEffects = (ExecuteEffects){
             .effects = effects,
         };
+        TraceLog(LOG_INFO, "EFFECT COUNT: %d", battle.data.executeEffects.effects.count);
+        LIST_ITERATE((&battle.data.executeEffects.effects))
+        {
+            Effect effect = LIST_ELEM((&battle.data.executeEffects.effects), i);
+            TraceLog(LOG_INFO, "EFFECT: %d", effect.type);
+        }
         TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_EXECUTE_EFFECTS");
         break;
     }

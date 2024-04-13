@@ -74,6 +74,7 @@ EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targe
             const int amount = template.data.damage.amount;
             const DamageType type = template.data.damage.damageType;
             LIST_APPEND((&effects), EffectDamage_Create(amount, type, target));
+            break;
         }
         case EFFECT_TEMPLATE_KILL:
             LIST_APPEND((&effects), EffectKill_Create(target));
