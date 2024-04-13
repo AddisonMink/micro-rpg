@@ -159,10 +159,10 @@ void Battle_Update(float delta)
     }
     case BATTLE_COMPILE_EFFECTS:
     {
+        const Id id = Queue_Peek(&battle.queue);
+        const Combatant *actor = &battle.combatants[id];
         const CompileEffects *data = &battle.data.compileEffects;
-        // TraceLog(LOG_INFO, "Battle_Update: BATTLE_COMPILE_EFFECTS: Action %s", data->action->name);
-        EffectList effects = Effect_Compile(data->action, battle.combatants, data->targetOpt, data->itemIndexOpt);
-        // TraceLog(LOG_INFO, "Battle_Update: BATTLE_COMPILE_EFFECTS: Effect Count %d", effects.count);
+        EffectList effects = Effect_Compile(data->action, actor, data->targetOpt, data->itemIndexOpt);
         battle.state = BATTLE_EXECUTE_EFFECTS;
         battle.data.executeEffects = (ExecuteEffects){
             .effects = effects,

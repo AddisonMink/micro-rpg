@@ -95,6 +95,7 @@ EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targe
             break;
         case EFFECT_TEMPLATE_ATTACK:
         {
+            TraceLog(LOG_INFO, "Compile Attack %d damage", actor->strength);
             const int amount = actor->strength;
             const DamageType type = template.data.attack.damageType;
             LIST_APPEND((&effects), EffectDamage_Create(amount, type, target));
