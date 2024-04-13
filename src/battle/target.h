@@ -1,5 +1,6 @@
 #pragma once
 
+#include "battle/action.h"
 #include "battle/combatant.h"
 
 typedef struct TargetList
@@ -9,3 +10,5 @@ typedef struct TargetList
     int count;
     int index;
 } TargetList;
+
+TargetList TargetList_Create(const Action *action, const Combatant combatants[MAX_COMBATANTS], Id id);

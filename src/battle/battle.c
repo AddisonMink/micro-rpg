@@ -35,7 +35,7 @@ typedef struct SelectTarget
 typedef struct CompileEffects
 {
     const Action *action;
-    int itemIndexOpot;
+    int itemIndexOpt;
     Id targetOpt;
 } CompileEffects;
 
@@ -95,7 +95,66 @@ void Battle_Update(float delta)
     {
     case BATTLE_SELECT_ACTION:
     {
-        ActionMenu_Update(delta);
+        const ActionMenuResult *result = ActionMenu_Update(delta);
+        if (result != NULL)
+        {
+            const Id id = battle.queue.data[battle.queue.index];
+
+            if (result->action->range == RANGE_SELF)
+            {
+                battle.state = BATTLE_COMPILE_EFFECTS;
+                battle.data.compileEffects = (CompileEffects){
+                    .action = result->action,
+                    .itemIndexOpt = result->itemIndexOpt,
+                    .targetOpt = id,
+                };
+            }
+            else
+            {
+                battle.state = BATTLE_SELECT_TARGET;
+                battle.data.selectTarget = (SelectTarget){
+                    .action = result->action,
+                    .itemIndexOpt = result->itemIndexOpt,
+                    .targets = TargetList_Create(result->action, battle.combatants, id),
+                    .scrollCooldown = 0.0f,
+                };
+            }
+        }
+        break;
+    }
+    case BATTLE_SELECT_TARGET:
+    {
+        SelectTarget *data = &battle.data.selectTarget;
+        if (data->scrollCooldown > 0)
+        {
+            data->scrollCooldown -= delta;
+        }
+
+        if (IsKeyPressed(KEY_BACKSPACE) || IsKeyPressed(KEY_DELETE))
+        {
+            battle.state = BATTLE_SELECT_ACTION;
+            ActionMenu_Init(&battle.items, &battle.combatants[battle.queue.data[battle.queue.index]]);
+            break;
+        }
+        else if (IsKeyDown(KEY_D) && data->scrollCooldown <= 0 && data->targets.count > 0)
+        {
+            data->targets.index = (data->targets.index + 1) % data->targets.count;
+            data->scrollCooldown = 0.2f;
+        }
+        else if (IsKeyDown(KEY_A) && data->scrollCooldown <= 0 && data->targets.count > 0)
+        {
+            data->targets.index = (data->targets.index - 1 + data->targets.count) % data->targets.count;
+            data->scrollCooldown = 0.2f;
+        }
+        else if (IsKeyPressed(KEY_ENTER) && data->targets.count > 0)
+        {
+            battle.state = BATTLE_COMPILE_EFFECTS;
+            battle.data.compileEffects = (CompileEffects){
+                .action = data->action,
+                .itemIndexOpt = data->itemIndexOpt,
+                .targetOpt = LIST_ELEM((&data->targets), data->targets.index),
+            };
+        }
         break;
     }
 
@@ -114,6 +173,36 @@ void Battle_Draw(UI *ui)
         EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, showEnemyStatus);
         PlayerDisplay_Draw(ui, battle.combatants, -1, NULL);
         ActionMenu_Draw(ui);
+        break;
+    }
+    case BATTLE_SELECT_TARGET:
+    {
+        const TargetList *targets = &battle.data.selectTarget.targets;
+        const Id id = targets->count > 0 ? LIST_ELEM(targets, targets->index) : -1;
+        const bool showEnemyStatus = IsKeyDown(KEY_TAB);
+        EnemyDisplay_Draw(ui, battle.combatants, id, NULL, showEnemyStatus);
+        PlayerDisplay_Draw(ui, battle.combatants, id, NULL);
+
+        if (id == -1)
+        {
+            UI_Reset(ui);
+            {
+                UI_AlignShimH(ui, SCREEN_WIDTH, SCREEN_HEIGHT, ALIGN_H_CENTER);
+                UI_Offset(ui, (Vector2){0, 100});
+                const Vector2 size = UI_Panel(ui, 200, 30);
+                {
+                    UI_AlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
+                    UI_BodyLabel(ui, "NO TARGETS");
+                }
+                UI_PanelEnd(ui);
+            }
+            UI_Draw(ui, (Vector2){0, 0});
+        }
+        break;
+    }
+    case BATTLE_COMPILE_EFFECTS:
+    {
+        TraceLog(LOG_INFO, "BATTLE_COMPILE_EFFECTS");
         break;
     }
 

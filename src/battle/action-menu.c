@@ -1,5 +1,7 @@
 #include "action-menu.h"
 
+#include "stddef.h"
+
 #include "common/list-macros.h"
 
 typedef enum ActionMenuState
@@ -36,6 +38,7 @@ typedef struct ActionMenu
 } ActionMenu;
 
 static ActionMenu menu;
+static ActionMenuResult result;
 
 void ActionMenu_Init(const ItemList *items, const Combatant *player)
 {
@@ -306,8 +309,10 @@ void ActionMenu_Draw(UI *ui)
 
 static const float scrollCooldown = 0.2f;
 
-void ActionMenu_Update(float delta)
+const ActionMenuResult *ActionMenu_Update(float delta)
 {
+    bool confirmed = false;
+
     if (menu.scrollCooldown > 0)
     {
         menu.scrollCooldown -= delta;
@@ -349,17 +354,37 @@ void ActionMenu_Update(float delta)
         }
         else
         {
-            // Execute action
+            const ActionMenuEntry *entry = &menu.data[menu.index];
+            const Action *action = entry->actions.data[entry->index];
+            result = (ActionMenuResult){menu.index, action};
+            confirmed = true;
         }
+    }
+    else if (IsKeyPressed(KEY_ONE))
+    {
+        const Action *action = Action_Load(ACTION_ATTACK);
+        result = (ActionMenuResult){-1, action};
+        confirmed = true;
+    }
+    else if (IsKeyPressed(KEY_TWO))
+    {
+        const Action *action = Action_Load(ACTION_MOVE);
+        result = (ActionMenuResult){-1, action};
+        confirmed = true;
     }
     else if (IsKeyPressed(KEY_BACKSPACE) || IsKeyPressed(KEY_DELETE))
     {
         if (menu.state == ACTION_MENU_SELECT_ITEM)
         {
+            const Action *action = Action_Load(ACTION_WAIT);
+            result = (ActionMenuResult){-1, action};
+            confirmed = true;
         }
         else
         {
             menu.state = ACTION_MENU_SELECT_ITEM;
         }
     }
+
+    return confirmed ? &result : NULL;
 }

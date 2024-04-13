@@ -11,6 +11,8 @@ typedef enum Range
     RANGE_PROJECTILE,
 } Range;
 
+#define NUM_RANGES 4
+
 typedef enum DamageType
 {
     DAMAGE_PHYSICAL,

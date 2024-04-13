@@ -29,6 +29,8 @@ typedef enum Row
     ROW_BACK,
 } Row;
 
+#define NUM_ROWS 2
+
 typedef struct Combatant
 {
     Id id;
