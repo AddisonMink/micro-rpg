@@ -228,6 +228,67 @@ void Battle_Update(float delta)
     }
     case BATTLE_END_TURN:
     {
+        // If all enemies are in the back row, move them forward.
+        bool allEnemiesBack = true;
+        for (Id i = FIRST_ENEMY_ID; i < MAX_COMBATANTS; i++)
+        {
+            const Combatant *enemy = &battle.combatants[i];
+            if (enemy->state == COMBATANT_STATE_ALIVE && enemy->row == ROW_FRONT)
+            {
+                allEnemiesBack = false;
+                break;
+            }
+        }
+
+        if (allEnemiesBack)
+        {
+            EffectList effects = (EffectList)LIST_INIT(MAX_EFFECTS);
+            for (Id i = FIRST_ENEMY_ID; i < MAX_COMBATANTS; i++)
+            {
+                const Combatant *enemy = &battle.combatants[i];
+                if (enemy->state == COMBATANT_STATE_ALIVE)
+                {
+                    LIST_APPEND((&effects), EffectMove_Create(DIRECTION_FORWARD, i));
+                }
+            }
+
+            battle.state = BATTLE_EXECUTE_EFFECTS;
+            battle.data.executeEffects = (ExecuteEffects){
+                .effects = effects,
+            };
+            break;
+        }
+
+        bool allPlayersBack = true;
+        for (Id i = 0; i < FIRST_ENEMY_ID; i++)
+        {
+            const Combatant *player = &battle.combatants[i];
+            if (player->state == COMBATANT_STATE_ALIVE && player->row == ROW_FRONT)
+            {
+                allPlayersBack = false;
+                break;
+            }
+        }
+
+        if (allPlayersBack)
+        {
+            EffectList effects = (EffectList)LIST_INIT(MAX_EFFECTS);
+            for (Id i = 0; i < FIRST_ENEMY_ID; i++)
+            {
+                const Combatant *player = &battle.combatants[i];
+                if (player->state == COMBATANT_STATE_ALIVE)
+                {
+                    LIST_APPEND((&effects), EffectMove_Create(DIRECTION_FORWARD, i));
+                }
+            }
+
+            battle.state = BATTLE_EXECUTE_EFFECTS;
+            battle.data.executeEffects = (ExecuteEffects){
+                .effects = effects,
+            };
+            break;
+        }
+
         const Id id = Queue_Next(&battle.queue);
         if (id < FIRST_ENEMY_ID)
         {
