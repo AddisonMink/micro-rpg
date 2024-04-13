@@ -18,3 +18,14 @@ Queue Queue_Create(const Combatant combatants[MAX_COMBATANTS])
 
     return queue;
 }
+
+Id Queue_Peek(const Queue *queue)
+{
+    return queue->data[queue->index];
+}
+
+Id Queue_Next(Queue *queue)
+{
+    queue->index = (queue->index + 1) % queue->count;
+    return Queue_Peek(queue);
+}

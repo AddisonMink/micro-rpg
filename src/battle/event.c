@@ -1,12 +1,23 @@
 #include "battle/event.h"
 
-Event Event_Wait(Id id, float duration)
+Event Event_Wait(float duration)
 {
     return (Event){
-        .id = id,
+        .id = -1,
         .elapsed = 0,
         .duration = duration,
         .type = EVENT_WAIT,
+    };
+}
+
+Event Event_GlobalMessage(const char *message, float duration)
+{
+    return (Event){
+        .id = -1,
+        .elapsed = 0,
+        .duration = duration,
+        .type = EVENT_GLOBAL_MESSAGE,
+        .data.globalMessage = message,
     };
 }
 

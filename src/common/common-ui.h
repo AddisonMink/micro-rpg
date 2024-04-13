@@ -19,3 +19,5 @@ Vector2 UI_Panel(UI *ui, float width, float height);
 void UI_PanelEnd(UI *ui);
 
 void UI_Meter(UI *ui, float width, float value, float max, Color color, Color bgColor);
+
+void UI_BodyMessage(UI *ui, const char *text);

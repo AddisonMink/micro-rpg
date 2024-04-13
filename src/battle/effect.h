@@ -83,4 +83,4 @@ typedef struct EffectResult
 
 EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targetOpt, int itemIndexOpt);
 
-// EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *items, const Effect *effect);
+EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *items, Effect effect);

@@ -32,14 +32,14 @@ TargetList TargetList_Create(const Action *action, const Combatant combatants[MA
 
     for (Id i = start; i < end; ++i)
     {
-        TraceLog(LOG_INFO, "TargetList_Create Candidate: %d", i);
+        // TraceLog(LOG_INFO, "TargetList_Create Candidate: %d", i);
         const Combatant *combatant = &combatants[i];
         if (combatant->state != COMBATANT_STATE_ALIVE)
             continue;
 
         if (rangeTable[action->range][combatants[id].row][combatant->row])
         {
-            TraceLog(LOG_INFO, "TargetList_Create: %d", i);
+            // TraceLog(LOG_INFO, "TargetList_Create: %d", i);
             LIST_APPEND((&targets), i);
         }
     }

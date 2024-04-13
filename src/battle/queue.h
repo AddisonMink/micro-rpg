@@ -11,3 +11,7 @@ typedef struct Queue
 } Queue;
 
 Queue Queue_Create(const Combatant combatants[MAX_COMBATANTS]);
+
+Id Queue_Peek(const Queue *queue);
+
+Id Queue_Next(Queue *queue);

@@ -311,6 +311,8 @@ static const float scrollCooldown = 0.2f;
 
 const ActionMenuResult *ActionMenu_Update(float delta)
 {
+    const bool itemsValid = !LIST_EMPTY((&menu));
+    const bool actionsValid = itemsValid && !LIST_EMPTY((&LIST_ELEM((&menu), menu.index).actions));
     bool confirmed = false;
 
     if (menu.scrollCooldown > 0)
@@ -348,11 +350,11 @@ const ActionMenuResult *ActionMenu_Update(float delta)
     }
     else if (IsKeyPressed(KEY_ENTER))
     {
-        if (menu.state == ACTION_MENU_SELECT_ITEM && menu.data[menu.index].actions.count > 0)
+        if (menu.state == ACTION_MENU_SELECT_ITEM && itemsValid && actionsValid)
         {
             menu.state = ACTION_MENU_SELECT_ACTION;
         }
-        else
+        else if (menu.state == ACTION_MENU_SELECT_ACTION && actionsValid)
         {
             const ActionMenuEntry *entry = &menu.data[menu.index];
             const Action *action = entry->actions.data[entry->index];

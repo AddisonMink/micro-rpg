@@ -46,3 +46,17 @@ void UI_Meter(UI *ui, float width, float value, float max, Color color, Color bg
     }
     UI_RowEnd(ui);
 }
+
+void UI_BodyMessage(UI *ui, const char *text)
+{
+    const Vector2 textSize = MeasureTextEx(Asset_Font(font), text, BODY_FONT_SIZE, 2);
+    const float width = textSize.x + panelPadding * 2;
+    const float height = textSize.y + panelPadding * 2;
+
+    const Vector2 size = UI_Panel(ui, width, height);
+    {
+        UI_AlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
+        UI_BodyLabel(ui, text);
+    }
+    UI_PanelEnd(ui);
+}

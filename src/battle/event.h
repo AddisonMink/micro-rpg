@@ -9,6 +9,7 @@
 typedef enum EventType
 {
     EVENT_WAIT,
+    EVENT_GLOBAL_MESSAGE,
     EVENT_FLASH,
     EVENT_MOVE,
     EVENT_MESSAGE,
@@ -25,6 +26,7 @@ typedef struct Event
     EventType type;
     union
     {
+        const char *globalMessage;
         Color flash;
         const char *message;
         const Animation *animate;
@@ -38,7 +40,9 @@ typedef struct EventList
     int count;
 } EventList;
 
-Event Event_Wait(Id id, float duration);
+Event Event_GlobalMessage(const char *message, float duration);
+
+Event Event_Wait(float duration);
 
 Event Event_Flash(Id id, Color flash, float duration);
 

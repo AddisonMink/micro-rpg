@@ -160,7 +160,9 @@ void Battle_Update(float delta)
     case BATTLE_COMPILE_EFFECTS:
     {
         const CompileEffects *data = &battle.data.compileEffects;
+        // TraceLog(LOG_INFO, "Battle_Update: BATTLE_COMPILE_EFFECTS: Action %s", data->action->name);
         EffectList effects = Effect_Compile(data->action, battle.combatants, data->targetOpt, data->itemIndexOpt);
+        // TraceLog(LOG_INFO, "Battle_Update: BATTLE_COMPILE_EFFECTS: Effect Count %d", effects.count);
         battle.state = BATTLE_EXECUTE_EFFECTS;
         battle.data.executeEffects = (ExecuteEffects){
             .effects = effects,
@@ -169,13 +171,96 @@ void Battle_Update(float delta)
     }
     case BATTLE_EXECUTE_EFFECTS:
     {
-        TraceLog(LOG_INFO, "BATTLE_EXECUTE_EFFECTS");
-        break;
-    }
+        EffectList *effects = &battle.data.executeEffects.effects;
+        // TraceLog(LOG_INFO, "Battle_Update: BATTLE_EXECUTE_EFFECTS: Effect Count %d", effects->count);
 
-    default:
+        if (LIST_EMPTY(effects))
+        {
+            // TraceLog(LOG_INFO, "Battle_Update: BATTLE_EXECUTE_EFFECTS: No Effects");
+            battle.state = BATTLE_END_TURN;
+        }
+        else
+        {
+            Effect effect = LIST_ELEM(effects, 0);
+            LIST_DELETE(effects, 0);
+
+            EffectResult result = Effect_Execute(battle.combatants, &battle.items, effect);
+            LIST_CONCAT(effects, (&result.effects));
+
+            if (!LIST_EMPTY((&result.events)))
+            {
+                battle.state = BATTLE_SHOW_EVENTS;
+                battle.data.showEvents = (ShowEvents){
+                    .effects = result.effects,
+                    .events = result.events,
+                };
+            }
+        }
         break;
     }
+    case BATTLE_SHOW_EVENTS:
+    {
+        ShowEvents *data = &battle.data.showEvents;
+        EventList *events = &data->events;
+
+        if (LIST_EMPTY(events))
+        {
+            battle.data.executeEffects = (ExecuteEffects){
+                .effects = data->effects,
+            };
+            battle.state = BATTLE_EXECUTE_EFFECTS;
+        }
+        else
+        {
+            Event *event = &LIST_ELEM(events, 0);
+            event->elapsed += delta;
+            if (event->elapsed >= event->duration)
+            {
+                LIST_DELETE(events, 0);
+            }
+        }
+        break;
+    }
+    case BATTLE_END_TURN:
+    {
+        const Id id = Queue_Next(&battle.queue);
+        if (id < FIRST_ENEMY_ID)
+        {
+            ActionMenu_Init(&battle.items, &battle.combatants[id]);
+            battle.state = BATTLE_SELECT_ACTION;
+        }
+        else
+        {
+            battle.state = BATTLE_ENEMY_TURN;
+        }
+    }
+    case BATTLE_ENEMY_TURN:
+    {
+        TraceLog(LOG_INFO, "BATTLE_ENEMY_TURN");
+        break;
+    }
+    case BATTLE_WIN:
+    {
+        TraceLog(LOG_INFO, "BATTLE_WIN");
+        break;
+    }
+    case BATTLE_LOSE:
+    {
+        TraceLog(LOG_INFO, "BATTLE_LOSE");
+        break;
+    }
+    }
+}
+
+static void drawGlobalMessage(UI *ui, const char *text)
+{
+    UI_Reset(ui);
+    {
+        UI_AlignShimH(ui, SCREEN_WIDTH, SCREEN_HEIGHT, ALIGN_H_CENTER);
+        UI_Offset(ui, (Vector2){0, 100});
+        UI_BodyMessage(ui, text);
+    }
+    UI_Draw(ui, (Vector2){0, 0});
 }
 
 void Battle_Draw(UI *ui)
@@ -200,28 +285,30 @@ void Battle_Draw(UI *ui)
 
         if (id == -1)
         {
-            UI_Reset(ui);
-            {
-                UI_AlignShimH(ui, SCREEN_WIDTH, SCREEN_HEIGHT, ALIGN_H_CENTER);
-                UI_Offset(ui, (Vector2){0, 100});
-                const Vector2 size = UI_Panel(ui, 200, 30);
-                {
-                    UI_AlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
-                    UI_BodyLabel(ui, "NO TARGETS");
-                }
-                UI_PanelEnd(ui);
-            }
-            UI_Draw(ui, (Vector2){0, 0});
+            drawGlobalMessage(ui, "NO TARGETS");
         }
         break;
     }
-    case BATTLE_COMPILE_EFFECTS:
+    case BATTLE_SHOW_EVENTS:
     {
-        TraceLog(LOG_INFO, "BATTLE_COMPILE_EFFECTS");
+        const ShowEvents *data = &battle.data.showEvents;
+        const Event *event = &LIST_ELEM((&data->events), 0);
+
+        EnemyDisplay_Draw(ui, battle.combatants, -1, event, false);
+        PlayerDisplay_Draw(ui, battle.combatants, -1, event);
+
+        if (event->type == EVENT_GLOBAL_MESSAGE)
+        {
+            drawGlobalMessage(ui, event->data.globalMessage);
+        };
         break;
     }
 
     default:
+    {
+        EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, false);
+        PlayerDisplay_Draw(ui, battle.combatants, -1, NULL);
         break;
+    }
     }
 }

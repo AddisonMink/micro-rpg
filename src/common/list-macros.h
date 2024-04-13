@@ -28,3 +28,5 @@
     for (int j = 0; j < LIST->count; j++)
 
 #define LIST_ELEM(LIST, INDEX) LIST->data[INDEX]
+
+#define LIST_EMPTY(LIST) (LIST->count <= 0)
