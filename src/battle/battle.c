@@ -171,12 +171,6 @@ void Battle_Update(float delta)
         battle.data.executeEffects = (ExecuteEffects){
             .effects = effects,
         };
-        TraceLog(LOG_INFO, "EFFECT COUNT: %d", battle.data.executeEffects.effects.count);
-        LIST_ITERATE((&battle.data.executeEffects.effects))
-        {
-            Effect effect = LIST_ELEM((&battle.data.executeEffects.effects), i);
-            TraceLog(LOG_INFO, "EFFECT: %d", effect.type);
-        }
         TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_EXECUTE_EFFECTS");
         break;
     }
@@ -201,7 +195,7 @@ void Battle_Update(float delta)
             {
                 battle.state = BATTLE_SHOW_EVENTS;
                 battle.data.showEvents = (ShowEvents){
-                    .effects = result.effects,
+                    .effects = *effects,
                     .events = result.events,
                 };
                 TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_SHOW_EVENTS");
@@ -220,7 +214,6 @@ void Battle_Update(float delta)
                 .effects = data->effects,
             };
             battle.state = BATTLE_EXECUTE_EFFECTS;
-            TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_EXECUTE_EFFECTS");
         }
         else
         {
