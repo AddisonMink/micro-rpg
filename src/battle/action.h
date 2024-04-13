@@ -104,10 +104,15 @@ typedef struct EffectTemplateList
 
 typedef enum ActionId
 {
+    // Basic
     ACTION_ATTACK,
     ACTION_MOVE,
     ACTION_WAIT,
 
+    // Enemu
+    ACTION_SCAMP_CLEAVER,
+
+    // Item
     ACTION_LODESTONE_ZAP,
     ACTION_LODESTONE_PULL,
 } ActionId;

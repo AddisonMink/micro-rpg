@@ -39,6 +39,21 @@ static const Action actions[] = {
         },
     },
 
+    [ACTION_SCAMP_CLEAVER] = {
+        .id = ACTION_SCAMP_CLEAVER,
+        .name = "Cleaver",
+        .range = RANGE_PROJECTILE,
+        .magicLevel = 0,
+        .cost = 0,
+        .effects = {
+            .data = {
+                MAKE_EFFECT_TEMPLATE_DAMAGE(DAMAGE_PHYSICAL, 2),
+            },
+            .capacity = MAX_EFFECT_TEMPLATES,
+            .count = 1,
+        },
+    },
+
     [ACTION_LODESTONE_ZAP] = {
         .id = ACTION_LODESTONE_ZAP,
         .name = "Zap",

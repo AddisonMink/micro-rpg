@@ -76,11 +76,7 @@ static void ui_enemy(UI *ui, const Combatant *enemy, bool selected, const Event 
         if (eventOpt != NULL && eventOpt->type == EVENT_MESSAGE)
         {
             UI_AlignShim(ui, width, height, ALIGN_H_CENTER, ALIGN_V_CENTER);
-            const Vector2 size = UI_Panel(ui, width, MESSAGE_HEIGHT);
-            {
-                UI_BodyLabel(ui, eventOpt->data.message);
-            }
-            UI_PanelEnd(ui);
+            UI_BodyMessage(ui, eventOpt->data.message);
         }
 
         if (showStatus || eventOpt != NULL && eventOpt->type == EVENT_STATUS)

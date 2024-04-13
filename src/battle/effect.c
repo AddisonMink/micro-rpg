@@ -58,10 +58,26 @@ Effect EffectBreakItem_Create(int itemIndex)
     };
 }
 
+Effect EffectPushEvent_Create(Event event)
+{
+    return (Effect){
+        .type = EFFECT_PUSH_EVENT,
+        .pushEvent = {
+            .event = event,
+        },
+    };
+}
+
 EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targetOpt, int itemIndexOpt)
 {
     const Id target = targetOpt == -1 ? actor->id : targetOpt;
     EffectList effects = LIST_INIT(MAX_EFFECTS);
+
+    if (actor->id >= FIRST_ENEMY_ID)
+    {
+        Event message = Event_Message(actor->id, action->name, 0.5);
+        LIST_APPEND((&effects), EffectPushEvent_Create(message));
+    }
 
     LIST_ITERATE((&action->effects))
     {
@@ -197,6 +213,11 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
         LIST_DELETE(items, itemIndex);
 
         LIST_APPEND(events, Event_GlobalMessage(itemBreakMessage, 1.0));
+        break;
+    }
+    case EFFECT_PUSH_EVENT:
+    {
+        LIST_APPEND(events, effect.pushEvent.event);
         break;
     }
     }
