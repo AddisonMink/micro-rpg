@@ -58,9 +58,19 @@ typedef struct Effect
     };
 } Effect;
 
+Effect EffectDamage_Create(int amount, DamageType type, Id id);
+
+Effect EffectKill_Create(Id id);
+
+Effect EffectMove_Create(Direction direction, Id id);
+
+Effect EffectUseItem_Create(int amount, int itemIndex);
+
+Effect EffectBreakItem_Create(int itemIndex);
+
 typedef struct EffectList
 {
-    Effect effects[MAX_EFFECTS];
+    Effect data[MAX_EFFECTS];
     int capacity;
     int count;
 } EffectList;
@@ -71,6 +81,6 @@ typedef struct EffectResult
     EventList events;
 } EffectResult;
 
-// EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targetOpt, int itemIndexOpt);
+EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targetOpt, int itemIndexOpt);
 
 // EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *items, const Effect *effect);

@@ -157,6 +157,21 @@ void Battle_Update(float delta)
         }
         break;
     }
+    case BATTLE_COMPILE_EFFECTS:
+    {
+        const CompileEffects *data = &battle.data.compileEffects;
+        EffectList effects = Effect_Compile(data->action, battle.combatants, data->targetOpt, data->itemIndexOpt);
+        battle.state = BATTLE_EXECUTE_EFFECTS;
+        battle.data.executeEffects = (ExecuteEffects){
+            .effects = effects,
+        };
+        break;
+    }
+    case BATTLE_EXECUTE_EFFECTS:
+    {
+        TraceLog(LOG_INFO, "BATTLE_EXECUTE_EFFECTS");
+        break;
+    }
 
     default:
         break;
