@@ -132,7 +132,9 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
         const AnimationId animationId = type == DAMAGE_PHYSICAL ? ANIMATION_SLASH : ANIMATION_ZAP;
         Combatant *combatant = &combatants[id];
 
-        int trueAmount = amount - combatant->armor;
+        int trueAmount = amount;
+        if (type == DAMAGE_PHYSICAL)
+            trueAmount -= combatant->armor;
         if (trueAmount < 0)
             trueAmount = 0;
 
