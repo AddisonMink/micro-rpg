@@ -108,6 +108,7 @@ void Battle_Update(float delta)
                     .itemIndexOpt = result->itemIndexOpt,
                     .targetOpt = id,
                 };
+                TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_COMPILE_EFFECTS");
             }
             else
             {
@@ -118,6 +119,7 @@ void Battle_Update(float delta)
                     .targets = TargetList_Create(result->action, battle.combatants, id),
                     .scrollCooldown = 0.0f,
                 };
+                TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_SELECT_TARGET");
             }
         }
         break;
@@ -134,7 +136,7 @@ void Battle_Update(float delta)
         {
             battle.state = BATTLE_SELECT_ACTION;
             ActionMenu_Init(&battle.items, &battle.combatants[battle.queue.data[battle.queue.index]]);
-            break;
+            TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_SELECT_ACTION");
         }
         else if (IsKeyDown(KEY_D) && data->scrollCooldown <= 0 && data->targets.count > 0)
         {
@@ -154,6 +156,7 @@ void Battle_Update(float delta)
                 .itemIndexOpt = data->itemIndexOpt,
                 .targetOpt = LIST_ELEM((&data->targets), data->targets.index),
             };
+            TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_COMPILE_EFFECTS");
         }
         break;
     }
@@ -167,24 +170,24 @@ void Battle_Update(float delta)
         battle.data.executeEffects = (ExecuteEffects){
             .effects = effects,
         };
+        TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_EXECUTE_EFFECTS");
         break;
     }
     case BATTLE_EXECUTE_EFFECTS:
     {
         EffectList *effects = &battle.data.executeEffects.effects;
-        // TraceLog(LOG_INFO, "Battle_Update: BATTLE_EXECUTE_EFFECTS: Effect Count %d", effects->count);
 
         if (LIST_EMPTY(effects))
         {
-            // TraceLog(LOG_INFO, "Battle_Update: BATTLE_EXECUTE_EFFECTS: No Effects");
             battle.state = BATTLE_END_TURN;
+            TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_END_TURN");
         }
         else
         {
             Effect effect = LIST_ELEM(effects, 0);
             LIST_DELETE(effects, 0);
 
-            EffectResult result = Effect_Execute(battle.combatants, &battle.items, effect);
+            EffectResult result = Effect_Execute(battle.combatants, &battle.items, &battle.queue, effect);
             LIST_CONCAT(effects, (&result.effects));
 
             if (!LIST_EMPTY((&result.events)))
@@ -194,6 +197,7 @@ void Battle_Update(float delta)
                     .effects = result.effects,
                     .events = result.events,
                 };
+                TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_SHOW_EVENTS");
             }
         }
         break;
@@ -209,6 +213,7 @@ void Battle_Update(float delta)
                 .effects = data->effects,
             };
             battle.state = BATTLE_EXECUTE_EFFECTS;
+            TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_EXECUTE_EFFECTS");
         }
         else
         {
@@ -228,11 +233,14 @@ void Battle_Update(float delta)
         {
             ActionMenu_Init(&battle.items, &battle.combatants[id]);
             battle.state = BATTLE_SELECT_ACTION;
+            TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_SELECT_ACTION");
         }
         else
         {
             battle.state = BATTLE_ENEMY_TURN;
+            TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_ENEMY_TURN");
         }
+        break;
     }
     case BATTLE_ENEMY_TURN:
     {
@@ -292,6 +300,10 @@ void Battle_Draw(UI *ui)
     case BATTLE_SHOW_EVENTS:
     {
         const ShowEvents *data = &battle.data.showEvents;
+        if (LIST_EMPTY((&data->events)))
+        {
+            break;
+        }
         const Event *event = &LIST_ELEM((&data->events), 0);
 
         EnemyDisplay_Draw(ui, battle.combatants, -1, event, false);
@@ -303,7 +315,6 @@ void Battle_Draw(UI *ui)
         };
         break;
     }
-
     default:
     {
         EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, false);

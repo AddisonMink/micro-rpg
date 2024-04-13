@@ -4,6 +4,7 @@
 #include "battle/combatant.h"
 #include "battle/event.h"
 #include "battle/item.h"
+#include "battle/queue.h"
 
 #define MAX_EFFECTS 5
 
@@ -83,4 +84,4 @@ typedef struct EffectResult
 
 EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targetOpt, int itemIndexOpt);
 
-EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *items, Effect effect);
+EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *items, Queue *queue, Effect effect);

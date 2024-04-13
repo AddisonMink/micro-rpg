@@ -15,3 +15,5 @@ Queue Queue_Create(const Combatant combatants[MAX_COMBATANTS]);
 Id Queue_Peek(const Queue *queue);
 
 Id Queue_Next(Queue *queue);
+
+void Queue_Delete(Queue *queue, Id id);

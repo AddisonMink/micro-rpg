@@ -1,5 +1,7 @@
 #include "queue.h"
 
+#include "common/list-macros.h"
+
 Queue Queue_Create(const Combatant combatants[MAX_COMBATANTS])
 {
     Queue queue = {
@@ -28,4 +30,29 @@ Id Queue_Next(Queue *queue)
 {
     queue->index = (queue->index + 1) % queue->count;
     return Queue_Peek(queue);
+}
+
+void Queue_Delete(Queue *queue, Id id)
+{
+
+    int index = -1;
+    LIST_ITERATE(queue)
+    {
+        if (LIST_ELEM(queue, i) == id)
+        {
+            index = i;
+            break;
+        }
+    }
+
+    if (index != -1)
+    {
+        TraceLog(LOG_INFO, "Queue_Delete: %d", index);
+        LIST_DELETE(queue, index);
+        if (queue->index > index)
+        {
+            queue->index--;
+            TraceLog(LOG_INFO, "Queue_Delete: %d", queue->index);
+        }
+    }
 }

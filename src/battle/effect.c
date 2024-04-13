@@ -95,7 +95,6 @@ EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targe
             break;
         case EFFECT_TEMPLATE_ATTACK:
         {
-            TraceLog(LOG_INFO, "Compile Attack %d damage", actor->strength);
             const int amount = actor->strength;
             const DamageType type = template.data.attack.damageType;
             LIST_APPEND((&effects), EffectDamage_Create(amount, type, target));
@@ -113,7 +112,7 @@ EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targe
     return effects;
 }
 
-EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *items, Effect effect)
+EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *items, Queue *queue, Effect effect)
 {
     EffectResult result = {
         .effects = LIST_INIT(MAX_EFFECTS),
@@ -158,6 +157,8 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
 
         combatant->hp = 0;
         combatant->state = COMBATANT_STATE_DEAD;
+        TraceLog(LOG_INFO, "Effect_Kill: %d", id);
+        Queue_Delete(queue, id);
         break;
     }
     case EFFECT_MOVE:
