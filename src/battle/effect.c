@@ -85,15 +85,6 @@ EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targe
             LIST_APPEND((&effects), EffectMove_Create(direction, target));
             break;
         }
-        case EFFECT_TEMPLATE_USE_ITEM:
-        {
-            const int amount = template.data.useItem.amount;
-            LIST_APPEND((&effects), EffectUseItem_Create(amount, itemIndexOpt));
-            break;
-        }
-        case EFFECT_TEMPLATE_BREAK_ITEM:
-            LIST_APPEND((&effects), EffectBreakItem_Create(itemIndexOpt));
-            break;
         case EFFECT_TEMPLATE_ATTACK:
         {
             const int amount = actor->strength;
@@ -108,6 +99,11 @@ EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targe
             break;
         }
         }
+    }
+
+    if (itemIndexOpt != -1)
+    {
+        LIST_APPEND((&effects), EffectUseItem_Create(action->cost, itemIndexOpt));
     }
 
     return effects;
@@ -200,7 +196,7 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
         const int itemIndex = effect.breakItem.itemIndex;
         LIST_DELETE(items, itemIndex);
 
-        LIST_APPEND(events, Event_GlobalMessage(itemBreakMessage, 0.2));
+        LIST_APPEND(events, Event_GlobalMessage(itemBreakMessage, 1.0));
         break;
     }
     }

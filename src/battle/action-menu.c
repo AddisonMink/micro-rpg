@@ -115,15 +115,6 @@ static void ui_effect_template(UI *ui, const EffectTemplate *effect)
         UI_BodyLabel(ui, TextFormat("Move %s", dirName));
         break;
     }
-    case EFFECT_TEMPLATE_USE_ITEM:
-    {
-        const int amount = effect->data.useItem.amount;
-        UI_BodyLabel(ui, TextFormat("Use %d", amount));
-        break;
-    }
-    case EFFECT_TEMPLATE_BREAK_ITEM:
-        UI_BodyLabel(ui, "Break");
-        break;
     case EFFECT_TEMPLATE_ATTACK:
     {
         const int type = effect->data.attack.damageType;
@@ -162,32 +153,40 @@ static void ui_item_list(UI *ui)
 
     const Vector2 size = UI_Panel(ui, ACTION_LIST_WIDTH, ACTION_MENU_HEIGHT);
     {
-        UI_Col(ui, SPACING);
-
-        UI_AlignShimH(ui, size.x, BODY_FONT_SIZE, ALIGN_H_CENTER);
-        UI_BodyLabel(ui, "ITEMS");
-
-        LIST_ITERATE((&menu))
+        if (menu.count > 0)
         {
-            const ActionMenuEntry *entry = &LIST_ELEM((&menu), i);
-            const Item *item = entry->item;
+            UI_Col(ui, SPACING);
 
-            UI_Row(ui, SPACING);
+            UI_AlignShimH(ui, size.x, BODY_FONT_SIZE, ALIGN_H_CENTER);
+            UI_BodyLabel(ui, "ITEMS");
+
+            LIST_ITERATE((&menu))
             {
-                if (entry->index == menu.index)
-                {
-                    UI_Sprite(ui, pointer, pointer.width, pointer.height, WHITE);
-                }
-                else
-                {
-                    UI_Rect(ui, pointer.width, pointer.height, BLANK);
-                }
+                const ActionMenuEntry *entry = &LIST_ELEM((&menu), i);
+                const Item *item = entry->item;
 
-                UI_BodyLabel(ui, item->name);
+                UI_Row(ui, SPACING);
+                {
+                    if (entry->index == menu.index)
+                    {
+                        UI_Sprite(ui, pointer, pointer.width, pointer.height, WHITE);
+                    }
+                    else
+                    {
+                        UI_Rect(ui, pointer.width, pointer.height, BLANK);
+                    }
+
+                    UI_BodyLabel(ui, TextFormat("%s x%d", item->name, item->uses));
+                }
+                UI_RowEnd(ui);
             }
-            UI_RowEnd(ui);
+            UI_ColEnd(ui);
         }
-        UI_ColEnd(ui);
+        else
+        {
+            UI_AlignShim(ui, size.x, size.y, ALIGN_H_CENTER, ALIGN_V_CENTER);
+            UI_BodyLabel(ui, "NO ITEMS");
+        }
     }
     UI_PanelEnd(ui);
 }
@@ -199,7 +198,7 @@ static void ui_action_list(UI *ui, bool showPointer)
 
     const Vector2 size = UI_Panel(ui, ACTION_LIST_WIDTH, ACTION_MENU_HEIGHT);
     {
-        if (entry->actions.count > 0)
+        if (menu.count > 0 && entry->actions.count > 0)
         {
             UI_Col(ui, SPACING);
 
@@ -247,6 +246,12 @@ static void ui_action_desc(UI *ui)
         {
             UI_AlignShimH(ui, size.x, 12, ALIGN_H_CENTER);
             UI_BodyLabel(ui, action->name);
+
+            if (action->cost > 0)
+            {
+                UI_AlignShimH(ui, size.x, 12, ALIGN_H_CENTER);
+                UI_BodyLabel(ui, TextFormat("Cost %d", action->cost));
+            }
 
             UI_AlignShimH(ui, size.x, 12, ALIGN_H_CENTER);
             ui_range(ui, action->range);
@@ -311,8 +316,8 @@ static const float scrollCooldown = 0.2f;
 
 const ActionMenuResult *ActionMenu_Update(float delta)
 {
-    const bool itemsValid = !LIST_EMPTY((&menu));
-    const bool actionsValid = itemsValid && !LIST_EMPTY((&LIST_ELEM((&menu), menu.index).actions));
+    const bool itemsNonEmpty = !LIST_EMPTY((&menu));
+    const bool actionsNonEmpty = itemsNonEmpty && !LIST_EMPTY((&LIST_ELEM((&menu), menu.index).actions));
     bool confirmed = false;
 
     if (menu.scrollCooldown > 0)
@@ -322,12 +327,12 @@ const ActionMenuResult *ActionMenu_Update(float delta)
 
     if (IsKeyDown(KEY_S) && menu.scrollCooldown <= 0)
     {
-        if (menu.state == ACTION_MENU_SELECT_ITEM)
+        if (menu.state == ACTION_MENU_SELECT_ITEM && itemsNonEmpty)
         {
             menu.index = (menu.index + 1) % menu.count;
             menu.scrollCooldown = scrollCooldown;
         }
-        else
+        else if (menu.state == ACTION_MENU_SELECT_ACTION && actionsNonEmpty)
         {
             ActionMenuEntry *entry = &LIST_ELEM((&menu), menu.index);
             entry->index = (entry->index + 1) % entry->actions.count;
@@ -336,12 +341,12 @@ const ActionMenuResult *ActionMenu_Update(float delta)
     }
     else if (IsKeyDown(KEY_W) && menu.scrollCooldown <= 0)
     {
-        if (menu.state == ACTION_MENU_SELECT_ITEM)
+        if (menu.state == ACTION_MENU_SELECT_ITEM && itemsNonEmpty)
         {
             menu.index = (menu.index - 1 + menu.count) % menu.count;
             menu.scrollCooldown = scrollCooldown;
         }
-        else
+        else if (menu.state == ACTION_MENU_SELECT_ACTION && actionsNonEmpty)
         {
             ActionMenuEntry *entry = &LIST_ELEM((&menu), menu.index);
             entry->index = (entry->index - 1 + entry->actions.count) % entry->actions.count;
@@ -350,11 +355,11 @@ const ActionMenuResult *ActionMenu_Update(float delta)
     }
     else if (IsKeyPressed(KEY_ENTER))
     {
-        if (menu.state == ACTION_MENU_SELECT_ITEM && itemsValid && actionsValid)
+        if (menu.state == ACTION_MENU_SELECT_ITEM && itemsNonEmpty && actionsNonEmpty)
         {
             menu.state = ACTION_MENU_SELECT_ACTION;
         }
-        else if (menu.state == ACTION_MENU_SELECT_ACTION && actionsValid)
+        else if (menu.state == ACTION_MENU_SELECT_ACTION && actionsNonEmpty)
         {
             const ActionMenuEntry *entry = &menu.data[menu.index];
             const Action *action = entry->actions.data[entry->index];

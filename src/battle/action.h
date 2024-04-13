@@ -32,8 +32,6 @@ typedef struct EffectTemplate
         EFFECT_TEMPLATE_DAMAGE,
         EFFECT_TEMPLATE_KILL,
         EFFECT_TEMPLATE_MOVE,
-        EFFECT_TEMPLATE_USE_ITEM,
-        EFFECT_TEMPLATE_BREAK_ITEM,
         EFFECT_TEMPLATE_ATTACK,
         EFFECT_TEMPLATE_AUTO_MOVE,
     } type;
@@ -82,19 +80,6 @@ typedef struct EffectTemplate
     {                                               \
         .type = EFFECT_TEMPLATE_MOVE,               \
         .data = {.move = {.direction = DIRECTION} } \
-    }
-
-#define MAKE_EFFECT_TEMPLATE_USE_ITEM(AMOUNT)    \
-    (EffectTemplate)                             \
-    {                                            \
-        .type = EFFECT_TEMPLATE_USE_ITEM,        \
-        .data = {.useItem = {.amount = AMOUNT} } \
-    }
-
-#define MAKE_EFFECT_TEMPLATE_BREAK_ITEM()   \
-    (EffectTemplate)                        \
-    {                                       \
-        .type = EFFECT_TEMPLATE_BREAK_ITEM, \
     }
 
 #define MAKE_EFFECT_TEMPLATE_ATTACK(DAMAGE_TYPE)         \
