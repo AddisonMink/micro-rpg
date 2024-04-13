@@ -5,6 +5,7 @@
 #include "battle/action.h"
 #include "battle/action-menu.h"
 #include "battle/effect.h"
+#include "battle/enemy-behavior.h"
 #include "battle/enemy-display.h"
 #include "battle/player-display.h"
 #include "battle/target.h"
@@ -244,7 +245,13 @@ void Battle_Update(float delta)
     }
     case BATTLE_ENEMY_TURN:
     {
-        TraceLog(LOG_INFO, "BATTLE_ENEMY_TURN");
+        EnemyBehavior behavior = EnemyBehavior_Get(battle.combatants, Queue_Peek(&battle.queue));
+        battle.data.compileEffects = (CompileEffects){
+            .action = behavior.action,
+            .targetOpt = behavior.targetOpt,
+        };
+        battle.state = BATTLE_COMPILE_EFFECTS;
+        TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_COMPILE_EFFECTS");
         break;
     }
     case BATTLE_WIN:
