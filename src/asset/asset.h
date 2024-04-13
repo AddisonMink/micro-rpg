@@ -26,6 +26,7 @@ typedef enum SpriteId
 
     // Animation Sprites
     SPRITE_SLASH,
+    SPRITE_ZAP,
 } SpriteId;
 
 typedef struct Animation Animation;
@@ -33,6 +34,7 @@ typedef struct Animation Animation;
 typedef enum AnimationId
 {
     ANIMATION_SLASH,
+    ANIMATION_ZAP,
 } AnimationId;
 
 void Asset_LoadFont(FontId tag);

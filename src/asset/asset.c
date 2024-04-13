@@ -1,7 +1,7 @@
 #include "asset.h"
 
 static const int numFonts = 1;
-static const int numSprites = 7;
+static const int numSprites = 8;
 
 typedef struct Animation
 {
@@ -26,11 +26,21 @@ static const char *spritePaths[numSprites] = {
     [SPRITE_MAGICIAN] = "assets/magician_32_38.png",
     [SPRITE_GALOOT] = "assets/galoot_32_38.png",
     [SPRITE_SLASH] = "assets/slash_32.png",
+    [SPRITE_ZAP] = "assets/lightning_32.png",
 };
 
 const Animation animations[] = {
     [ANIMATION_SLASH] = {
         .spriteTag = SPRITE_SLASH,
+        .rows = 2,
+        .cols = 2,
+        .frameCount = 4,
+        .frameSize = {32, 32},
+        .duration = 0.2,
+        .loop = false,
+    },
+    [ANIMATION_ZAP] = {
+        .spriteTag = SPRITE_ZAP,
         .rows = 2,
         .cols = 2,
         .frameCount = 4,

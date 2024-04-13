@@ -129,6 +129,7 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
         const int amount = effect.damage.amount;
         const DamageType type = effect.damage.type;
         const Id id = effect.damage.id;
+        const AnimationId animationId = type == DAMAGE_PHYSICAL ? ANIMATION_SLASH : ANIMATION_ZAP;
         Combatant *combatant = &combatants[id];
 
         int trueAmount = amount - combatant->armor;
@@ -141,7 +142,7 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
             LIST_APPEND(effects, EffectKill_Create(id));
         }
 
-        LIST_APPEND(events, Event_Animate(id, ANIMATION_SLASH));
+        LIST_APPEND(events, Event_Animate(id, animationId));
         LIST_APPEND(events, Event_Flash(id, RED, 0.1));
         if (combatant->id >= FIRST_ENEMY_ID && combatant->hp > 0)
         {
