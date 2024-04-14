@@ -7,6 +7,7 @@
 typedef enum ItemType
 {
     ITEM_LODESTONE,
+    ITEM_WAND,
 } ItemType;
 
 typedef struct Item

@@ -167,7 +167,7 @@ static void ui_item_list(UI *ui)
 
                 UI_Row(ui, SPACING);
                 {
-                    if (entry->index == menu.index)
+                    if (menu.index == i)
                     {
                         UI_Sprite(ui, pointer, pointer.width, pointer.height, WHITE);
                     }

@@ -115,6 +115,9 @@ typedef enum ActionId
     // Item
     ACTION_LODESTONE_ZAP,
     ACTION_LODESTONE_PULL,
+
+    ACTION_WAND_BONK,
+    ACTION_WAND_SHOOT,
 } ActionId;
 
 typedef struct Action

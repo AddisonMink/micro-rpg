@@ -17,6 +17,13 @@ static const ItemData itemData[] = {
         .actionIds = {ACTION_LODESTONE_ZAP, ACTION_LODESTONE_PULL},
         .actionCount = 2,
     },
+    [ITEM_WAND] = {
+        .type = ITEM_WAND,
+        .name = "Wand",
+        .usesMax = 5,
+        .actionIds = {ACTION_WAND_BONK, ACTION_WAND_SHOOT},
+        .actionCount = 2,
+    },
 };
 
 Item Item_Create(ItemType type)

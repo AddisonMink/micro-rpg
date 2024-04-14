@@ -84,6 +84,36 @@ static const Action actions[] = {
             .count = 2,
         },
     },
+
+    [ACTION_WAND_BONK] = {
+        .id = ACTION_WAND_BONK,
+        .name = "Bonk",
+        .range = RANGE_MELEE,
+        .magicLevel = 0,
+        .cost = 2,
+        .effects = {
+            .data = {
+                MAKE_EFFECT_TEMPLATE_ATTACK(DAMAGE_MAGICAL),
+            },
+            .capacity = MAX_EFFECT_TEMPLATES,
+            .count = 1,
+        },
+    },
+
+    [ACTION_WAND_SHOOT] = {
+        .id = ACTION_WAND_SHOOT,
+        .name = "Shoot",
+        .range = RANGE_PROJECTILE,
+        .magicLevel = 1,
+        .cost = 1,
+        .effects = {
+            .data = {
+                MAKE_EFFECT_TEMPLATE_DAMAGE(DAMAGE_MAGICAL, 1),
+            },
+            .capacity = MAX_EFFECT_TEMPLATES,
+            .count = 1,
+        },
+    },
 };
 
 const Action *Action_Load(ActionId id)

@@ -79,11 +79,13 @@ void Battle_Init()
     battle.combatants[1] = Combatant_Create(1, COMBATANT_TYPE_GALOOT, ROW_FRONT);
     battle.combatants[FIRST_ENEMY_ID] = Combatant_Create(FIRST_ENEMY_ID, COMBATANT_TYPE_SCAMP, ROW_FRONT);
     battle.combatants[FIRST_ENEMY_ID + 1] = Combatant_Create(FIRST_ENEMY_ID + 1, COMBATANT_TYPE_SCAMP, ROW_BACK);
+    battle.combatants[FIRST_ENEMY_ID + 2] = Combatant_Create(FIRST_ENEMY_ID + 2, COMBATANT_TYPE_SCAMP, ROW_FRONT);
 
     battle.queue = Queue_Create(battle.combatants);
 
     battle.items = (ItemList)LIST_INIT(MAX_ITEMS);
     LIST_APPEND((&battle.items), Item_Create(ITEM_LODESTONE));
+    LIST_APPEND((&battle.items), Item_Create(ITEM_WAND));
 
     battle.state = BATTLE_SELECT_ACTION;
     const Id id = battle.queue.data[battle.queue.index];
