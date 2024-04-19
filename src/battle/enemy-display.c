@@ -11,15 +11,15 @@
 
 static void ui_enemy(UI *ui, const Combatant *enemy, bool selected, const Event *eventOpt, bool showStatus)
 {
-    if (eventOpt != NULL && eventOpt->type == EVENT_FADE)
-        TraceLog(LOG_INFO, "FADE");
+    const bool alive = enemy->state == COMBATANT_STATE_ALIVE;
+    const EventType eventType = eventOpt == NULL ? -1 : eventOpt->type;
 
     const float width = enemy->sprite.width * SPRITE_SCALE;
     const float height = enemy->sprite.height * SPRITE_SCALE;
 
     float spriteWidth = width;
     float spriteHeight = height;
-    if (eventOpt != NULL && eventOpt->type == EVENT_MOVE)
+    if (eventType == EVENT_MOVE)
     {
         const float diff = 1 - BACK_ROW_SCALE;
         const float progress = eventOpt->elapsed / eventOpt->duration;
@@ -44,9 +44,9 @@ static void ui_enemy(UI *ui, const Combatant *enemy, bool selected, const Event 
     Color color = WHITE;
     if (enemy->state == COMBATANT_STATE_DEAD)
         color.a = 0;
-    else if (eventOpt != NULL && eventOpt->type == EVENT_FLASH)
+    else if (eventType == EVENT_FLASH)
         color = eventOpt->data.flash;
-    if (eventOpt != NULL && eventOpt->type == EVENT_FADE)
+    if (eventType == EVENT_FADE)
         color.a = (1 - eventOpt->elapsed / eventOpt->duration) * 255;
 
     UI_Overlay(ui);
@@ -62,7 +62,7 @@ static void ui_enemy(UI *ui, const Combatant *enemy, bool selected, const Event 
             UI_Sprite(ui, pointer, pointer.width, pointer.height, WHITE);
         }
 
-        if (eventOpt != NULL && eventOpt->type == EVENT_ANIMATE)
+        if (eventType == EVENT_ANIMATE)
         {
             const Texture2D animSprite = Asset_AnimationSprite(eventOpt->data.animate);
             const Rectangle source = Asset_AnimationFrame(eventOpt->data.animate, eventOpt->elapsed);
@@ -73,13 +73,13 @@ static void ui_enemy(UI *ui, const Combatant *enemy, bool selected, const Event 
             UI_SpriteSlice(ui, animSprite, source, animWidth, animHeight, WHITE);
         }
 
-        if (eventOpt != NULL && eventOpt->type == EVENT_MESSAGE)
+        if (eventType == EVENT_MESSAGE)
         {
             UI_AlignShim(ui, width, height, ALIGN_H_CENTER, ALIGN_V_CENTER);
             UI_BodyMessage(ui, eventOpt->data.message);
         }
 
-        if (showStatus || eventOpt != NULL && eventOpt->type == EVENT_STATUS)
+        if (alive && (showStatus || eventType == EVENT_STATUS))
         {
             UI_AlignShim(ui, width, height, ALIGN_H_CENTER, ALIGN_V_CENTER);
             const Vector2 size = UI_Panel(ui, width, STATUS_HEIGHT);
