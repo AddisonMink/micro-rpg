@@ -1,7 +1,7 @@
 #include "asset.h"
 
-static const int numFonts = 1;
-static const int numSprites = 8;
+#define NUM_FONTS 1
+#define NUM_SPRITES 8
 
 typedef struct Animation
 {
@@ -14,11 +14,11 @@ typedef struct Animation
     bool loop;
 } Animation;
 
-static const char *fontPaths[numFonts] = {
+static const char *fontPaths[NUM_FONTS] = {
     [FONT_KONGTEXT] = "assets/kongtext.ttf",
 };
 
-static const char *spritePaths[numSprites] = {
+static const char *spritePaths[NUM_SPRITES] = {
     [SPRITE_NINESLICE] = "assets/nineslice.png",
     [SPRITE_POINTER] = "assets/pointer_12.png",
     [SPRITE_POINTER_DOWN] = "assets/pointer_down_12.png",
@@ -50,10 +50,10 @@ const Animation animations[] = {
     },
 };
 
-static Font fonts[numFonts];
-static Texture2D sprites[numSprites];
-static bool fontsLoaded[numFonts] = {false};
-static bool spritesLoaded[numSprites] = {false};
+static Font fonts[NUM_FONTS];
+static Texture2D sprites[NUM_SPRITES];
+static bool fontsLoaded[NUM_FONTS] = {false};
+static bool spritesLoaded[NUM_SPRITES] = {false};
 
 void Asset_LoadFont(FontId tag)
 {
@@ -120,7 +120,7 @@ bool Asset_AnimationFinished(const Animation *animation, float time)
 
 void Asset_UnloadAll()
 {
-    for (int i = 0; i < numFonts; i++)
+    for (int i = 0; i < NUM_FONTS; i++)
     {
         if (fontsLoaded[i])
         {
@@ -128,7 +128,7 @@ void Asset_UnloadAll()
             fontsLoaded[i] = false;
         }
     }
-    for (int i = 0; i < numSprites; i++)
+    for (int i = 0; i < NUM_SPRITES; i++)
     {
         if (spritesLoaded[i])
         {

@@ -29,7 +29,7 @@ int main(void)
     Battle_Init();
 
 #if defined(PLATFORM_WEB)
-    emscripten_set_main_loop(update, 0, 1);
+    emscripten_set_main_loop(run, 0, 1);
 #else
     SetTargetFPS(60);
     while (!WindowShouldClose())
