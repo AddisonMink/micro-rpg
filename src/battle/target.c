@@ -29,17 +29,15 @@ TargetList TargetList_Create(const Action *action, const Combatant combatants[MA
 
     const Id start = id < FIRST_ENEMY_ID ? FIRST_ENEMY_ID : 0;
     const Id end = start == FIRST_ENEMY_ID ? MAX_COMBATANTS : FIRST_ENEMY_ID;
-
+    const Row row = combatants[id].row;
     for (Id i = start; i < end; ++i)
     {
-        // TraceLog(LOG_INFO, "TargetList_Create Candidate: %d", i);
-        const Combatant *combatant = &combatants[i];
-        if (combatant->state != COMBATANT_STATE_ALIVE)
-            continue;
+        const Combatant *candidate = &combatants[i];
+        const bool alive = candidate->state == COMBATANT_STATE_ALIVE;
+        const bool inRange = rangeTable[action->range][row][candidate->row];
 
-        if (rangeTable[action->range][combatants[id].row][combatant->row])
+        if (alive && inRange)
         {
-            // TraceLog(LOG_INFO, "TargetList_Create: %d", i);
             LIST_APPEND((&targets), i);
         }
     }

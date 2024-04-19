@@ -6,16 +6,18 @@
 static Id chooseTargetWithLowestArmor(const Combatant combatants[MAX_COMBATANTS], TargetList targets)
 {
     int lowestArmor = __INT_MAX__;
-    Id result = -1;
+    Id result;
     LIST_ITERATE((&targets))
     {
-        const Combatant *target = &combatants[i];
+        const Id candidateId = LIST_ELEM((&targets), i);        
+        const Combatant *target = &combatants[candidateId];
         if (target->armor < lowestArmor)
         {
             lowestArmor = target->armor;
-            result = i;
+            result = target->id;
         }
     }
+
     return result;
 }
 
@@ -44,7 +46,7 @@ EnemyBehavior EnemyBehavior_Get(const Combatant combatants[MAX_COMBATANTS], Id e
 
     EnemyBehavior result = {
         .action = Action_Load(ACTION_WAIT),
-        .targetOpt = 0,
+        .targetOpt = -1,
     };
 
     switch (enemy->type)
