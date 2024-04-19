@@ -26,10 +26,14 @@ Id Queue_Peek(const Queue *queue)
     return queue->data[queue->index];
 }
 
-Id Queue_Next(Queue *queue)
+Id Queue_PeekNext(const Queue *queue)
+{
+    return queue->data[(queue->index + 1) % queue->count];
+}
+
+void Queue_Next(Queue *queue)
 {
     queue->index = (queue->index + 1) % queue->count;
-    return Queue_Peek(queue);
 }
 
 void Queue_Delete(Queue *queue, Id id)

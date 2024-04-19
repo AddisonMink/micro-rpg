@@ -71,7 +71,36 @@ typedef struct Battle
     } data;
 } Battle;
 
+typedef struct CombatantList
+{
+    Combatant data[MAX_COMBATANTS];
+    int capacity;
+    int count;
+} CombatantList;
+
 static Battle battle;
+
+static CombatantList PlayerList()
+{
+    CombatantList list = {
+        .capacity = MAX_PLAYERS,
+        .count = 0,
+    };
+    for (Id i = 0; i < MAX_PLAYERS; i++)
+        list.data[list.count++] = battle.combatants[i];
+    return list;
+}
+
+static CombatantList EnemyList()
+{
+    CombatantList list = {
+        .capacity = MAX_ENEMIES,
+        .count = 0,
+    };
+    for (Id i = FIRST_ENEMY_ID; i < MAX_COMBATANTS; i++)
+        list.data[list.count++] = battle.combatants[i];
+    return list;
+}
 
 void Battle_Init()
 {
@@ -230,76 +259,73 @@ void Battle_Update(float delta)
     }
     case BATTLE_END_TURN:
     {
-        // If all enemies are in the back row, move them forward.
-        bool allEnemiesBack = true;
-        for (Id i = FIRST_ENEMY_ID; i < MAX_COMBATANTS; i++)
+        CombatantList players = PlayerList();
+        CombatantList enemies = EnemyList();
+        const Id id = Queue_PeekNext(&battle.queue);
+
+        const bool allPlayersDead = !LIST_EXISTS((&players), Combatant, {
+            success = elem->state == COMBATANT_STATE_ALIVE;
+        });
+
+        const bool allEnemiesDead = !LIST_EXISTS((&enemies), Combatant, {
+            success = elem->state == COMBATANT_STATE_ALIVE;
+        });
+
+        const bool allEnemiesBack = !LIST_EXISTS((&enemies), Combatant, {
+            success = elem->state == COMBATANT_STATE_ALIVE && elem->row == ROW_FRONT;
+        });
+
+        const bool allPlayersBack = !LIST_EXISTS((&players), Combatant, {
+            success = elem->state == COMBATANT_STATE_ALIVE && elem->row == ROW_FRONT;
+        });
+
+        if (allPlayersDead)
         {
-            const Combatant *enemy = &battle.combatants[i];
-            if (enemy->state == COMBATANT_STATE_ALIVE && enemy->row == ROW_FRONT)
-            {
-                allEnemiesBack = false;
-                break;
-            }
+            battle.state = BATTLE_LOSE;
         }
-
-        if (allEnemiesBack)
+        else if (allEnemiesDead)
         {
-            EffectList effects = (EffectList)LIST_INIT(MAX_EFFECTS);
-            for (Id i = FIRST_ENEMY_ID; i < MAX_COMBATANTS; i++)
-            {
-                const Combatant *enemy = &battle.combatants[i];
-                if (enemy->state == COMBATANT_STATE_ALIVE)
-                {
-                    LIST_APPEND((&effects), EffectMove_Create(DIRECTION_FORWARD, i));
-                }
-            }
-
+            battle.state = BATTLE_WIN;
+        }
+        else if (allEnemiesBack || allPlayersBack)
+        {
             battle.state = BATTLE_EXECUTE_EFFECTS;
             battle.data.executeEffects = (ExecuteEffects){
-                .effects = effects,
+                .effects = LIST_INIT(MAX_EFFECTS),
             };
-            break;
-        }
 
-        bool allPlayersBack = true;
-        for (Id i = 0; i < FIRST_ENEMY_ID; i++)
-        {
-            const Combatant *player = &battle.combatants[i];
-            if (player->state == COMBATANT_STATE_ALIVE && player->row == ROW_FRONT)
+            if (allPlayersBack)
             {
-                allPlayersBack = false;
-                break;
-            }
-        }
-
-        if (allPlayersBack)
-        {
-            EffectList effects = (EffectList)LIST_INIT(MAX_EFFECTS);
-            for (Id i = 0; i < FIRST_ENEMY_ID; i++)
-            {
-                const Combatant *player = &battle.combatants[i];
-                if (player->state == COMBATANT_STATE_ALIVE)
-                {
-                    LIST_APPEND((&effects), EffectMove_Create(DIRECTION_FORWARD, i));
-                }
+                LIST_FOREACH((&players), Combatant, {
+                    if (elem.state == COMBATANT_STATE_ALIVE)
+                    {
+                        LIST_APPEND((&battle.data.executeEffects.effects), EffectMove_Create(DIRECTION_FORWARD, elem.id));
+                    }
+                });
             }
 
-            battle.state = BATTLE_EXECUTE_EFFECTS;
-            battle.data.executeEffects = (ExecuteEffects){
-                .effects = effects,
-            };
+            if (allEnemiesBack)
+            {
+                LIST_FOREACH((&enemies), Combatant, {
+                    if (elem.state == COMBATANT_STATE_ALIVE)
+                    {
+                        LIST_APPEND((&battle.data.executeEffects.effects), EffectMove_Create(DIRECTION_FORWARD, elem.id));
+                    }
+                });
+            }
+            TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_EXECUTE_EFFECTS");
             break;
         }
-
-        const Id id = Queue_Next(&battle.queue);
-        if (id < FIRST_ENEMY_ID)
+        else if (id < FIRST_ENEMY_ID)
         {
+            Queue_Next(&battle.queue);
             ActionMenu_Init(&battle.items, &battle.combatants[id]);
             battle.state = BATTLE_SELECT_ACTION;
             TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_SELECT_ACTION");
         }
         else
         {
+            Queue_Next(&battle.queue);
             battle.state = BATTLE_ENEMY_TURN;
             TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_ENEMY_TURN");
         }
