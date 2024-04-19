@@ -14,6 +14,22 @@ typedef struct List
 
 // Initialize
 
+#define STATIC_LIST_TYPE(TYPE, CAPACITY) \
+    typedef struct TYPE##List            \
+    {                                    \
+        int count;                       \
+        int capacity;                    \
+        TYPE data[CAPACITY];             \
+    } TYPE##List
+
+#define STATIC_LIST_TYPE_PTR(TYPE, CAPACITY) \
+    typedef struct TYPE##List                \
+    {                                        \
+        int count;                           \
+        int capacity;                        \
+        TYPE *data[CAPACITY];                \
+    } TYPE##List
+
 #define LIST_INIT(CAPACITY)  \
     {                        \
         .count = 0,          \
@@ -57,6 +73,18 @@ typedef struct List
         }                                     \
     }
 
+#define LIST_FOREACH_PTR(LIST, TYPE, BLOCK)   \
+    {                                         \
+        for (int i = 0; i < LIST->count; i++) \
+        {                                     \
+            TYPE *elem = LIST->data[i];       \
+            do                                \
+            {                                 \
+                BLOCK                         \
+            } while (0);                      \
+        }                                     \
+    }
+
 // List Queries
 
 /* LIST_FIND
@@ -90,6 +118,26 @@ typedef struct List
         LIST_FIND_RESULT;                       \
     })
 
+#define LIST_FIND_PTR(LIST, TYPE, BLOCK)        \
+    ({                                          \
+        TYPE *LIST_FIND_RESULT = NULL;          \
+        bool success = false;                   \
+        for (int i = 0; i < (LIST)->count; i++) \
+        {                                       \
+            TYPE *elem = (LIST)->data[i];       \
+            do                                  \
+            {                                   \
+                BLOCK                           \
+            } while (0);                        \
+            if (success)                        \
+            {                                   \
+                LIST_FIND_RESULT = elem;        \
+                break;                          \
+            }                                   \
+        }                                       \
+        LIST_FIND_RESULT;                       \
+    })
+
 /* LIST_EXISTS
  * Apply a test to each element in the list and return true if an an element satisfies the test.
  * If a test is successful, set local variable "success" to true.
@@ -102,6 +150,9 @@ typedef struct List
  */
 #define LIST_EXISTS(LIST, TYPE, BLOCK) \
     (LIST_FIND(LIST, TYPE, BLOCK) != NULL)
+
+#define LIST_EXISTS_PTR(LIST, TYPE, BLOCK) \
+    (LIST_FIND_PTR(LIST, TYPE, BLOCK) != NULL)
 
 #define LIST_ELEM(LIST, INDEX) LIST->data[INDEX]
 

@@ -71,12 +71,7 @@ typedef struct Battle
     } data;
 } Battle;
 
-typedef struct CombatantList
-{
-    Combatant data[MAX_COMBATANTS];
-    int capacity;
-    int count;
-} CombatantList;
+STATIC_LIST_TYPE_PTR(Combatant, MAX_COMBATANTS);
 
 static Battle battle;
 
@@ -87,7 +82,7 @@ static CombatantList PlayerList()
         .count = 0,
     };
     for (Id i = 0; i < MAX_PLAYERS; i++)
-        list.data[list.count++] = battle.combatants[i];
+        list.data[list.count++] = &battle.combatants[i];
     return list;
 }
 
@@ -98,7 +93,7 @@ static CombatantList EnemyList()
         .count = 0,
     };
     for (Id i = FIRST_ENEMY_ID; i < MAX_COMBATANTS; i++)
-        list.data[list.count++] = battle.combatants[i];
+        list.data[list.count++] = &battle.combatants[i];
     return list;
 }
 
@@ -263,19 +258,19 @@ void Battle_Update(float delta)
         CombatantList enemies = EnemyList();
         const Id id = Queue_PeekNext(&battle.queue);
 
-        const bool allPlayersDead = !LIST_EXISTS((&players), Combatant, {
+        const bool allPlayersDead = !LIST_EXISTS_PTR((&players), Combatant, {
             success = elem->state == COMBATANT_STATE_ALIVE;
         });
 
-        const bool allEnemiesDead = !LIST_EXISTS((&enemies), Combatant, {
+        const bool allEnemiesDead = !LIST_EXISTS_PTR((&enemies), Combatant, {
             success = elem->state == COMBATANT_STATE_ALIVE;
         });
 
-        const bool allEnemiesBack = !LIST_EXISTS((&enemies), Combatant, {
+        const bool allEnemiesBack = !LIST_EXISTS_PTR((&enemies), Combatant, {
             success = elem->state == COMBATANT_STATE_ALIVE && elem->row == ROW_FRONT;
         });
 
-        const bool allPlayersBack = !LIST_EXISTS((&players), Combatant, {
+        const bool allPlayersBack = !LIST_EXISTS_PTR((&players), Combatant, {
             success = elem->state == COMBATANT_STATE_ALIVE && elem->row == ROW_FRONT;
         });
 
@@ -296,20 +291,20 @@ void Battle_Update(float delta)
 
             if (allPlayersBack)
             {
-                LIST_FOREACH((&players), Combatant, {
-                    if (elem.state == COMBATANT_STATE_ALIVE)
+                LIST_FOREACH_PTR((&players), Combatant, {
+                    if (elem->state == COMBATANT_STATE_ALIVE)
                     {
-                        LIST_APPEND((&battle.data.executeEffects.effects), EffectMove_Create(DIRECTION_FORWARD, elem.id));
+                        LIST_APPEND((&battle.data.executeEffects.effects), EffectMove_Create(DIRECTION_FORWARD, elem->id));
                     }
                 });
             }
 
             if (allEnemiesBack)
             {
-                LIST_FOREACH((&enemies), Combatant, {
-                    if (elem.state == COMBATANT_STATE_ALIVE)
+                LIST_FOREACH_PTR((&enemies), Combatant, {
+                    if (elem->state == COMBATANT_STATE_ALIVE)
                     {
-                        LIST_APPEND((&battle.data.executeEffects.effects), EffectMove_Create(DIRECTION_FORWARD, elem.id));
+                        LIST_APPEND((&battle.data.executeEffects.effects), EffectMove_Create(DIRECTION_FORWARD, elem->id));
                     }
                 });
             }
