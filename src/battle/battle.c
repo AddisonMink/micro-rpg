@@ -344,12 +344,10 @@ void Battle_Update(float delta)
     }
     case BATTLE_WIN:
     {
-        TraceLog(LOG_INFO, "BATTLE_WIN");
         break;
     }
     case BATTLE_LOSE:
     {
-        TraceLog(LOG_INFO, "BATTLE_LOSE");
         break;
     }
     }
@@ -410,6 +408,20 @@ void Battle_Draw(UI *ui)
         {
             drawGlobalMessage(ui, event->data.globalMessage);
         };
+        break;
+    }
+    case BATTLE_WIN:
+    {
+        EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, false);
+        PlayerDisplay_Draw(ui, battle.combatants, -1, NULL);
+        drawGlobalMessage(ui, "V I C T O R Y");
+        break;
+    }
+    case BATTLE_LOSE:
+    {
+        EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, false);
+        PlayerDisplay_Draw(ui, battle.combatants, -1, NULL);
+        drawGlobalMessage(ui, "D E F E A T");
         break;
     }
     default:
