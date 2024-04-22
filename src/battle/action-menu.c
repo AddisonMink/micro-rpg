@@ -2,7 +2,7 @@
 
 #include "stddef.h"
 
-#include "common/list-macros.h"
+#include "common/list-macros-new.h"
 
 typedef enum ActionMenuState
 {
@@ -49,31 +49,27 @@ void ActionMenu_Init(const ItemList *items, const Combatant *player)
     menu.state = ACTION_MENU_SELECT_ITEM;
     menu.scrollCooldown = 0;
 
-    LIST_ITERATE(items)
-    {
-        const Item *item = &LIST_ELEM(items, i);
-
+    LIST_ITER(items, Item, {
         ActionMenuEntry entry;
         entry.index = 0;
-        entry.item = item;
+        entry.item = _elem;
 
         ItemActionList *actions = &entry.actions;
-        actions->capacity = item->actions.capacity;
+        actions->capacity = _elem->actions.capacity;
         actions->count = 0;
         actions->index = 0;
 
-        LIST_ITERATE2((&item->actions))
-        {
-            const Action *action = LIST_ELEM((&item->actions), j);
+        ActionRefList *actionRefs = &_elem->actions;
 
-            if (player->magic >= action->magicLevel)
+        LIST_ITER(actionRefs, const Action *, {
+            if (player->magic >= (*_elem)->magicLevel)
             {
-                LIST_APPEND(actions, action);
+                LIST_PUSH(actions, (*_elem));
             }
-        }
+        })
 
-        LIST_APPEND((&menu), entry);
-    }
+        LIST_PUSH((&menu), entry);
+    })
 }
 
 #define SPACING 10
@@ -160,14 +156,12 @@ static void ui_item_list(UI *ui)
             UI_AlignShimH(ui, size.x, BODY_FONT_SIZE, ALIGN_H_CENTER);
             UI_BodyLabel(ui, "ITEMS");
 
-            LIST_ITERATE((&menu))
-            {
-                const ActionMenuEntry *entry = &LIST_ELEM((&menu), i);
-                const Item *item = entry->item;
+            LIST_ITER((&menu), ActionMenuEntry, {
+                const Item *item = _elem->item;
 
                 UI_Row(ui, SPACING);
                 {
-                    if (menu.index == i)
+                    if (menu.index == _index)
                     {
                         UI_Sprite(ui, pointer, pointer.width, pointer.height, WHITE);
                     }
@@ -179,7 +173,7 @@ static void ui_item_list(UI *ui)
                     UI_BodyLabel(ui, TextFormat("%s x%d", item->name, item->uses));
                 }
                 UI_RowEnd(ui);
-            }
+            })
             UI_ColEnd(ui);
         }
         else
@@ -205,13 +199,11 @@ static void ui_action_list(UI *ui, bool showPointer)
             UI_AlignShimH(ui, size.x, BODY_FONT_SIZE, ALIGN_H_CENTER);
             UI_BodyLabel(ui, "ACTIONS");
 
-            LIST_ITERATE((&entry->actions))
-            {
-                const Action *action = LIST_ELEM((&entry->actions), i);
-
+            const ItemActionList *actions = &entry->actions;
+            LIST_ITER(actions, const Action *, {
                 UI_Row(ui, SPACING);
                 {
-                    if (entry->index == i && showPointer)
+                    if (entry->index == _index && showPointer)
                     {
                         UI_Sprite(ui, pointer, pointer.width, pointer.height, WHITE);
                     }
@@ -220,10 +212,10 @@ static void ui_action_list(UI *ui, bool showPointer)
                         UI_Rect(ui, pointer.width, pointer.height, BLANK);
                     }
 
-                    UI_BodyLabel(ui, action->name);
+                    UI_BodyLabel(ui, (*_elem)->name);
                 }
                 UI_RowEnd(ui);
-            }
+            })
             UI_ColEnd(ui);
         }
         else
@@ -256,12 +248,10 @@ static void ui_action_desc(UI *ui)
             UI_AlignShimH(ui, size.x, 12, ALIGN_H_CENTER);
             ui_range(ui, action->range);
 
-            LIST_ITERATE((&action->effects))
-            {
-                const EffectTemplate *effect = &LIST_ELEM((&action->effects), i);
+            LIST_ITER((&action->effects), EffectTemplate, {
                 UI_AlignShimH(ui, size.x, 12, ALIGN_H_CENTER);
-                ui_effect_template(ui, effect);
-            }
+                ui_effect_template(ui, _elem);
+            })
         }
         UI_ColEnd(ui);
     }

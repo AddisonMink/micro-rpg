@@ -1,6 +1,6 @@
 #include "queue.h"
 
-#include "common/list-macros.h"
+#include "common/list-macros-new.h"
 
 Queue Queue_Create(const Combatant combatants[MAX_COMBATANTS])
 {
@@ -38,16 +38,7 @@ void Queue_Next(Queue *queue)
 
 void Queue_Delete(Queue *queue, Id id)
 {
-
-    int index = -1;
-    LIST_ITERATE(queue)
-    {
-        if (LIST_ELEM(queue, i) == id)
-        {
-            index = i;
-            break;
-        }
-    }
+    const int index = LIST_FIND_INDEX(queue, Id, *_elem == id);
 
     if (index != -1)
     {

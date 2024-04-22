@@ -5,6 +5,7 @@
 #include "battle/event.h"
 #include "battle/item.h"
 #include "battle/queue.h"
+#include "common/list-macros-new.h"
 
 #define MAX_EFFECTS 5
 
@@ -78,12 +79,7 @@ Effect EffectBreakItem_Create(int itemIndex);
 
 Effect EffectPushEvent_Create(Event event);
 
-typedef struct EffectList
-{
-    Effect data[MAX_EFFECTS];
-    int capacity;
-    int count;
-} EffectList;
+STATIC_LIST_TYPE(EffectList, Effect, MAX_EFFECTS);
 
 typedef struct EffectResult
 {

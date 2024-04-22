@@ -1,7 +1,5 @@
 #include "effect.h"
 
-#include "common/list-macros.h"
-
 static const char *itemBreakMessage = "Item broke!";
 
 Effect EffectDamage_Create(int amount, DamageType type, Id id)
@@ -71,55 +69,52 @@ Effect EffectPushEvent_Create(Event event)
 EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targetOpt, int itemIndexOpt)
 {
     const Id target = targetOpt == -1 ? actor->id : targetOpt;
-    EffectList effects = LIST_INIT(MAX_EFFECTS);
+    EffectList effects = LIST_INIT(EffectList, MAX_EFFECTS);
 
     if (actor->id >= FIRST_ENEMY_ID)
     {
         Event message = Event_Message(actor->id, action->name, 0.5);
-        LIST_APPEND((&effects), EffectPushEvent_Create(message));
+        LIST_PUSH((&effects), EffectPushEvent_Create(message));
     }
 
-    LIST_ITERATE((&action->effects))
-    {
-        const EffectTemplate template = LIST_ELEM((&action->effects), i);
-
-        switch (template.type)
+    LIST_ITER((&action->effects), EffectTemplate, {
+        switch (_elem->type)
         {
         case EFFECT_TEMPLATE_DAMAGE:
         {
-            const int amount = template.data.damage.amount;
-            const DamageType type = template.data.damage.damageType;
-            LIST_APPEND((&effects), EffectDamage_Create(amount, type, target));
+            const int amount = _elem->data.damage.amount;
+            const DamageType type = _elem->data.damage.damageType;
+            LIST_PUSH((&effects), EffectDamage_Create(amount, type, target));
             break;
         }
         case EFFECT_TEMPLATE_KILL:
-            LIST_APPEND((&effects), EffectKill_Create(target));
+            LIST_PUSH((&effects), EffectKill_Create(target));
             break;
         case EFFECT_TEMPLATE_MOVE:
         {
-            const Direction direction = template.data.move.direction;
-            LIST_APPEND((&effects), EffectMove_Create(direction, target));
+            const Direction direction = _elem->data.move.direction;
+            LIST_PUSH((&effects), EffectMove_Create(direction, target));
             break;
         }
         case EFFECT_TEMPLATE_ATTACK:
         {
             const int amount = actor->strength;
-            const DamageType type = template.data.attack.damageType;
-            LIST_APPEND((&effects), EffectDamage_Create(amount, type, target));
+            const DamageType type = _elem->data.attack.damageType;
+            LIST_PUSH((&effects), EffectDamage_Create(amount, type, target));
             break;
         }
         case EFFECT_TEMPLATE_AUTO_MOVE:
         {
             const Direction direction = actor->row == ROW_FRONT ? DIRECTION_BACK : DIRECTION_FORWARD;
-            LIST_APPEND((&effects), EffectMove_Create(direction, actor->id));
+            LIST_PUSH((&effects), EffectMove_Create(direction, actor->id));
             break;
         }
         }
-    }
+    })
 
     if (itemIndexOpt != -1)
     {
-        LIST_APPEND((&effects), EffectUseItem_Create(action->cost, itemIndexOpt));
+        LIST_PUSH((&effects), EffectUseItem_Create(action->cost, itemIndexOpt));
     }
 
     return effects;
@@ -128,8 +123,8 @@ EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targe
 EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *items, Queue *queue, Effect effect)
 {
     EffectResult result = {
-        .effects = LIST_INIT(MAX_EFFECTS),
-        .events = LIST_INIT(MAX_EVENTS),
+        .effects = LIST_INIT(EffectList, MAX_EFFECTS),
+        .events = LIST_INIT(EventList, MAX_EVENTS),
     };
     EffectList *effects = &result.effects;
     EventList *events = &result.events;
@@ -153,15 +148,15 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
         combatant->hp -= trueAmount;
         if (combatant->hp <= 0)
         {
-            LIST_APPEND(effects, EffectKill_Create(id));
+            LIST_PUSH(effects, EffectKill_Create(id));
         }
 
-        LIST_APPEND(events, Event_Animate(id, animationId));
-        LIST_APPEND(events, Event_Flash(id, RED, 0.1));
+        LIST_PUSH(events, Event_Animate(id, animationId));
+        LIST_PUSH(events, Event_Flash(id, RED, 0.1));
         if (combatant->id >= FIRST_ENEMY_ID && combatant->hp > 0)
         {
-            LIST_APPEND(events, Event_Wait(0.2));
-            LIST_APPEND(events, Event_Status(id, 0.2));
+            LIST_PUSH(events, Event_Wait(0.2));
+            LIST_PUSH(events, Event_Status(id, 0.2));
         }
         break;
     }
@@ -174,7 +169,7 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
         combatant->state = COMBATANT_STATE_DEAD;
         Queue_Delete(queue, id);
 
-        LIST_APPEND(events, Event_Fade(id, 0.5));
+        LIST_PUSH(events, Event_Fade(id, 0.5));
         break;
     }
     case EFFECT_MOVE:
@@ -190,7 +185,7 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
 
         if (showMove)
         {
-            LIST_APPEND(events, Event_Move(id, 0.2));
+            LIST_PUSH(events, Event_Move(id, 0.2));
         }
         break;
     }
@@ -203,7 +198,7 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
         item->uses -= amount;
         if (item->uses <= 0)
         {
-            LIST_APPEND(effects, EffectBreakItem_Create(itemIndex));
+            LIST_PUSH(effects, EffectBreakItem_Create(itemIndex));
         }
         break;
     }
@@ -212,12 +207,12 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
         const int itemIndex = effect.breakItem.itemIndex;
         LIST_DELETE(items, itemIndex);
 
-        LIST_APPEND(events, Event_GlobalMessage(itemBreakMessage, 1.0));
+        LIST_PUSH(events, Event_GlobalMessage(itemBreakMessage, 1.0));
         break;
     }
     case EFFECT_PUSH_EVENT:
     {
-        LIST_APPEND(events, effect.pushEvent.event);
+        LIST_PUSH(events, effect.pushEvent.event);
         break;
     }
     }

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "action.h"
+#include "battle/action.h"
+#include "common/list-macros-new.h"
 
 #define MAX_ITEMS 3
 
@@ -16,14 +17,9 @@ typedef struct Item
     const char *name;
     int usesMax;
     int uses;
-    ActionList actions;
+    ActionRefList actions;
 } Item;
 
-typedef struct ItemList
-{
-    Item data[MAX_ITEMS];
-    int capacity;
-    int count;
-} ItemList;
+STATIC_LIST_TYPE(ItemList, Item, MAX_ITEMS);
 
 Item Item_Create(ItemType type);

@@ -2,6 +2,8 @@
 
 #include "raylib.h"
 
+#include "common/list-macros-new.h"
+
 #define MAX_COMBATANTS 6
 #define MAX_PLAYERS 3
 #define MAX_ENEMIES 3
@@ -46,5 +48,7 @@ typedef struct Combatant
     int hp;
     Row row;
 } Combatant;
+
+STATIC_LIST_TYPE(CombatantRefList, Combatant *, MAX_COMBATANTS);
 
 Combatant Combatant_Create(Id id, CombatantType type, Row row);
