@@ -32,6 +32,8 @@ static void run()
 
             DrawCube(rightWallPos, 2.0f, 2.0f, 8.0f, RED);
             DrawCubeWires(rightWallPos, 2.0f, 2.0f, 8.0f, MAROON);
+
+            Battle_Draw3D(&camera);
         }
         DrawGrid(20, 1.0f);
 

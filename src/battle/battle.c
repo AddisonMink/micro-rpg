@@ -7,6 +7,7 @@
 #include "battle/effect.h"
 #include "battle/enemy-behavior.h"
 #include "battle/enemy-display.h"
+#include "battle/enemy-display-3d.h"
 #include "battle/player-display.h"
 #include "battle/target.h"
 #include "battle/queue.h"
@@ -101,7 +102,7 @@ void Battle_Init()
 {
     battle.combatants[0] = Combatant_Create(0, COMBATANT_TYPE_MAGICIAN, ROW_BACK);
     battle.combatants[1] = Combatant_Create(1, COMBATANT_TYPE_GALOOT, ROW_FRONT);
-    battle.combatants[FIRST_ENEMY_ID] = Combatant_Create(FIRST_ENEMY_ID, COMBATANT_TYPE_SCAMP, ROW_FRONT);
+    battle.combatants[FIRST_ENEMY_ID] = Combatant_Create(FIRST_ENEMY_ID, COMBATANT_TYPE_SCAMP, ROW_BACK);
     battle.combatants[FIRST_ENEMY_ID + 1] = Combatant_Create(FIRST_ENEMY_ID + 1, COMBATANT_TYPE_SCAMP, ROW_BACK);
     battle.combatants[FIRST_ENEMY_ID + 2] = Combatant_Create(FIRST_ENEMY_ID + 2, COMBATANT_TYPE_SCAMP, ROW_FRONT);
 
@@ -368,7 +369,7 @@ void Battle_Draw(UI *ui)
     case BATTLE_SELECT_ACTION:
     {
         const bool showEnemyStatus = IsKeyDown(KEY_TAB);
-        EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, showEnemyStatus);
+        // EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, showEnemyStatus);
         PlayerDisplay_Draw(ui, battle.combatants, -1, NULL);
         ActionMenu_Draw(ui);
         break;
@@ -378,7 +379,7 @@ void Battle_Draw(UI *ui)
         const TargetList *targets = &battle.data.selectTarget.targets;
         const Id id = targets->count > 0 ? LIST_ELEM(targets, targets->index) : -1;
         const bool showEnemyStatus = IsKeyDown(KEY_TAB);
-        EnemyDisplay_Draw(ui, battle.combatants, id, NULL, showEnemyStatus);
+        // EnemyDisplay_Draw(ui, battle.combatants, id, NULL, showEnemyStatus);
         PlayerDisplay_Draw(ui, battle.combatants, id, NULL);
 
         if (id == -1)
@@ -398,7 +399,7 @@ void Battle_Draw(UI *ui)
         }
         const Event *event = &LIST_ELEM((&data->events), 0);
 
-        EnemyDisplay_Draw(ui, battle.combatants, -1, event, false);
+        // EnemyDisplay_Draw(ui, battle.combatants, -1, event, false);
         PlayerDisplay_Draw(ui, battle.combatants, -1, event);
 
         if (event->type == EVENT_GLOBAL_MESSAGE)
@@ -409,23 +410,28 @@ void Battle_Draw(UI *ui)
     }
     case BATTLE_WIN:
     {
-        EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, false);
+        // EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, false);
         PlayerDisplay_Draw(ui, battle.combatants, -1, NULL);
         drawGlobalMessage(ui, "V I C T O R Y");
         break;
     }
     case BATTLE_LOSE:
     {
-        EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, false);
+        // EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, false);
         PlayerDisplay_Draw(ui, battle.combatants, -1, NULL);
         drawGlobalMessage(ui, "D E F E A T");
         break;
     }
     default:
     {
-        EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, false);
+        // EnemyDisplay_Draw(ui, battle.combatants, -1, NULL, false);
         PlayerDisplay_Draw(ui, battle.combatants, -1, NULL);
         break;
     }
     }
+}
+
+void Battle_Draw3D(const Camera3D *camera)
+{
+    EnemyDisplay3D_Draw(camera, battle.combatants, NULL);
 }
