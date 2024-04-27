@@ -14,8 +14,12 @@ static Camera3D camera = {0};
 static UI *ui;
 
 static Texture2D wallTexture;
-static Mesh planeMesh;
+static Mesh cubeMesh;
 static Model wallModel;
+
+static Texture2D floorTexture;
+static Mesh floorMesh;
+static Model floorModel;
 
 static void run()
 {
@@ -28,12 +32,20 @@ static void run()
 
         BeginMode3D(camera);
         {
-            DrawGrid(10, 1.0f);
-
-            for (int z = 5; z >= -5; z -= 2)
+            float progress = 0.0f;
+            for (float z = 10; z >= -5; z -= 2)
             {
-                DrawModelEx(wallModel, (Vector3){-2.5, 1, z}, (Vector3){0, 1, 0}, 0.0f, (Vector3){1, 1, 1}, WHITE);
-                DrawModelEx(wallModel, (Vector3){2.5, 1, z}, (Vector3){1, 0, 0}, 180.0f, (Vector3){1, 1, 1}, WHITE);
+                Color tint = WHITE;
+                tint.r = WHITE.r - (progress / 3 * 255.0f);
+                tint.g = WHITE.g - (progress / 1.5 * 255.0f);
+                tint.b = WHITE.b - (progress * 255.0f);
+                progress += 0.2f;
+
+                TraceLog(LOG_INFO, "Z = %f, Color %d %d %d", z, tint.r, tint.g, tint.b);
+                DrawModelEx(wallModel, (Vector3){-2.5, 1, z}, (Vector3){0, 1, 0}, 0.0f, (Vector3){1, 1, 1}, tint);
+                DrawModelEx(wallModel, (Vector3){2.5, 1, z}, (Vector3){1, 0, 0}, 180.0f, (Vector3){1, 1, 1}, tint);
+                DrawModelEx(floorModel, (Vector3){-1, -1, z}, (Vector3){1, 0, 0}, 90.0f, (Vector3){1, 1, 1}, tint);
+                DrawModelEx(floorModel, (Vector3){1, -1, z}, (Vector3){1, 0, 0}, 90.0f, (Vector3){1, 1, 1}, tint);
             }
         }
         EndMode3D();
@@ -50,10 +62,13 @@ int main(void)
     Battle_Init();
 
     wallTexture = Asset_Sprite(SPRITE_WALL);
-    // planeMesh = GenMeshPlane(1.0f, 1.0f, 1, 1);
-    planeMesh = GenMeshCube(2.0f, 2.0f, 2.0f);
-    wallModel = LoadModelFromMesh(planeMesh);
+    cubeMesh = GenMeshCube(2.0f, 2.0f, 2.0f);
+    wallModel = LoadModelFromMesh(cubeMesh);
     SetMaterialTexture(&wallModel.materials[0], MATERIAL_MAP_DIFFUSE, wallTexture);
+
+    floorTexture = Asset_Sprite(SPRITE_FLOOR);
+    floorModel = LoadModelFromMesh(cubeMesh);
+    SetMaterialTexture(&floorModel.materials[0], MATERIAL_MAP_DIFFUSE, floorTexture);
 
     camera.position = (Vector3){0.0f, 1, 5.0f};
     camera.target = (Vector3){0.0f, 1.0f, 0.0f};

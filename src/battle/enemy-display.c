@@ -30,11 +30,13 @@ static void renderEnemySprite(
     Vector3 origin,
     const Event *eventOpt)
 {
+    const Color base = enemy->row == ROW_FRONT ? WHITE : GRAY;
+
     const Color tint =
         eventOpt && eventOpt->type == EVENT_FLASH  ? eventOpt->data.flash
-        : eventOpt && eventOpt->type == EVENT_FADE ? Fade(WHITE, 1.0 - eventOpt->elapsed)
+        : eventOpt && eventOpt->type == EVENT_FADE ? Fade(base, 1.0 - eventOpt->elapsed)
         : enemy->state == COMBATANT_STATE_DEAD     ? BLANK
-                                                   : WHITE;
+                                                   : base;
 
     if (eventOpt && eventOpt->type == EVENT_MOVE)
     {

@@ -25,8 +25,9 @@ typedef enum SpriteId
     SPRITE_SLASH,
     SPRITE_ZAP,
 
-    // Badkground Sprites
+    // Background Sprites
     SPRITE_WALL,
+    SPRITE_FLOOR,
 } SpriteId;
 
 typedef struct Animation Animation;
