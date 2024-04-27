@@ -1,7 +1,7 @@
 #include "asset.h"
 
 #define NUM_FONTS 1
-#define NUM_SPRITES 8
+#define NUM_SPRITES 9
 
 typedef struct Animation
 {
@@ -27,6 +27,7 @@ static const char *spritePaths[NUM_SPRITES] = {
     [SPRITE_GALOOT] = "assets/galoot_32_38.png",
     [SPRITE_SLASH] = "assets/slash_32.png",
     [SPRITE_ZAP] = "assets/lightning_32.png",
+    [SPRITE_WALL] = "assets/wall.png",
 };
 
 const Animation animations[] = {
