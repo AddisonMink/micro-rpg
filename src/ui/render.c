@@ -112,7 +112,7 @@ static void drawElement(const Element *element, Vector2 origin)
             element->label.text,
             (Vector2){origin.x + element->offsetFromParent.x, origin.y + element->offsetFromParent.y},
             element->label.fontSize,
-            2,
+            1,
             element->label.color);
         break;
     }

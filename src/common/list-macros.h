@@ -14,13 +14,13 @@ typedef struct List
 
 // Initialize
 
-#define STATIC_LIST_TYPE(TYPE, CAPACITY) \
-    typedef struct TYPE##List            \
-    {                                    \
-        int count;                       \
-        int capacity;                    \
-        TYPE data[CAPACITY];             \
-    } TYPE##List
+#define STATIC_LIST_TYPE(NAME, TYPE, CAPACITY) \
+    typedef struct NAME                        \
+    {                                          \
+        int count;                             \
+        int capacity;                          \
+        TYPE data[CAPACITY];                   \
+    } NAME
 
 #define STATIC_LIST_TYPE_PTR(TYPE, CAPACITY) \
     typedef struct TYPE##List                \
@@ -38,11 +38,15 @@ typedef struct List
 
 // List Mutators
 
-#define LIST_APPEND(LIST, VALUE)           \
-    if (LIST->count < LIST->capacity)      \
-        LIST->data[LIST->count++] = VALUE; \
-    else                                   \
-        TraceLog(LOG_WARNING, "List is full!")
+#define LIST_APPEND(LIST, VALUE)                \
+    if ((LIST)->count < (LIST)->capacity)       \
+    {                                           \
+        (LIST)->data[(LIST)->count++] = VALUE;  \
+    }                                           \
+    else                                        \
+    {                                           \
+        TraceLog(LOG_WARNING, "List is full!"); \
+    }
 
 #define LIST_CONCAT(LIST1, LIST2)          \
     for (int i = 0; i < LIST2->count; i++) \
@@ -60,18 +64,6 @@ typedef struct List
 
 #define LIST_ITERATE2(LIST) \
     for (int j = 0; j < LIST->count; j++)
-
-#define LIST_FOREACH(LIST, TYPE, BLOCK)       \
-    {                                         \
-        for (int i = 0; i < LIST->count; i++) \
-        {                                     \
-            const TYPE elem = LIST->data[i];  \
-            do                                \
-            {                                 \
-                BLOCK                         \
-            } while (0);                      \
-        }                                     \
-    }
 
 #define LIST_FOREACH_PTR(LIST, TYPE, BLOCK)   \
     {                                         \
@@ -157,3 +149,13 @@ typedef struct List
 #define LIST_ELEM(LIST, INDEX) LIST->data[INDEX]
 
 #define LIST_EMPTY(LIST) (LIST->count <= 0)
+
+#define LIST_FOREACH(LIST, TYPE, ELEM)                                                   \
+    for (int _index = 0, _done = 0; !_done; _done = (++_index == (LIST)->count) ? 1 : 0) \
+        for (TYPE *ELEM = &(LIST)->data[_index]; !_done; _done = 1)
+
+#define LIST_FOREACH_IF(LIST, TYPE, ELEM, COND)                                          \
+    for (int _index = 0, _done = 0; !_done; _done = (++_index == (LIST)->count) ? 1 : 0) \
+        for (type *ELEM = &(LIST)->data[_index]; !_done && (COND); _done = 1)
+
+#define LIST_COUNT(LIST) (LIST)->count

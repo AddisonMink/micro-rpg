@@ -193,7 +193,7 @@ static void setPrimitiveSize(Element *element)
     }
     case E_LABEL:
     {
-        Vector2 size = MeasureTextEx(element->label.font, element->label.text, element->label.fontSize, 2.0);
+        Vector2 size = MeasureTextEx(element->label.font, element->label.text, element->label.fontSize, 1);
         element->width = size.x;
         element->height = size.y;
         break;

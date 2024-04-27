@@ -69,3 +69,17 @@ Combatant Combatant_Create(Id id, CombatantType type, Row row)
         .row = row,
     };
 }
+
+CombatantRefList Combatant_EnemyList(Combatant combatants[MAX_COMBATANTS])
+{
+    CombatantRefList list = LIST_INIT(MAX_ENEMIES);
+    for (Id i = FIRST_ENEMY_ID; i < MAX_COMBATANTS; i++)
+    {
+        Combatant *combatant = &combatants[i];
+        if (combatant->state != COMBATANT_STATE_INVALID)
+        {
+            LIST_APPEND(&list, combatant);
+        }
+    }
+    return list;
+}

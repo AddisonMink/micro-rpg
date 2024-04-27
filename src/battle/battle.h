@@ -6,4 +6,4 @@ void Battle_Init();
 
 void Battle_Update(float delta);
 
-void Battle_Draw(UI *ui);
+void Battle_Draw(Camera3D camera, UI *ui);
