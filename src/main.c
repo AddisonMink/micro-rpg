@@ -40,8 +40,7 @@ static void run()
                 tint.g = WHITE.g - (progress / 1.5 * 255.0f);
                 tint.b = WHITE.b - (progress * 255.0f);
                 progress += 0.2f;
-
-                TraceLog(LOG_INFO, "Z = %f, Color %d %d %d", z, tint.r, tint.g, tint.b);
+                
                 DrawModelEx(wallModel, (Vector3){-2.5, 1, z}, (Vector3){0, 1, 0}, 0.0f, (Vector3){1, 1, 1}, tint);
                 DrawModelEx(wallModel, (Vector3){2.5, 1, z}, (Vector3){1, 0, 0}, 180.0f, (Vector3){1, 1, 1}, tint);
                 DrawModelEx(floorModel, (Vector3){-1, -1, z}, (Vector3){1, 0, 0}, 90.0f, (Vector3){1, 1, 1}, tint);
