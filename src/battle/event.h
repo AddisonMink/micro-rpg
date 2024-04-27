@@ -3,7 +3,6 @@
 #include "asset/asset.h"
 #include "battle/action.h"
 #include "battle/combatant.h"
-#include "common/list-macros-new.h"
 
 #define MAX_EVENTS 5
 
@@ -34,7 +33,12 @@ typedef struct Event
     } data;
 } Event;
 
-STATIC_LIST_TYPE(EventList, Event, MAX_EVENTS);
+typedef struct EventList
+{
+    Event data[MAX_EVENTS];
+    int capacity;
+    int count;
+} EventList;
 
 Event Event_GlobalMessage(const char *message, float duration);
 

@@ -1,20 +1,22 @@
 #include "enemy-behavior.h"
 
 #include "battle/target.h"
-#include "common/list-macros-new.h"
+#include "common/list-macros.h"
 
 static Id chooseTargetWithLowestArmor(const Combatant combatants[MAX_COMBATANTS], TargetList targets)
 {
     int lowestArmor = __INT_MAX__;
     Id result;
-    LIST_ITER((&targets), Id, {
-        const Combatant *target = &combatants[*_elem];
+    LIST_ITERATE((&targets))
+    {
+        const Id candidateId = LIST_ELEM((&targets), i);        
+        const Combatant *target = &combatants[candidateId];
         if (target->armor < lowestArmor)
         {
             lowestArmor = target->armor;
             result = target->id;
         }
-    })
+    }
 
     return result;
 }

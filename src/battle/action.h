@@ -1,7 +1,5 @@
 #pragma once
 
-#include "common/list-macros-new.h"
-
 #define MAX_EFFECT_TEMPLATES 3
 #define MAX_ACTIONS 3
 
@@ -97,7 +95,12 @@ typedef struct EffectTemplate
         .type = EFFECT_TEMPLATE_AUTO_MOVE, \
     }
 
-STATIC_LIST_TYPE(EffectTemplateList, EffectTemplate, MAX_EFFECT_TEMPLATES);
+typedef struct EffectTemplateList
+{
+    EffectTemplate data[MAX_EFFECT_TEMPLATES];
+    int capacity;
+    int count;
+} EffectTemplateList;
 
 typedef enum ActionId
 {
@@ -127,6 +130,11 @@ typedef struct Action
     EffectTemplateList effects;
 } Action;
 
-STATIC_LIST_TYPE(ActionRefList, const Action *, MAX_ACTIONS);
+typedef struct ActionList
+{
+    const Action *data[MAX_ACTIONS];
+    int capacity;
+    int count;
+} ActionList;
 
 const Action *Action_Load(ActionId id);

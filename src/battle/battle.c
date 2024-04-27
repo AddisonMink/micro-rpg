@@ -11,7 +11,7 @@
 #include "battle/player-display.h"
 #include "battle/target.h"
 #include "battle/queue.h"
-#include "common/list-macros-new.h"
+#include "common/list-macros.h"
 
 typedef enum BattleState
 {
@@ -108,9 +108,9 @@ void Battle_Init()
 
     battle.queue = Queue_Create(battle.combatants);
 
-    battle.items = LIST_INIT(ItemList, MAX_ITEMS);
-    LIST_PUSH((&battle.items), Item_Create(ITEM_LODESTONE));
-    LIST_PUSH((&battle.items), Item_Create(ITEM_WAND));
+    battle.items = (ItemList)LIST_INIT(MAX_ITEMS);
+    LIST_APPEND((&battle.items), Item_Create(ITEM_LODESTONE));
+    LIST_APPEND((&battle.items), Item_Create(ITEM_WAND));
 
     battle.state = BATTLE_SELECT_ACTION;
     const Id id = battle.queue.data[battle.queue.index];
@@ -258,10 +258,24 @@ void Battle_Update(float delta)
         CombatantList players = PlayerList();
         CombatantList enemies = EnemyList();
         const Id id = Queue_PeekNext(&battle.queue);
-        const bool allPlayersDead = LIST_NONE((&players), Combatant *, (*_elem)->state == COMBATANT_STATE_ALIVE);
-        const bool allEnemiesDead = LIST_NONE((&enemies), Combatant *, (*_elem)->state == COMBATANT_STATE_ALIVE);
-        const bool allEnemiesBack = LIST_ALL((&enemies), Combatant *, (*_elem)->state == COMBATANT_STATE_ALIVE && (*_elem)->row == ROW_BACK);
-        const bool allPlayersBack = LIST_ALL((&players), Combatant *, (*_elem)->state == COMBATANT_STATE_ALIVE && (*_elem)->row == ROW_BACK);
+
+        LIST_ITER((&players), Combatant *, , {})
+
+        const bool allPlayersDead = !LIST_CONTAINS((&players), Combatant *, , {
+            _success = _elem->state == COMBATANT_STATE_ALIVE;
+        });
+
+        const bool allEnemiesDead = !LIST_CONTAINS((&enemies), Combatant *, , {
+            _success = _elem->state == COMBATANT_STATE_ALIVE;
+        });
+
+        const bool allEnemiesBack = !LIST_CONTAINS((&enemies), Combatant *, , {
+            _success = _elem->state == COMBATANT_STATE_ALIVE && _elem->row == ROW_FRONT;
+        });
+
+        const bool allPlayersBack = !LIST_CONTAINS((&players), Combatant *, , {
+            _success = _elem->state == COMBATANT_STATE_ALIVE && _elem->row == ROW_FRONT;
+        });
 
         if (allPlayersDead)
         {
@@ -275,25 +289,25 @@ void Battle_Update(float delta)
         {
             battle.state = BATTLE_EXECUTE_EFFECTS;
             battle.data.executeEffects = (ExecuteEffects){
-                .effects = LIST_INIT(EffectList, MAX_EFFECTS),
+                .effects = LIST_INIT(MAX_EFFECTS),
             };
 
             if (allPlayersBack)
             {
-                LIST_ITER((&players), Combatant *, {
-                    if ((*_elem)->state == COMBATANT_STATE_ALIVE)
+                LIST_ITER((&players), Combatant *, , {
+                    if (_elem->state == COMBATANT_STATE_ALIVE)
                     {
-                        LIST_PUSH((&battle.data.executeEffects.effects), EffectMove_Create(DIRECTION_FORWARD, (*_elem)->id));
+                        LIST_APPEND((&battle.data.executeEffects.effects), EffectMove_Create(DIRECTION_FORWARD, _elem->id));
                     }
-                })
+                });
             }
 
             if (allEnemiesBack)
             {
-                LIST_ITER((&enemies), Combatant *, {
-                    if ((*_elem)->state == COMBATANT_STATE_ALIVE)
+                LIST_ITER((&enemies), Combatant *, , {
+                    if (_elem->state == COMBATANT_STATE_ALIVE)
                     {
-                        LIST_PUSH((&battle.data.executeEffects.effects), EffectMove_Create(DIRECTION_FORWARD, (*_elem)->id));
+                        LIST_APPEND((&battle.data.executeEffects.effects), EffectMove_Create(DIRECTION_FORWARD, _elem->id));
                     }
                 });
             }

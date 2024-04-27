@@ -1,6 +1,6 @@
 #include "target.h"
 
-#include "common/list-macros-new.h"
+#include "common/list-macros.h"
 
 static const bool rangeTable[NUM_RANGES][NUM_ROWS][NUM_ROWS] = {
     [RANGE_MELEE] = {
@@ -19,11 +19,11 @@ static const bool rangeTable[NUM_RANGES][NUM_ROWS][NUM_ROWS] = {
 
 TargetList TargetList_Create(const Action *action, const Combatant combatants[MAX_COMBATANTS], Id id)
 {
-    TargetList targets = LIST_INIT(TargetList, MAX_COMBATANTS);
+    TargetList targets = LIST_INIT(MAX_COMBATANTS);
 
     if (action->range == RANGE_SELF)
     {
-        LIST_PUSH((&targets), id);
+        LIST_APPEND((&targets), id);
         return targets;
     };
 
@@ -38,7 +38,7 @@ TargetList TargetList_Create(const Action *action, const Combatant combatants[MA
 
         if (alive && inRange)
         {
-            LIST_PUSH((&targets), i);
+            LIST_APPEND((&targets), i);
         }
     }
 
