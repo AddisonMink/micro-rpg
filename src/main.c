@@ -18,6 +18,17 @@ static void run()
     BeginDrawing();
     {
         ClearBackground(BLACK);
+
+        BeginMode3D(camera);
+        {
+            DrawGrid(10, 1.0f);
+            DrawCube((Vector3){-2, 1, 0.0f}, 1.0f, 2.0f, 12.0f, RED);
+            DrawCube((Vector3){2, 1, 0.0f}, 1.0f, 2.0f, 12.0f, RED);
+            DrawCube((Vector3){0, -1, 0.0f}, 4.0f, 2.0f, 12.0f, BLUE);
+            DrawCube((Vector3){0, 3, 0.0f}, 4.0f, 2.0f, 12.0f, BLUE);
+        }
+        EndMode3D();
+
         Battle_Draw(camera, ui);
     }
     EndDrawing();
@@ -29,8 +40,8 @@ int main(void)
     ui = UI_Alloc(100);
     Battle_Init();
 
-    camera.position = (Vector3){0.0f, 0.0f, 5.0f};
-    camera.target = (Vector3){0.0f, 0.0f, 0.0f};
+    camera.position = (Vector3){0.0f, 1, 5.0f};
+    camera.target = (Vector3){0.0f, 1.0f, 0.0f};
     camera.up = (Vector3){0.0f, 1.0f, 0.0f};
     camera.fovy = 45.0f;
     camera.projection = CAMERA_PERSPECTIVE;

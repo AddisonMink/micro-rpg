@@ -4,7 +4,7 @@
 #include "ui/ui.h"
 
 #define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+#define SCREEN_HEIGHT 800
 #define BODY_FONT_SIZE 14
 #define HEADER_FONT_SIZE 18
 

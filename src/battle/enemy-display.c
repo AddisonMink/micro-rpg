@@ -6,7 +6,7 @@
 
 static const float Z_POS = 0.0;
 static const float Z_POS_BACK_ROW_OFFSET = 3.0;
-static const float Y_POS = 0.0;
+static const float Y_POS = 0.5;
 static const float X_POS_1[MAX_ENEMIES] = {0, 0, 0};
 static const float X_POS_2[MAX_ENEMIES] = {-1, 1, 0};
 static const float X_POS_3[MAX_ENEMIES] = {-1, 0, 1};
