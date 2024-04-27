@@ -33,7 +33,7 @@ static void run()
         BeginMode3D(camera);
         {
             float progress = 0.0f;
-            for (float z = 10; z >= -5; z -= 2)
+            for (float z = 10; z >= -12; z -= 2)
             {
                 Color tint = WHITE;
                 tint.r = WHITE.r - (progress / 3 * 255.0f);
