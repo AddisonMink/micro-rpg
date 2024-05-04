@@ -85,6 +85,21 @@ static const Action actions[] = {
         },
     },
 
+    [ACTION_SCAMP_KNIFE] = {
+        .id = ACTION_SCAMP_KNIFE,
+        .name = "Knife",
+        .range = RANGE_MELEE,
+        .magicLevel = 0,
+        .cost = 0,
+        .effects = {
+            .data = {
+                MAKE_EFFECT_TEMPLATE_ATTACK(false, DAMAGE_PHYSICAL),
+            },
+            .capacity = MAX_EFFECT_TEMPLATES,
+            .count = 1,
+        },
+    },
+
     [ACTION_LODESTONE_ZAP] = {
         .id = ACTION_LODESTONE_ZAP,
         .name = "Zap",

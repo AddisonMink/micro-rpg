@@ -181,7 +181,7 @@ void Battle_Update(float delta)
             battle.data.compileEffects = (CompileEffects){
                 .action = data->action,
                 .itemIndexOpt = data->itemIndexOpt,
-                .targetOpt = LIST_ELEM((&data->targets), data->targets.index),
+                .targetOpt = LIST_ELEM_DEPRECATED((&data->targets), data->targets.index),
             };
             TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_COMPILE_EFFECTS");
         }
@@ -204,20 +204,20 @@ void Battle_Update(float delta)
     {
         EffectList *effects = &battle.data.executeEffects.effects;
 
-        if (LIST_EMPTY(effects))
+        if (LIST_EMPTY_DEPRECATED(effects))
         {
             battle.state = BATTLE_END_TURN;
             TraceLog(LOG_INFO, "Battle_Update: Transition to BATTLE_END_TURN");
         }
         else
         {
-            Effect effect = LIST_ELEM(effects, 0);
+            Effect effect = LIST_ELEM_DEPRECATED(effects, 0);
             LIST_DELETE(effects, 0);
 
             EffectResult result = Effect_Execute(battle.combatants, &battle.items, &battle.queue, effect);
             LIST_CONCAT(effects, (&result.effects));
 
-            if (!LIST_EMPTY((&result.events)))
+            if (!LIST_EMPTY_DEPRECATED((&result.events)))
             {
                 battle.state = BATTLE_SHOW_EVENTS;
                 battle.data.showEvents = (ShowEvents){
@@ -234,7 +234,7 @@ void Battle_Update(float delta)
         ShowEvents *data = &battle.data.showEvents;
         EventList *events = &data->events;
 
-        if (LIST_EMPTY(events))
+        if (LIST_EMPTY_DEPRECATED(events))
         {
             battle.data.executeEffects = (ExecuteEffects){
                 .effects = data->effects,
@@ -243,7 +243,7 @@ void Battle_Update(float delta)
         }
         else
         {
-            Event *event = &LIST_ELEM(events, 0);
+            Event *event = &LIST_ELEM_DEPRECATED(events, 0);
             event->elapsed += delta;
             if (event->elapsed >= event->duration)
             {
@@ -258,19 +258,19 @@ void Battle_Update(float delta)
         CombatantList enemies = EnemyList();
         const Id id = Queue_PeekNext(&battle.queue);
 
-        const bool allPlayersDead = !LIST_EXISTS_PTR((&players), Combatant, {
+        const bool allPlayersDead = !LIST_EXISTS_PTR_DEPRECATED((&players), Combatant, {
             success = elem->state == COMBATANT_STATE_ALIVE;
         });
 
-        const bool allEnemiesDead = !LIST_EXISTS_PTR((&enemies), Combatant, {
+        const bool allEnemiesDead = !LIST_EXISTS_PTR_DEPRECATED((&enemies), Combatant, {
             success = elem->state == COMBATANT_STATE_ALIVE;
         });
 
-        const bool allEnemiesBack = !LIST_EXISTS_PTR((&enemies), Combatant, {
+        const bool allEnemiesBack = !LIST_EXISTS_PTR_DEPRECATED((&enemies), Combatant, {
             success = elem->state == COMBATANT_STATE_ALIVE && elem->row == ROW_FRONT;
         });
 
-        const bool allPlayersBack = !LIST_EXISTS_PTR((&players), Combatant, {
+        const bool allPlayersBack = !LIST_EXISTS_PTR_DEPRECATED((&players), Combatant, {
             success = elem->state == COMBATANT_STATE_ALIVE && elem->row == ROW_FRONT;
         });
 
@@ -291,7 +291,7 @@ void Battle_Update(float delta)
 
             if (allPlayersBack)
             {
-                LIST_FOREACH_PTR((&players), Combatant, {
+                LIST_FOREACH_PTR_DEPRECATED((&players), Combatant, {
                     if (elem->state == COMBATANT_STATE_ALIVE)
                     {
                         LIST_APPEND((&battle.data.executeEffects.effects), EffectMove_Create(DIRECTION_FORWARD, elem->id));
@@ -301,7 +301,7 @@ void Battle_Update(float delta)
 
             if (allEnemiesBack)
             {
-                LIST_FOREACH_PTR((&enemies), Combatant, {
+                LIST_FOREACH_PTR_DEPRECATED((&enemies), Combatant, {
                     if (elem->state == COMBATANT_STATE_ALIVE)
                     {
                         LIST_APPEND((&battle.data.executeEffects.effects), EffectMove_Create(DIRECTION_FORWARD, elem->id));
@@ -374,7 +374,7 @@ void Battle_Draw(Camera3D camera, UI *ui)
     case BATTLE_SELECT_TARGET:
     {
         const TargetList *targets = &battle.data.selectTarget.targets;
-        const Id id = targets->count > 0 ? LIST_ELEM(targets, targets->index) : -1;
+        const Id id = targets->count > 0 ? LIST_ELEM_DEPRECATED(targets, targets->index) : -1;
         const bool showEnemyStatus = IsKeyDown(KEY_TAB);
         EnemyDisplay_Draw(camera, ui, battle.combatants, id, NULL, showEnemyStatus);
         PlayerDisplay_Draw(ui, battle.combatants, id, NULL);
@@ -388,13 +388,13 @@ void Battle_Draw(Camera3D camera, UI *ui)
     case BATTLE_SHOW_EVENTS:
     {
         const ShowEvents *data = &battle.data.showEvents;
-        if (LIST_EMPTY((&data->events)))
+        if (LIST_EMPTY_DEPRECATED((&data->events)))
         {
             EnemyDisplay_Draw(camera, ui, battle.combatants, -1, NULL, false);
             PlayerDisplay_Draw(ui, battle.combatants, -1, NULL);
             break;
         }
-        const Event *event = &LIST_ELEM((&data->events), 0);
+        const Event *event = &LIST_ELEM_DEPRECATED((&data->events), 0);
 
         EnemyDisplay_Draw(camera, ui, battle.combatants, -1, event, false);
         PlayerDisplay_Draw(ui, battle.combatants, -1, event);

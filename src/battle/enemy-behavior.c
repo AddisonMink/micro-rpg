@@ -3,13 +3,28 @@
 #include "battle/target.h"
 #include "common/list-macros.h"
 
+static CombatantRefList allyList(Combatant combatants[MAX_COMBATANTS], Combatant *enemy)
+{
+    CombatantRefList result = LIST_INIT(MAX_ENEMIES);
+    for (Id id = FIRST_ENEMY_ID; id < MAX_COMBATANTS; id++)
+    {
+        Combatant *combatant = &combatants[id];
+        if (combatant->state == COMBATANT_STATE_ALIVE && combatant->id != enemy->id)
+        {
+            LIST_APPEND(&result, combatant);
+        }
+    }
+
+    return result;
+}
+
 static Id chooseTargetWithLowestArmor(const Combatant combatants[MAX_COMBATANTS], TargetList targets)
 {
     int lowestArmor = __INT_MAX__;
     Id result;
-    LIST_ITERATE((&targets))
+    LIST_ITERATE_DEPRECATED((&targets))
     {
-        const Id candidateId = LIST_ELEM((&targets), i);
+        const Id candidateId = LIST_ELEM_DEPRECATED((&targets), i);
         const Combatant *target = &combatants[candidateId];
         if (target->armor < lowestArmor)
         {
@@ -27,7 +42,7 @@ static bool tryAction(EnemyBehavior *result, const Combatant combatants[MAX_COMB
     const TargetList targets = TargetList_Create(action, combatants, enemy->id);
     bool success = false;
 
-    if (!LIST_EMPTY((&targets)))
+    if (!LIST_EMPTY_DEPRECATED((&targets)))
     {
         const Id targetId = chooseTargetWithLowestArmor(combatants, targets);
         *result = (EnemyBehavior){
@@ -40,9 +55,9 @@ static bool tryAction(EnemyBehavior *result, const Combatant combatants[MAX_COMB
     return success;
 }
 
-EnemyBehavior EnemyBehavior_Get(const Combatant combatants[MAX_COMBATANTS], Id enemyId)
+EnemyBehavior EnemyBehavior_Get(Combatant combatants[MAX_COMBATANTS], Id enemyId)
 {
-    const Combatant *enemy = &combatants[enemyId];
+    Combatant *enemy = &combatants[enemyId];
 
     EnemyBehavior result = {
         .action = Action_Load(ACTION_WAIT),
@@ -61,7 +76,13 @@ EnemyBehavior EnemyBehavior_Get(const Combatant combatants[MAX_COMBATANTS], Id e
     {
         if (tryAction(&result, combatants, enemy, ACTION_SCAMP_BLOWGUN))
             break;
-        if (tryAction(&result, combatants, enemy, ACTION_SCAMP_HOOK))
+
+        CombatantRefList allies = allyList(combatants, enemy);
+        const bool allyInFront = LIST_ANY(&allies, Combatant *, ally, (*ally)->row == ROW_FRONT);
+        if (allyInFront && tryAction(&result, combatants, enemy, ACTION_SCAMP_HOOK))
+            break;
+
+        if (tryAction(&result, combatants, enemy, ACTION_SCAMP_KNIFE))
             break;
         break;
     }

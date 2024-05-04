@@ -40,9 +40,9 @@ void Queue_Delete(Queue *queue, Id id)
 {
 
     int index = -1;
-    LIST_ITERATE(queue)
+    LIST_ITERATE_DEPRECATED(queue)
     {
-        if (LIST_ELEM(queue, i) == id)
+        if (LIST_ELEM_DEPRECATED(queue, i) == id)
         {
             index = i;
             break;

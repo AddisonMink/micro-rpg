@@ -79,9 +79,9 @@ EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targe
         LIST_APPEND((&effects), EffectPushEvent_Create(message));
     }
 
-    LIST_ITERATE((&action->effects))
+    LIST_ITERATE_DEPRECATED((&action->effects))
     {
-        const EffectTemplate template = LIST_ELEM((&action->effects), i);
+        const EffectTemplate template = LIST_ELEM_DEPRECATED((&action->effects), i);
         const Id effectTarget = template.selfOverride ? actor->id : target;
 
         switch (template.type)
@@ -199,7 +199,7 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
     {
         const int amount = effect.useItem.amount;
         const int itemIndex = effect.useItem.itemIndex;
-        Item *item = &LIST_ELEM(items, itemIndex);
+        Item *item = &LIST_ELEM_DEPRECATED(items, itemIndex);
 
         item->uses -= amount;
         if (item->uses <= 0)

@@ -9,4 +9,4 @@ typedef struct EnemyBehavior
     Id targetOpt;
 } EnemyBehavior;
 
-EnemyBehavior EnemyBehavior_Get(const Combatant combatants[MAX_COMBATANTS], Id enemyId);
+EnemyBehavior EnemyBehavior_Get(Combatant combatants[MAX_COMBATANTS], Id enemyId);

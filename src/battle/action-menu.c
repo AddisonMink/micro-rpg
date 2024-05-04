@@ -49,9 +49,9 @@ void ActionMenu_Init(const ItemList *items, const Combatant *player)
     menu.state = ACTION_MENU_SELECT_ITEM;
     menu.scrollCooldown = 0;
 
-    LIST_ITERATE(items)
+    LIST_ITERATE_DEPRECATED(items)
     {
-        const Item *item = &LIST_ELEM(items, i);
+        const Item *item = &LIST_ELEM_DEPRECATED(items, i);
 
         ActionMenuEntry entry;
         entry.index = 0;
@@ -62,9 +62,9 @@ void ActionMenu_Init(const ItemList *items, const Combatant *player)
         actions->count = 0;
         actions->index = 0;
 
-        LIST_ITERATE2((&item->actions))
+        LIST_ITERATE2_DEPRECATED((&item->actions))
         {
-            const Action *action = LIST_ELEM((&item->actions), j);
+            const Action *action = LIST_ELEM_DEPRECATED((&item->actions), j);
 
             if (player->magic >= action->magicLevel)
             {
@@ -160,9 +160,9 @@ static void ui_item_list(UI *ui)
             UI_AlignShimH(ui, size.x, BODY_FONT_SIZE, ALIGN_H_CENTER);
             UI_BodyLabel(ui, "ITEMS");
 
-            LIST_ITERATE((&menu))
+            LIST_ITERATE_DEPRECATED((&menu))
             {
-                const ActionMenuEntry *entry = &LIST_ELEM((&menu), i);
+                const ActionMenuEntry *entry = &LIST_ELEM_DEPRECATED((&menu), i);
                 const Item *item = entry->item;
 
                 UI_Row(ui, SPACING);
@@ -194,7 +194,7 @@ static void ui_item_list(UI *ui)
 static void ui_action_list(UI *ui, bool showPointer)
 {
     const Texture2D pointer = Asset_Sprite(SPRITE_POINTER);
-    const ActionMenuEntry *entry = &LIST_ELEM((&menu), menu.index);
+    const ActionMenuEntry *entry = &LIST_ELEM_DEPRECATED((&menu), menu.index);
 
     const Vector2 size = UI_Panel(ui, ACTION_LIST_WIDTH, ACTION_MENU_HEIGHT);
     {
@@ -205,9 +205,9 @@ static void ui_action_list(UI *ui, bool showPointer)
             UI_AlignShimH(ui, size.x, BODY_FONT_SIZE, ALIGN_H_CENTER);
             UI_BodyLabel(ui, "ACTIONS");
 
-            LIST_ITERATE((&entry->actions))
+            LIST_ITERATE_DEPRECATED((&entry->actions))
             {
-                const Action *action = LIST_ELEM((&entry->actions), i);
+                const Action *action = LIST_ELEM_DEPRECATED((&entry->actions), i);
 
                 UI_Row(ui, SPACING);
                 {
@@ -237,8 +237,8 @@ static void ui_action_list(UI *ui, bool showPointer)
 
 static void ui_action_desc(UI *ui)
 {
-    const ActionMenuEntry *entry = &LIST_ELEM((&menu), menu.index);
-    const Action *action = LIST_ELEM((&entry->actions), entry->index);
+    const ActionMenuEntry *entry = &LIST_ELEM_DEPRECATED((&menu), menu.index);
+    const Action *action = LIST_ELEM_DEPRECATED((&entry->actions), entry->index);
 
     const Vector2 size = UI_Panel(ui, ACTION_LIST_WIDTH, ACTION_MENU_HEIGHT);
     {
@@ -256,9 +256,9 @@ static void ui_action_desc(UI *ui)
             UI_AlignShimH(ui, size.x, 12, ALIGN_H_CENTER);
             ui_range(ui, action->range);
 
-            LIST_ITERATE((&action->effects))
+            LIST_ITERATE_DEPRECATED((&action->effects))
             {
-                const EffectTemplate *effect = &LIST_ELEM((&action->effects), i);
+                const EffectTemplate *effect = &LIST_ELEM_DEPRECATED((&action->effects), i);
                 UI_AlignShimH(ui, size.x, 12, ALIGN_H_CENTER);
                 ui_effect_template(ui, effect);
             }
@@ -316,8 +316,8 @@ static const float scrollCooldown = 0.2f;
 
 const ActionMenuResult *ActionMenu_Update(float delta)
 {
-    const bool itemsNonEmpty = !LIST_EMPTY((&menu));
-    const bool actionsNonEmpty = itemsNonEmpty && !LIST_EMPTY((&LIST_ELEM((&menu), menu.index).actions));
+    const bool itemsNonEmpty = !LIST_EMPTY_DEPRECATED((&menu));
+    const bool actionsNonEmpty = itemsNonEmpty && !LIST_EMPTY_DEPRECATED((&LIST_ELEM_DEPRECATED((&menu), menu.index).actions));
     bool confirmed = false;
 
     if (menu.scrollCooldown > 0)
@@ -334,7 +334,7 @@ const ActionMenuResult *ActionMenu_Update(float delta)
         }
         else if (menu.state == ACTION_MENU_SELECT_ACTION && actionsNonEmpty)
         {
-            ActionMenuEntry *entry = &LIST_ELEM((&menu), menu.index);
+            ActionMenuEntry *entry = &LIST_ELEM_DEPRECATED((&menu), menu.index);
             entry->index = (entry->index + 1) % entry->actions.count;
             menu.scrollCooldown = scrollCooldown;
         }
@@ -348,7 +348,7 @@ const ActionMenuResult *ActionMenu_Update(float delta)
         }
         else if (menu.state == ACTION_MENU_SELECT_ACTION && actionsNonEmpty)
         {
-            ActionMenuEntry *entry = &LIST_ELEM((&menu), menu.index);
+            ActionMenuEntry *entry = &LIST_ELEM_DEPRECATED((&menu), menu.index);
             entry->index = (entry->index - 1 + entry->actions.count) % entry->actions.count;
             menu.scrollCooldown = scrollCooldown;
         }
