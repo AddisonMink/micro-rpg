@@ -15,6 +15,7 @@ typedef enum SpriteId
     SPRITE_POINTER_DOWN,
 
     // Enemy Sprites
+    SPRITE_OGRE,
     SPRITE_SCAMP,
 
     // Player Sprites

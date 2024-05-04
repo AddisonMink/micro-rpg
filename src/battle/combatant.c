@@ -37,6 +37,17 @@ static const CombatantData combatantData[] = {
         .hpMax = 6,
     },
 
+    [COMBATANT_TYPE_OGRE] = {
+        .type = COMBATANT_TYPE_OGRE,
+        .name = "Ogre",
+        .spriteId = SPRITE_OGRE,
+        .strength = 3,
+        .magic = 0,
+        .speed = 1,
+        .armor = 2,
+        .hpMax = 10,
+    },
+
     [COMBATANT_TYPE_SCAMP] = {
         .type = COMBATANT_TYPE_SCAMP,
         .name = "Scamp",

@@ -15,6 +15,7 @@ typedef enum CombatantType
 {
     COMBATANT_TYPE_GALOOT,
     COMBATANT_TYPE_MAGICIAN,
+    COMBATANT_TYPE_OGRE,
     COMBATANT_TYPE_SCAMP,
 } CombatantType;
 
