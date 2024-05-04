@@ -112,7 +112,7 @@ typedef enum ActionId
     // Enemu
     ACTION_OGRE_SMASH,
 
-    ACTION_SCAMP_CLEAVER,
+    ACTION_SCAMP_BLOWGUN,
 
     // Item
     ACTION_LODESTONE_ZAP,

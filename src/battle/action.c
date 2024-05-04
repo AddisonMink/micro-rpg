@@ -54,9 +54,9 @@ static const Action actions[] = {
         },
     },
 
-    [ACTION_SCAMP_CLEAVER] = {
-        .id = ACTION_SCAMP_CLEAVER,
-        .name = "Cleaver",
+    [ACTION_SCAMP_BLOWGUN] = {
+        .id = ACTION_SCAMP_BLOWGUN,
+        .name = "Blowgun",
         .range = RANGE_PROJECTILE,
         .magicLevel = 0,
         .cost = 0,

@@ -59,7 +59,7 @@ EnemyBehavior EnemyBehavior_Get(const Combatant combatants[MAX_COMBATANTS], Id e
     }
     case COMBATANT_TYPE_SCAMP:
     {
-        if (tryAction(&result, combatants, enemy, ACTION_SCAMP_CLEAVER))
+        if (tryAction(&result, combatants, enemy, ACTION_SCAMP_BLOWGUN))
             break;
         if (tryAction(&result, combatants, enemy, ACTION_ATTACK))
             break;
