@@ -168,6 +168,23 @@ void EnemyDisplay_Draw(
         : enemies.count == 2 ? X_POS_2
                              : X_POS_3;
 
+    LIST_FOREACH_IF(&enemies, Combatant *, enemy, (*enemy)->row == ROW_BACK)
+    {
+        const Id id = (*enemy)->id;
+        const Event *event = eventOpt && eventOpt->id == id ? eventOpt : NULL;
+        const bool isSelected = id == selected;
+        renderEnemy(camera, ui, *enemy, x_pos[_index], event, showStatus, isSelected);
+    }
+
+    LIST_FOREACH_IF(&enemies, Combatant *, enemy, (*enemy)->row == ROW_FRONT)
+    {
+        const Id id = (*enemy)->id;
+        const Event *event = eventOpt && eventOpt->id == id ? eventOpt : NULL;
+        const bool isSelected = id == selected;
+        renderEnemy(camera, ui, *enemy, x_pos[_index], event, showStatus, isSelected);
+    }
+
+    /*
     int index = 0;
     LIST_FOREACH(&enemies, Combatant *, enemy)
     {
@@ -177,4 +194,5 @@ void EnemyDisplay_Draw(
         renderEnemy(camera, ui, *enemy, x_pos[index], event, showStatus, isSelected);
         index++;
     }
+    */
 }

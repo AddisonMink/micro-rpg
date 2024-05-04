@@ -156,6 +156,6 @@ typedef struct List
 
 #define LIST_FOREACH_IF(LIST, TYPE, ELEM, COND)                                          \
     for (int _index = 0, _done = 0; !_done; _done = (++_index == (LIST)->count) ? 1 : 0) \
-        for (type *ELEM = &(LIST)->data[_index]; !_done && (COND); _done = 1)
+        for (TYPE *ELEM = &(LIST)->data[_index]; !_done && (COND); _done = 1)
 
 #define LIST_COUNT(LIST) (LIST)->count
