@@ -2,6 +2,8 @@
 
 #include "raylib.h"
 
+#include "combatant.h"
+
 #define MAX_EFFECT_TEMPLATES 3
 #define MAX_ACTIONS 3
 
@@ -38,6 +40,7 @@ typedef struct EffectTemplate
         EFFECT_TEMPLATE_MOVE,
         EFFECT_TEMPLATE_ATTACK,
         EFFECT_TEMPLATE_AUTO_MOVE,
+        EFFECT_TEMPLATE_STATUS,
     } type;
 
     union
@@ -62,6 +65,11 @@ typedef struct EffectTemplate
         {
             DamageType damageType;
         } attack;
+
+        struct
+        {
+            Status status;
+        } status;
 
     } data;
 } EffectTemplate;
@@ -102,6 +110,14 @@ typedef struct EffectTemplate
     {                                        \
         .selfOverride = SELF,                \
         .type = EFFECT_TEMPLATE_AUTO_MOVE,   \
+    }
+
+#define MAKE_EFFECT_TEMPLATE_STATUS(SELF, STATUS) \
+    (EffectTemplate)                              \
+    {                                             \
+        .selfOverride = SELF,                     \
+        .type = EFFECT_TEMPLATE_STATUS,           \
+        .data = {.status = {.status = STATUS} }   \
     }
 
 typedef struct EffectTemplateList

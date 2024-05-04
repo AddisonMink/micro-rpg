@@ -78,6 +78,7 @@ Combatant Combatant_Create(Id id, CombatantType type, Row row)
         .hp = data->hpMax,
         .hpMax = data->hpMax,
         .row = row,
+        .statuses = {false},
     };
 }
 

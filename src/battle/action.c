@@ -125,9 +125,10 @@ static const Action actions[] = {
             .data = {
                 MAKE_EFFECT_TEMPLATE_MOVE(false, DIRECTION_FORWARD),
                 MAKE_EFFECT_TEMPLATE_DAMAGE(false, DAMAGE_MAGICAL, 1),
+                MAKE_EFFECT_TEMPLATE_STATUS(false, STATUS_STUCK),
             },
             .capacity = MAX_EFFECT_TEMPLATES,
-            .count = 2,
+            .count = 3,
         },
     },
 

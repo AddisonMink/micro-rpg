@@ -16,6 +16,7 @@ typedef enum EffectType
     EFFECT_USE_ITEM,
     EFFECT_BREAK_ITEM,
     EFFECT_PUSH_EVENT,
+    EFFECT_STATUS,
 } EffectType;
 
 typedef struct EffectDamage
@@ -52,6 +53,12 @@ typedef struct EffectPushEvent
     Event event;
 } EffectPushEvent;
 
+typedef struct EffectStatus
+{
+    Status status;
+    Id id;
+} EffectStatus;
+
 typedef struct Effect
 {
     EffectType type;
@@ -63,6 +70,7 @@ typedef struct Effect
         EffectUseItem useItem;
         EffectBreakItem breakItem;
         EffectPushEvent pushEvent;
+        EffectStatus status;
     };
 } Effect;
 
@@ -77,6 +85,8 @@ Effect EffectUseItem_Create(int amount, int itemIndex);
 Effect EffectBreakItem_Create(int itemIndex);
 
 Effect EffectPushEvent_Create(Event event);
+
+Effect EffectStatus_Create(Status status, Id id);
 
 typedef struct EffectList
 {

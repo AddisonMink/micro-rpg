@@ -125,6 +125,8 @@ static void ui_effect_template(UI *ui, const EffectTemplate *effect)
     case EFFECT_TEMPLATE_AUTO_MOVE:
         UI_BodyLabel(ui, "Move");
         break;
+    case EFFECT_TEMPLATE_STATUS:
+        break;
     }
 }
 

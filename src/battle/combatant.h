@@ -34,6 +34,13 @@ typedef enum Row
 
 #define NUM_ROWS 2
 
+typedef enum Status
+{
+    STATUS_STUCK,
+} Status;
+
+#define NUM_STATUSES 1
+
 typedef struct Combatant
 {
     Id id;
@@ -48,6 +55,7 @@ typedef struct Combatant
     int hpMax;
     int hp;
     Row row;
+    Status statuses[NUM_STATUSES];
 } Combatant;
 
 STATIC_LIST_TYPE(CombatantRefList, Combatant *, MAX_COMBATANTS);

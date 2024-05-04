@@ -4,6 +4,12 @@
 
 static const char *itemBreakMessage = "Item broke!";
 
+static const char *statusMessages[] = {
+    [STATUS_STUCK] = "Stuck!",
+};
+
+static const char *cantMoveMessage = "Can't move!";
+
 Effect EffectDamage_Create(int amount, DamageType type, Id id)
 {
     return (Effect){
@@ -68,6 +74,17 @@ Effect EffectPushEvent_Create(Event event)
     };
 }
 
+Effect EffectStatus_Create(Status status, Id id)
+{
+    return (Effect){
+        .type = EFFECT_STATUS,
+        .status = {
+            .status = status,
+            .id = id,
+        },
+    };
+}
+
 EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targetOpt, int itemIndexOpt)
 {
     const Id target = targetOpt == -1 ? actor->id : targetOpt;
@@ -113,6 +130,12 @@ EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targe
         {
             const Direction direction = actor->row == ROW_FRONT ? DIRECTION_BACK : DIRECTION_FORWARD;
             LIST_APPEND((&effects), EffectMove_Create(direction, actor->id));
+            break;
+        }
+        case EFFECT_TEMPLATE_STATUS:
+        {
+            const Status status = template.data.status.status;
+            LIST_APPEND((&effects), EffectStatus_Create(status, effectTarget));
             break;
         }
         }
@@ -184,6 +207,13 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
         const Direction direction = effect.move.direction;
         Combatant *combatant = &combatants[id];
 
+        TraceLog(LOG_INFO, "Combatant %d stuck: %d", id, combatant->statuses[STATUS_STUCK]);
+        if (combatant->statuses[STATUS_STUCK])
+        {
+            LIST_APPEND(events, Event_GlobalMessage(cantMoveMessage, 1.0));
+            break;
+        }
+
         const Row row = direction == DIRECTION_FORWARD ? ROW_FRONT : ROW_BACK;
         const bool showMove = combatant->row != row;
 
@@ -219,6 +249,17 @@ EffectResult Effect_Execute(Combatant combatants[MAX_COMBATANTS], ItemList *item
     case EFFECT_PUSH_EVENT:
     {
         LIST_APPEND(events, effect.pushEvent.event);
+        break;
+    }
+    case EFFECT_STATUS:
+    {
+        const Status status = effect.status.status;
+        const Id id = effect.status.id;
+        Combatant *combatant = &combatants[id];
+
+        combatant->statuses[status] = true;
+
+        LIST_APPEND(events, Event_GlobalMessage(statusMessages[status], 1.0));
         break;
     }
     }
