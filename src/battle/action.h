@@ -110,6 +110,8 @@ typedef enum ActionId
     ACTION_WAIT,
 
     // Enemu
+    ACTION_OGRE_SMASH,
+
     ACTION_SCAMP_CLEAVER,
 
     // Item

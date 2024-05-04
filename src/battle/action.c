@@ -39,6 +39,21 @@ static const Action actions[] = {
         },
     },
 
+    [ACTION_OGRE_SMASH] = {
+        .id = ACTION_OGRE_SMASH,
+        .name = "Smash",
+        .range = RANGE_MELEE,
+        .magicLevel = 0,
+        .cost = 0,
+        .effects = {
+            .data = {
+                MAKE_EFFECT_TEMPLATE_ATTACK(DAMAGE_PHYSICAL),
+            },
+            .capacity = MAX_EFFECT_TEMPLATES,
+            .count = 1,
+        },
+    },
+
     [ACTION_SCAMP_CLEAVER] = {
         .id = ACTION_SCAMP_CLEAVER,
         .name = "Cleaver",

@@ -44,8 +44,8 @@ static const CombatantData combatantData[] = {
         .strength = 3,
         .magic = 0,
         .speed = 1,
-        .armor = 2,
-        .hpMax = 10,
+        .armor = 0,
+        .hpMax = 6,
     },
 
     [COMBATANT_TYPE_SCAMP] = {
