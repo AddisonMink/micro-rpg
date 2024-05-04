@@ -108,17 +108,18 @@ typedef struct List
     for (int _index = 0, _done = 0; !_done; _done = (++_index == (LIST)->count) ? 1 : 0) \
         for (TYPE *ELEM = &(LIST)->data[_index]; !_done && (COND); _done = 1)
 
-#define LIST_FIND(LIST, TYPE, ELEM, COND)                                                    \
-    ({                                                                                       \
-        TYPE *LIST_FIND_RESULT = NULL;                                                       \
-        for (int _index = 0, _done = 0; !_done; _done = (++_index == (LIST)->count) ? 1 : 0) \
-            for (TYPE *ELEM = &(LIST)->data[_index]; !_done; _done = 1)                      \
-                if (COND)                                                                    \
-                {                                                                            \
-                    LIST_FIND_RESULT = ELEM;                                                 \
-                    break;                                                                   \
-                }                                                                            \
-        LIST_FIND_RESULT;                                                                    \
+#define LIST_FIND(LIST, TYPE, ELEM, COND)                                                        \
+    ({                                                                                           \
+        TYPE *LIST_FIND_RESULT = NULL;                                                           \
+        if ((LIST)->count > 0)                                                                   \
+            for (int _index = 0, _done = 0; !_done; _done = (++_index == (LIST)->count) ? 1 : 0) \
+                for (TYPE *ELEM = &(LIST)->data[_index]; !_done; _done = 1)                      \
+                    if (COND)                                                                    \
+                    {                                                                            \
+                        LIST_FIND_RESULT = ELEM;                                                 \
+                        break;                                                                   \
+                    }                                                                            \
+        LIST_FIND_RESULT;                                                                        \
     })
 
 #define LIST_ANY(LIST, TYPE, ELEM, COND) \
