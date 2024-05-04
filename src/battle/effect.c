@@ -82,6 +82,7 @@ EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targe
     LIST_ITERATE((&action->effects))
     {
         const EffectTemplate template = LIST_ELEM((&action->effects), i);
+        const Id effectTarget = template.selfOverride ? actor->id : target;
 
         switch (template.type)
         {
@@ -89,23 +90,23 @@ EffectList Effect_Compile(const Action *action, const Combatant *actor, Id targe
         {
             const int amount = template.data.damage.amount;
             const DamageType type = template.data.damage.damageType;
-            LIST_APPEND((&effects), EffectDamage_Create(amount, type, target));
+            LIST_APPEND((&effects), EffectDamage_Create(amount, type, effectTarget));
             break;
         }
         case EFFECT_TEMPLATE_KILL:
-            LIST_APPEND((&effects), EffectKill_Create(target));
+            LIST_APPEND((&effects), EffectKill_Create(effectTarget));
             break;
         case EFFECT_TEMPLATE_MOVE:
         {
             const Direction direction = template.data.move.direction;
-            LIST_APPEND((&effects), EffectMove_Create(direction, target));
+            LIST_APPEND((&effects), EffectMove_Create(direction, effectTarget));
             break;
         }
         case EFFECT_TEMPLATE_ATTACK:
         {
             const int amount = actor->strength;
             const DamageType type = template.data.attack.damageType;
-            LIST_APPEND((&effects), EffectDamage_Create(amount, type, target));
+            LIST_APPEND((&effects), EffectDamage_Create(amount, type, effectTarget));
             break;
         }
         case EFFECT_TEMPLATE_AUTO_MOVE:

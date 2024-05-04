@@ -8,7 +8,7 @@ static const Action actions[] = {
         .magicLevel = 0,
         .cost = 0,
         .effects = {
-            .data = {MAKE_EFFECT_TEMPLATE_ATTACK(DAMAGE_PHYSICAL)},
+            .data = {MAKE_EFFECT_TEMPLATE_ATTACK(false, DAMAGE_PHYSICAL)},
             .capacity = MAX_EFFECT_TEMPLATES,
             .count = 1,
         },
@@ -21,7 +21,7 @@ static const Action actions[] = {
         .magicLevel = 0,
         .cost = 0,
         .effects = {
-            .data = {MAKE_EFFECT_TEMPLATE_AUTO_MOVE()},
+            .data = {MAKE_EFFECT_TEMPLATE_AUTO_MOVE(false)},
             .capacity = MAX_EFFECT_TEMPLATES,
             .count = 1,
         },
@@ -47,7 +47,7 @@ static const Action actions[] = {
         .cost = 0,
         .effects = {
             .data = {
-                MAKE_EFFECT_TEMPLATE_ATTACK(DAMAGE_PHYSICAL),
+                MAKE_EFFECT_TEMPLATE_ATTACK(false, DAMAGE_PHYSICAL),
             },
             .capacity = MAX_EFFECT_TEMPLATES,
             .count = 1,
@@ -62,7 +62,7 @@ static const Action actions[] = {
         .cost = 0,
         .effects = {
             .data = {
-                MAKE_EFFECT_TEMPLATE_DAMAGE(DAMAGE_PHYSICAL, 2),
+                MAKE_EFFECT_TEMPLATE_DAMAGE(false, DAMAGE_PHYSICAL, 2),
             },
             .capacity = MAX_EFFECT_TEMPLATES,
             .count = 1,
@@ -77,8 +77,8 @@ static const Action actions[] = {
         .cost = 0,
         .effects = {
             .data = {
-                MAKE_EFFECT_TEMPLATE_ATTACK(DAMAGE_PHYSICAL),
-                MAKE_EFFECT_TEMPLATE_MOVE(DIRECTION_BACK),
+                MAKE_EFFECT_TEMPLATE_ATTACK(false, DAMAGE_PHYSICAL),
+                MAKE_EFFECT_TEMPLATE_MOVE(true, DIRECTION_BACK),
             },
             .capacity = MAX_EFFECT_TEMPLATES,
             .count = 2,
@@ -93,7 +93,7 @@ static const Action actions[] = {
         .cost = 1,
         .effects = {
             .data = {
-                MAKE_EFFECT_TEMPLATE_DAMAGE(DAMAGE_MAGICAL, 2),
+                MAKE_EFFECT_TEMPLATE_DAMAGE(false, DAMAGE_MAGICAL, 2),
             },
             .capacity = MAX_EFFECT_TEMPLATES,
             .count = 1,
@@ -108,8 +108,8 @@ static const Action actions[] = {
         .cost = 2,
         .effects = {
             .data = {
-                MAKE_EFFECT_TEMPLATE_MOVE(DIRECTION_FORWARD),
-                MAKE_EFFECT_TEMPLATE_DAMAGE(DAMAGE_MAGICAL, 1),
+                MAKE_EFFECT_TEMPLATE_MOVE(false, DIRECTION_FORWARD),
+                MAKE_EFFECT_TEMPLATE_DAMAGE(false, DAMAGE_MAGICAL, 1),
             },
             .capacity = MAX_EFFECT_TEMPLATES,
             .count = 2,
@@ -124,7 +124,7 @@ static const Action actions[] = {
         .cost = 2,
         .effects = {
             .data = {
-                MAKE_EFFECT_TEMPLATE_ATTACK(DAMAGE_MAGICAL),
+                MAKE_EFFECT_TEMPLATE_ATTACK(false, DAMAGE_MAGICAL),
             },
             .capacity = MAX_EFFECT_TEMPLATES,
             .count = 1,
@@ -139,7 +139,7 @@ static const Action actions[] = {
         .cost = 1,
         .effects = {
             .data = {
-                MAKE_EFFECT_TEMPLATE_DAMAGE(DAMAGE_MAGICAL, 1),
+                MAKE_EFFECT_TEMPLATE_DAMAGE(false, DAMAGE_MAGICAL, 1),
             },
             .capacity = MAX_EFFECT_TEMPLATES,
             .count = 1,

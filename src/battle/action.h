@@ -1,5 +1,7 @@
 #pragma once
 
+#include "raylib.h"
+
 #define MAX_EFFECT_TEMPLATES 3
 #define MAX_ACTIONS 3
 
@@ -27,6 +29,8 @@ typedef enum Direction
 
 typedef struct EffectTemplate
 {
+    bool selfOverride;
+
     enum
     {
         EFFECT_TEMPLATE_DAMAGE,
@@ -62,37 +66,42 @@ typedef struct EffectTemplate
     } data;
 } EffectTemplate;
 
-#define MAKE_EFFECT_TEMPLATE_DAMAGE(DAMAGE_TYPE, AMOUNT)                   \
+#define MAKE_EFFECT_TEMPLATE_DAMAGE(SELF, DAMAGE_TYPE, AMOUNT)             \
     (EffectTemplate)                                                       \
     {                                                                      \
+        .selfOverride = SELF,                                              \
         .type = EFFECT_TEMPLATE_DAMAGE,                                    \
         .data = {.damage = {.damageType = DAMAGE_TYPE, .amount = AMOUNT} } \
     }
 
-#define MAKE_EFFECT_TEMPLATE_KILL()   \
-    (EffectTemplate)                  \
-    {                                 \
-        .type = EFFECT_TEMPLATE_KILL, \
+#define MAKE_EFFECT_TEMPLATE_KILL(SELF) \
+    (EffectTemplate)                    \
+    {                                   \
+        .selfOverride = SELF,           \
+        .type = EFFECT_TEMPLATE_KILL,   \
     }
 
-#define MAKE_EFFECT_TEMPLATE_MOVE(DIRECTION)        \
+#define MAKE_EFFECT_TEMPLATE_MOVE(SELF, DIRECTION)  \
     (EffectTemplate)                                \
     {                                               \
+        .selfOverride = SELF,                       \
         .type = EFFECT_TEMPLATE_MOVE,               \
         .data = {.move = {.direction = DIRECTION} } \
     }
 
-#define MAKE_EFFECT_TEMPLATE_ATTACK(DAMAGE_TYPE)         \
+#define MAKE_EFFECT_TEMPLATE_ATTACK(SELF, DAMAGE_TYPE)   \
     (EffectTemplate)                                     \
     {                                                    \
+        .selfOverride = SELF,                            \
         .type = EFFECT_TEMPLATE_ATTACK,                  \
         .data = {.attack = {.damageType = DAMAGE_TYPE} } \
     }
 
-#define MAKE_EFFECT_TEMPLATE_AUTO_MOVE()   \
-    (EffectTemplate)                       \
-    {                                      \
-        .type = EFFECT_TEMPLATE_AUTO_MOVE, \
+#define MAKE_EFFECT_TEMPLATE_AUTO_MOVE(SELF) \
+    (EffectTemplate)                         \
+    {                                        \
+        .selfOverride = SELF,                \
+        .type = EFFECT_TEMPLATE_AUTO_MOVE,   \
     }
 
 typedef struct EffectTemplateList
