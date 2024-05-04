@@ -31,20 +31,6 @@ static void renderEnemySprite(
     Vector3 origin,
     const Event *eventOpt)
 {
-    const Vector3 trueOrigin = ({
-        Vector3 result = origin;
-
-        if (eventOpt && eventOpt->type == EVENT_MOVE)
-        {
-            const float dest = enemy->row == ROW_FRONT ? Z_POS_FRONT : Z_POS_BACK;
-            const float start = enemy->row == ROW_FRONT ? Z_POS_BACK : Z_POS_FRONT;
-            const float progress = eventOpt->elapsed / eventOpt->duration;
-            origin.z = Lerp(start, dest, progress);
-        }
-
-        origin;
-    });
-
     const float size = enemy->sprite.height * PIXEL_TO_WORLD;
 
     const Color tint = ({
@@ -56,7 +42,7 @@ static void renderEnemySprite(
                                                    : base;
     });
 
-    DrawBillboard(camera, enemy->sprite, trueOrigin, size, tint);
+    DrawBillboard(camera, enemy->sprite, origin, size, tint);
 }
 
 static void renderAnimation(
@@ -119,7 +105,16 @@ static void renderEnemy(
     const Vector3 origin = ({
         const float height = enemy->sprite.height * PIXEL_TO_WORLD;
         const float y = height / 2;
-        const float z = enemy->row == ROW_FRONT ? Z_POS_FRONT : Z_POS_BACK;
+
+        float z = enemy->row == ROW_FRONT ? Z_POS_FRONT : Z_POS_BACK;
+        if (eventOpt && eventOpt->type == EVENT_MOVE)
+        {
+            const float dest = enemy->row == ROW_FRONT ? Z_POS_FRONT : Z_POS_BACK;
+            const float start = enemy->row == ROW_FRONT ? Z_POS_BACK : Z_POS_FRONT;
+            const float progress = eventOpt->elapsed / eventOpt->duration;
+            z = Lerp(start, dest, progress);
+        }
+
         (Vector3){x, y, z};
     });
 
