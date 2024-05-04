@@ -61,7 +61,7 @@ EnemyBehavior EnemyBehavior_Get(const Combatant combatants[MAX_COMBATANTS], Id e
     {
         if (tryAction(&result, combatants, enemy, ACTION_SCAMP_BLOWGUN))
             break;
-        if (tryAction(&result, combatants, enemy, ACTION_ATTACK))
+        if (tryAction(&result, combatants, enemy, ACTION_SCAMP_HOOK))
             break;
         break;
     }

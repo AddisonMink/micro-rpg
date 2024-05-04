@@ -113,6 +113,7 @@ typedef enum ActionId
     ACTION_OGRE_SMASH,
 
     ACTION_SCAMP_BLOWGUN,
+    ACTION_SCAMP_HOOK,
 
     // Item
     ACTION_LODESTONE_ZAP,

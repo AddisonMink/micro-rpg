@@ -101,8 +101,8 @@ void Battle_Init()
 {
     battle.combatants[0] = Combatant_Create(0, COMBATANT_TYPE_MAGICIAN, ROW_BACK);
     battle.combatants[1] = Combatant_Create(1, COMBATANT_TYPE_GALOOT, ROW_FRONT);
-    battle.combatants[FIRST_ENEMY_ID] = Combatant_Create(FIRST_ENEMY_ID, COMBATANT_TYPE_SCAMP, ROW_BACK);
-    battle.combatants[FIRST_ENEMY_ID + 1] = Combatant_Create(FIRST_ENEMY_ID + 1, COMBATANT_TYPE_OGRE, ROW_FRONT);
+    battle.combatants[FIRST_ENEMY_ID] = Combatant_Create(FIRST_ENEMY_ID, COMBATANT_TYPE_SCAMP, ROW_FRONT);
+    battle.combatants[FIRST_ENEMY_ID + 1] = Combatant_Create(FIRST_ENEMY_ID + 1, COMBATANT_TYPE_SCAMP, ROW_FRONT);
     battle.combatants[FIRST_ENEMY_ID + 2] = Combatant_Create(FIRST_ENEMY_ID + 2, COMBATANT_TYPE_SCAMP, ROW_BACK);
 
     battle.queue = Queue_Create(battle.combatants);

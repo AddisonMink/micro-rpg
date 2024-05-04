@@ -69,6 +69,22 @@ static const Action actions[] = {
         },
     },
 
+    [ACTION_SCAMP_HOOK] = {
+        .id = ACTION_SCAMP_HOOK,
+        .name = "Hook",
+        .range = RANGE_MELEE,
+        .magicLevel = 0,
+        .cost = 0,
+        .effects = {
+            .data = {
+                MAKE_EFFECT_TEMPLATE_ATTACK(DAMAGE_PHYSICAL),
+                MAKE_EFFECT_TEMPLATE_MOVE(DIRECTION_BACK),
+            },
+            .capacity = MAX_EFFECT_TEMPLATES,
+            .count = 2,
+        },
+    },
+
     [ACTION_LODESTONE_ZAP] = {
         .id = ACTION_LODESTONE_ZAP,
         .name = "Zap",
