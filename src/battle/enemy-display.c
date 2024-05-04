@@ -4,12 +4,13 @@
 
 #include "raymath.h"
 
-static const float Z_POS = 0.0;
-static const float Z_POS_BACK_ROW_OFFSET = 3.0;
-static const float Y_POS = 0.5;
+static const float PIXEL_TO_WORLD = 1.0f / 48.0f;
+
 static const float X_POS_1[MAX_ENEMIES] = {0, 0, 0};
 static const float X_POS_2[MAX_ENEMIES] = {-1, 1, 0};
 static const float X_POS_3[MAX_ENEMIES] = {-1, 0, 1};
+static const float Z_POS_FRONT = 0.0;
+static const float Z_POS_BACK = -3.0;
 
 static const float STATUS_PANEL_WIDTH = 100;
 static const float STATUS_PANEL_HEIGHT = 50;
@@ -30,24 +31,32 @@ static void renderEnemySprite(
     Vector3 origin,
     const Event *eventOpt)
 {
-    const Color base = enemy->row == ROW_FRONT ? WHITE : GRAY;
+    const Vector3 trueOrigin = ({
+        Vector3 result = origin;
 
-    const Color tint =
+        if (eventOpt && eventOpt->type == EVENT_MOVE)
+        {
+            const float dest = enemy->row == ROW_FRONT ? Z_POS_FRONT : Z_POS_BACK;
+            const float start = enemy->row == ROW_FRONT ? Z_POS_BACK : Z_POS_FRONT;
+            const float progress = eventOpt->elapsed / eventOpt->duration;
+            origin.z = Lerp(start, dest, progress);
+        }
+
+        origin;
+    });
+
+    const float size = enemy->sprite.height * PIXEL_TO_WORLD;
+
+    const Color tint = ({
+        const Color base = enemy->row == ROW_FRONT ? WHITE : GRAY;
+
         eventOpt && eventOpt->type == EVENT_FLASH  ? eventOpt->data.flash
         : eventOpt && eventOpt->type == EVENT_FADE ? Fade(base, 1.0 - eventOpt->elapsed)
         : enemy->state == COMBATANT_STATE_DEAD     ? BLANK
                                                    : base;
+    });
 
-    if (eventOpt && eventOpt->type == EVENT_MOVE)
-    {
-        const float dest = enemy->row == ROW_FRONT ? 0 : -Z_POS_BACK_ROW_OFFSET;
-        const float start = enemy->row == ROW_FRONT ? -Z_POS_BACK_ROW_OFFSET : 0;
-        const float progress = eventOpt->elapsed / eventOpt->duration;
-
-        origin.z = Lerp(start, dest, progress);
-    }
-
-    DrawBillboard(camera, enemy->sprite, origin, 1.0, tint);
+    DrawBillboard(camera, enemy->sprite, trueOrigin, size, tint);
 }
 
 static void renderAnimation(
@@ -102,13 +111,17 @@ static void drawMessagePanel(UI *ui, const char *message, Vector2 pos)
 static void renderEnemy(
     Camera3D camera, UI *ui,
     const Combatant *enemy,
-    Vector3 origin,
+    float x,
     const Event *eventOpt,
     bool showStatus,
     bool selected)
 {
-    if (enemy->row == ROW_BACK)
-        origin.z -= Z_POS_BACK_ROW_OFFSET;
+    const Vector3 origin = ({
+        const float height = enemy->sprite.height * PIXEL_TO_WORLD;
+        const float y = height / 2;
+        const float z = enemy->row == ROW_FRONT ? Z_POS_FRONT : Z_POS_BACK;
+        (Vector3){x, y, z};
+    });
 
     const EventType eventType = eventOpt == NULL ? -1 : eventOpt->type;
     const Vector2 pos = GetWorldToScreen(origin, camera);
@@ -159,10 +172,9 @@ void EnemyDisplay_Draw(
     LIST_FOREACH(&enemies, Combatant *, enemy)
     {
         const Id id = (*enemy)->id;
-        const Vector3 origin = (Vector3){x_pos[index], Y_POS, Z_POS};
         const Event *event = eventOpt && eventOpt->id == id ? eventOpt : NULL;
         const bool isSelected = id == selected;
-        renderEnemy(camera, ui, *enemy, origin, event, showStatus, isSelected);
+        renderEnemy(camera, ui, *enemy, x_pos[index], event, showStatus, isSelected);
         index++;
     }
 }
