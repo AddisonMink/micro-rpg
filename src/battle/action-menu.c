@@ -80,7 +80,7 @@ void ActionMenu_Init(const ItemList *items, const Combatant *player)
 #define ACTION_TAB_WIDTH 150
 #define ACTION_TAB_HEIGHT 30
 #define ACTION_MENU_WIDTH (ACTION_TAB_WIDTH * 3 + SPACING * 2)
-#define ACTION_MENU_HEIGHT 120
+#define ACTION_MENU_HEIGHT 140
 #define ACTION_LIST_WIDTH ((ACTION_MENU_WIDTH - SPACING) / 2)
 
 static void ui_action_tab(UI *ui, const char *name)
@@ -126,6 +126,7 @@ static void ui_effect_template(UI *ui, const EffectTemplate *effect)
         UI_BodyLabel(ui, "Move");
         break;
     case EFFECT_TEMPLATE_STATUS:
+        UI_BodyLabel(ui, "Status");
         break;
     }
 }
